@@ -179,6 +179,9 @@
     <div class="sub" id="sourceLabel">carregando…</div>
   </div>
   <div class="right-controls">
+    <select id="yearFilter" class="btn btn-secondary" onchange="onYearFilterChange()" title="Filtra o dashboard a partir do ano selecionado (baseado no ETA)">
+      <option value="all">Todos os anos</option>
+    </select>
     <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
     <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Gerenciar acessos</a>
     <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
@@ -197,7 +200,7 @@
       <h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
       <div class="chart-wrap table-scroll" id="tblFornecedorWrap">
         <table id="tblFornecedor">
-          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Valor Invoice (USD)</th><th>Data de Embarque</th></tr></thead>
+          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>Data de Embarque</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -408,6 +411,8 @@ const NEW_PROCESS_FIELDS = [
 const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
 
 let lastRows = [];
+let ALL_PROCESSOS = [];
+let YEAR_FILTER = 'all';
 let PROCESSOS_HEADERS = [];
 let PRODUTO_OPTIONS = [];
 let FORNECEDOR_OPTIONS = [];
@@ -523,6 +528,51 @@ function navioCell(navio){
   return `${navio} <a href="${url}" target="_blank" rel="noopener" class="edit-btn" style="text-decoration:none;">Rastrear</a>`;
 }
 
+// ---------------------------------------------------------------------
+// Filtro de ano (baseado no ETA) — "a partir de", nao mostra dados antes do ano escolhido
+// ---------------------------------------------------------------------
+function etaYear(row){
+  const eta = row && row.ETA ? row.ETA.trim() : '';
+  const m = eta.match(/^(\d{4})-/);
+  return m ? m[1] : null;
+}
+
+function populateYearFilter(rows){
+  const years = [...new Set(rows.map(etaYear).filter(Boolean))].sort();
+  const sel = document.getElementById('yearFilter');
+  const current = sel.value || 'all';
+  sel.innerHTML = ['<option value="all">Todos os anos</option>']
+    .concat(years.map(y => `<option value="${y}">A partir de ${y}</option>`))
+    .join('');
+  // mantem a selecao anterior se o ano ainda existir na lista
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
+  YEAR_FILTER = sel.value;
+}
+
+function onYearFilterChange(){
+  YEAR_FILTER = document.getElementById('yearFilter').value;
+  renderAll();
+}
+
+function applyYearFilter(rows){
+  if (YEAR_FILTER === 'all') return rows;
+  return rows.filter(r => {
+    const y = etaYear(r);
+    if (!y) return true; // sem ETA definido: nao exclui, so nao da pra classificar
+    return y >= YEAR_FILTER;
+  });
+}
+
+function renderAll(){
+  const filtered = applyYearFilter(ALL_PROCESSOS);
+  renderKPIs(filtered);
+  renderFornecedorTable(filtered);
+  renderProdutoTotalTable(filtered);
+  renderProdutoEtaTable(filtered);
+  renderPpglTable(filtered);
+  renderTable(filtered);
+}
+
 function renderKPIs(rows){
   const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
 
@@ -550,11 +600,12 @@ function renderFornecedorTable(rows){
     const processo = r['Processo Contr.'] || '—';
     const key = fornecedor + '|' + processo;
     if (!groups.has(key)){
-      groups.set(key, {fornecedor, processo, valor:0, dataEmbarque: r['Data de embarque'] || ''});
+      groups.set(key, {fornecedor, processo, valor:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
     }
     const g = groups.get(key);
     g.valor += (num(r['Valor Invoice (USD)']) || 0);
     if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
+    if (r.Status && r.Status.trim()) g.statuses.add(r.Status.trim());
   });
   const items = [...groups.values()].sort((a,b) => {
     if (!a.dataEmbarque && !b.dataEmbarque) return 0;
@@ -564,17 +615,23 @@ function renderFornecedorTable(rows){
   });
   const tbody = document.querySelector('#tblFornecedor tbody');
   if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">Sem dados.</td></tr>`;
     return;
   }
-  tbody.innerHTML = items.map(it => `
+  tbody.innerHTML = items.map(it => {
+    const statusCell = it.statuses.size
+      ? [...it.statuses].map(statusBadge).join(' ')
+      : statusBadge('');
+    return `
     <tr>
       <td>${it.fornecedor}</td>
       <td>${it.processo}</td>
+      <td>${statusCell}</td>
       <td>${fmtUSD(it.valor)}</td>
       <td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderProdutoTotalTable(rows){
@@ -800,12 +857,9 @@ async function refresh(){
     document.getElementById('statusDot').className = 'dot';
     document.getElementById('statusText').textContent = 'ao vivo';
 
-    renderKPIs(parsedP.data);
-    renderFornecedorTable(parsedP.data);
-    renderProdutoTotalTable(parsedP.data);
-    renderProdutoEtaTable(parsedP.data);
-    renderPpglTable(parsedP.data);
-    renderTable(parsedP.data);
+    ALL_PROCESSOS = parsedP.data;
+    populateYearFilter(ALL_PROCESSOS);
+    renderAll();
     renderFinimp();
   } catch (err) {
     document.getElementById('statusDot').className = 'dot err';
