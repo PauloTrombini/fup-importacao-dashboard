@@ -201,6 +201,29 @@
   </div>
 </div>
 
+<div class="overlay" id="docOverlay">
+  <div class="modal">
+    <h3 id="docTitle">Documentos do processo</h3>
+    <div class="modal-sub">PDFs ficam guardados no Google Drive; o link fica registrado na planilha.</div>
+
+    <div id="docList" style="margin-bottom:18px;"></div>
+
+    <div class="field-row">
+      <label>Categoria</label>
+      <select id="docCategoria" style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;"></select>
+    </div>
+    <div class="field-row">
+      <label>Arquivo (PDF)</label>
+      <input type="file" id="docFile" accept="application/pdf">
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeDocsModal()">Fechar</button>
+      <button type="button" class="btn btn-primary" id="docSaveBtn" onclick="submitUpload()">Enviar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toastBox"></div>
 
 <script>
@@ -211,13 +234,22 @@ const SHEET_ID = '17qjdmQwe5qK-B76RCOQ8v3fJmzdZHrfFnao3nDqVjAw';
 const GID_PROCESSOS = '0';
 const GID_FINIMP = '2096853513';
 const GID_PRODUTOS = '632533681';
+const GID_DOCUMENTOS = '282169672';
 const TAB_PROCESSOS = 'Processos';
+const TAB_DOCUMENTOS = 'Documentos';
 const REFRESH_MS = 60000;
+
+// Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
+const DRIVE_FOLDER_ID = '16WWIdaJBE3QMLNjKexvZ1mKmeXXxUSRv';
+const DOC_CATEGORIES = [
+  'Invoice', 'Bill of Lading (BL)', 'Packing List',
+  'Declaração de Importação (DI)', 'Contrato', 'Outro',
+];
 
 // ID do cliente OAuth (tipo "Aplicativo da Web") criado no Google Cloud.
 // So funciona login para a conta autorizada como "usuario de teste".
 const CLIENT_ID = '446804769711-9d2f71d7mf1q464o0ffcu08prkldka32.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
 
 const EDITABLE_FIELDS = [
   {key:'Processo', label:'Processo', type:'text'},
@@ -239,6 +271,8 @@ const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
 let lastRows = [];
 let PROCESSOS_HEADERS = [];
 let PRODUTO_OPTIONS = [];
+let DOCUMENTOS = [];
+let currentDocsProcesso = null;
 let accessToken = null;
 let tokenClient = null;
 
@@ -417,7 +451,10 @@ function renderTable(rows){
       <td>${r.ETA || '—'}</td>
       <td>${r.ETB || '—'}</td>
       <td>${statusBadge(r.Status)}</td>
-      <td>${editing ? `<button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>` : ''}</td>
+      <td>${editing ? `
+        <button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>
+        <button class="edit-btn" onclick="openDocsModal('${String(r.Processo ?? '').replace(/'/g, "\\'")}')">Documentos</button>
+      ` : ''}</td>
     </tr>
   `).join('');
 }
@@ -440,10 +477,11 @@ function renderFinimp(rows){
 
 async function refresh(){
   try {
-    const [resP, resF, resPr] = await Promise.all([
+    const [resP, resF, resPr, resD] = await Promise.all([
       fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
       fetch(csvUrl(GID_FINIMP), {cache:'no-store'}),
-      fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'})
+      fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'}),
+      fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'})
     ]);
     if (!resP.ok || !resF.ok) throw new Error('Falha ao buscar dados da planilha');
     const [textP, textF] = await Promise.all([resP.text(), resF.text()]);
@@ -456,6 +494,11 @@ async function refresh(){
       const parsedPr = parseCSV(textPr);
       const col = parsedPr.headers[0];
       PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
+    }
+
+    if (resD.ok){
+      const textD = await resD.text();
+      DOCUMENTOS = parseCSV(textD).data;
     }
 
     document.getElementById('sourceLabel').textContent =
@@ -569,6 +612,139 @@ async function writeCell(rowNum, field, value){
     throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
   }
   return res.json();
+}
+
+function renderDocList(){
+  const el = document.getElementById('docList');
+  const docs = DOCUMENTOS.filter(d => (d['Processo'] ?? '') === currentDocsProcesso);
+  if (!docs.length){
+    el.innerHTML = '<div class="empty">Nenhum documento enviado ainda.</div>';
+    return;
+  }
+  el.innerHTML = docs.map(d => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-size:13px;">${d['Categoria'] ?? '—'}</div>
+        <div style="font-size:12px; color:var(--txt2);">${d['Nome do Arquivo'] ?? ''} · ${d['Enviado em'] ?? ''}</div>
+      </div>
+      <a href="${d['Link']}" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Abrir</a>
+    </div>
+  `).join('');
+}
+
+function openDocsModal(processo){
+  currentDocsProcesso = processo;
+  document.getElementById('docTitle').textContent = `Documentos · ${processo || ''}`;
+  const sel = document.getElementById('docCategoria');
+  sel.innerHTML = DOC_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+  document.getElementById('docFile').value = '';
+  renderDocList();
+  document.getElementById('docOverlay').classList.add('open');
+}
+
+function closeDocsModal(){
+  document.getElementById('docOverlay').classList.remove('open');
+}
+
+function arrayBufferToBase64(buffer){
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+async function uploadToDrive(file, driveName){
+  const metadata = { name: driveName, parents: [DRIVE_FOLDER_ID] };
+  const boundary = '-------fupimportacao314159265';
+  const delimiter = `\r\n--${boundary}\r\n`;
+  const closeDelim = `\r\n--${boundary}--`;
+  const base64Data = arrayBufferToBase64(await file.arrayBuffer());
+
+  const multipartBody =
+    delimiter +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+    JSON.stringify(metadata) +
+    delimiter +
+    'Content-Type: application/pdf\r\n' +
+    'Content-Transfer-Encoding: base64\r\n\r\n' +
+    base64Data +
+    closeDelim;
+
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': `multipart/related; boundary=${boundary}`,
+    },
+    body: multipartBody,
+  });
+  if (!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao enviar para o Drive`);
+  }
+  const created = await res.json();
+
+  try {
+    await fetch(`https://www.googleapis.com/drive/v3/files/${created.id}/permissions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ role: 'reader', type: 'anyone' }),
+    });
+  } catch (e) { /* nao bloqueia se falhar */ }
+
+  return created.webViewLink || `https://drive.google.com/file/d/${created.id}/view`;
+}
+
+async function appendDocumentRow(processo, categoria, filename, link){
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(TAB_DOCUMENTOS + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  const enviado_em = new Date().toISOString().slice(0,19).replace('T',' ');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ values: [[processo, categoria, filename, link, enviado_em]] }),
+  });
+  if (!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao registrar na planilha`);
+  }
+}
+
+async function submitUpload(){
+  const fileInput = document.getElementById('docFile');
+  const file = fileInput.files[0];
+  if (!file){
+    showToast('Escolha um arquivo PDF.', false);
+    return;
+  }
+  const categoria = document.getElementById('docCategoria').value;
+  const saveBtn = document.getElementById('docSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Enviando…';
+
+  try {
+    const driveName = `${currentDocsProcesso} - ${categoria} - ${file.name}`;
+    const link = await uploadToDrive(file, driveName);
+    await appendDocumentRow(currentDocsProcesso, categoria, file.name, link);
+    showToast('Documento enviado com sucesso.', true);
+    await refresh();
+    renderDocList();
+    fileInput.value = '';
+  } catch (e) {
+    if (String(e.message).includes('401')){
+      accessToken = null;
+      setEditingUI(false);
+    }
+    showToast(e.message, false);
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Enviar';
 }
 
 function openEditModal(rowId){
