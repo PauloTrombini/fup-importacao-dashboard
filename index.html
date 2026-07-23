@@ -43,33 +43,28 @@
     100%{box-shadow:0 0 0 0 rgba(47,208,138,0);}
   }
   .dot.err{ background:var(--red); animation:none; }
-  main{ padding:24px 28px 60px; max-width:1400px; margin:0 auto; }
+  main{ padding:24px 28px 60px; max-width:1500px; margin:0 auto; }
   .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:24px; }
   .kpi{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
   .kpi .label{ color:var(--txt2); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
-  .kpi .value{ font-size:24px; font-weight:700; margin-top:6px; }
+  .kpi .value{ font-size:22px; font-weight:700; margin-top:6px; }
   .kpi .value.pos{ color:var(--green); }
   .kpi .value.neg{ color:var(--red); }
-  .grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-bottom:16px; }
+  .grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
   .grid3{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
   @media (max-width:900px){ .grid, .grid3 { grid-template-columns:1fr; } }
   .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; }
   .panel h2{ font-size:14px; margin:0 0 14px; color:var(--txt2); font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
-  .chart-wrap{ position:relative; min-height:260px; overflow:auto; padding-top:4px; }
-  .bar-row{ margin-bottom:12px; }
-  .bar-row .bar-label{ display:flex; justify-content:space-between; font-size:12px; color:var(--txt2); margin-bottom:5px; }
-  .bar-row .bar-label span:last-child{ color:var(--txt); font-weight:600; }
-  .bar-track{ background:var(--panel2); border-radius:6px; height:10px; overflow:hidden; }
-  .bar-fill{ height:100%; border-radius:6px; }
-  .donut-legend{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt); margin-bottom:8px; }
-  .donut-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0; }
+  .chart-wrap{ position:relative; min-height:120px; overflow:auto; padding-top:4px; }
   table{ width:100%; border-collapse:collapse; font-size:13px; }
   th,td{ padding:9px 10px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
   th{ color:var(--txt2); font-weight:600; font-size:11px; text-transform:uppercase; position:sticky; top:0; background:var(--panel); }
   tr:hover td{ background:var(--panel2); }
-  .table-scroll{ max-height:420px; overflow:auto; }
+  .table-scroll{ max-height:440px; overflow:auto; }
   .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
-  .badge.atracando{ background:rgba(79,140,255,.15); color:var(--accent); }
+  .badge.produzindo{ background:rgba(245,185,66,.15); color:var(--amber); }
+  .badge.embarcado{ background:rgba(79,140,255,.15); color:var(--accent); }
+  .badge.chegou{ background:rgba(47,208,138,.15); color:var(--green); }
   .badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
   .empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
   footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
@@ -94,21 +89,26 @@
   .overlay.open{ display:flex; }
   .modal{
     background:var(--panel); border:1px solid var(--border); border-radius:14px;
-    width:100%; max-width:520px; max-height:85vh; overflow:auto;
+    width:100%; max-width:560px; max-height:88vh; overflow:auto;
     padding:22px 24px;
   }
+  .modal.wide{ max-width:720px; }
   .modal h3{ margin:0 0 4px; font-size:17px; }
   .modal .modal-sub{ color:var(--txt2); font-size:13px; margin-bottom:18px; }
+  .field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:560px){ .field-grid{ grid-template-columns:1fr; } }
   .field-row{ margin-bottom:14px; }
   .field-row label{
     display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2);
     text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
   }
-  .field-row input{
+  .field-row input, .field-row select{
     width:100%; background:var(--panel2); border:1px solid var(--border);
     color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;
   }
   .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+
+  .cor-cell{ border-radius:6px; padding:3px 10px; font-size:12px; font-weight:600; display:inline-block; }
 
   #toastBox{
     position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
@@ -131,6 +131,7 @@
     <div class="sub" id="sourceLabel">carregando…</div>
   </div>
   <div class="right-controls">
+    <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
     <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Gerenciar acessos</a>
     <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
     <div class="status">
@@ -145,25 +146,31 @@
 
   <div class="grid">
     <div class="panel">
-      <h2>Valor Invoice (USD) por Fornecedor</h2>
-      <div class="chart-wrap" id="chartFornecedor"></div>
-    </div>
-    <div class="panel">
-      <h2>Processos por Status</h2>
-      <div class="chart-wrap" id="chartStatus"></div>
+      <h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
+      <div class="chart-wrap table-scroll" id="tblFornecedorWrap">
+        <table id="tblFornecedor">
+          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Valor Invoice (USD)</th><th>Data de Embarque</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <div class="grid3">
     <div class="panel">
-      <h2>Peso (MTON) por Produto</h2>
-      <div class="chart-wrap" id="chartProduto"></div>
+      <h2>Produto × ETA (Data Estimada de Chegada)</h2>
+      <div class="chart-wrap table-scroll" id="tblProdutoEtaWrap">
+        <table id="tblProdutoEta">
+          <thead><tr><th>Produto</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
     <div class="panel">
-      <h2>Resumo FINIMP</h2>
+      <h2>Resumo FINIMP (por Data de Pagamento)</h2>
       <div class="table-scroll">
         <table id="tblFinimp">
-          <thead><tr><th>Data Inicial</th><th>Data Pgto</th><th>Total Operação (USD)</th><th>Ganho Op. (R$)</th></tr></thead>
+          <thead><tr><th>Data Pgto</th><th>Total Operação (USD)</th><th>FTS (R$)</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -176,9 +183,10 @@
       <table id="tblProcessos">
         <thead>
           <tr>
-            <th>Processo</th><th>Fornecedor</th><th>Produto</th><th>Bobinas</th>
+            <th>Processo Contr.</th><th>Fornecedor</th><th>Produto</th><th>Revestimento</th><th>Cor</th>
+            <th>Navio</th><th>Data Embarque</th><th>Bobinas</th>
             <th>Peso (MTON)</th><th>Preço Unit. (USD)</th><th>Valor Invoice (USD)</th>
-            <th>Pago (USD)</th><th>A Pagar (USD)</th><th>ETA</th><th>ETB</th><th>Status</th>
+            <th>ETA</th><th>ETB</th><th>Status</th>
             <th id="thEditCol" style="display:none;"></th>
           </tr>
         </thead>
@@ -198,6 +206,18 @@
     <div class="modal-actions">
       <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
       <button type="button" class="btn btn-primary" id="saveBtn" onclick="submitEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="newProcessOverlay">
+  <div class="modal wide">
+    <h3>Novo Processo de Importação</h3>
+    <div class="modal-sub">Cria uma linha completa na aba Processos. Se digitar um Produto/Fornecedor/Cor/Revestimento novo, ele é adicionado automaticamente na respectiva lista suspensa.</div>
+    <form id="newProcessForm" class="field-grid"></form>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeNewProcessModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="newProcessSaveBtn" onclick="submitNewProcess()">Criar Processo</button>
     </div>
   </div>
 </div>
@@ -236,8 +256,15 @@ const GID_PROCESSOS = '0';
 const GID_FINIMP = '2096853513';
 const GID_PRODUTOS = '632533681';
 const GID_DOCUMENTOS = '282169672';
+const GID_FORNECEDORES = '109208429';
+const GID_COR = '1208696385';
+const GID_REVESTIMENTO = '136288052';
 const TAB_PROCESSOS = 'Processos';
 const TAB_DOCUMENTOS = 'Documentos';
+const TAB_PRODUTOS = 'Produtos';
+const TAB_FORNECEDORES = 'Fornecedores';
+const TAB_COR = 'Cor';
+const TAB_REVESTIMENTO = 'Revestimento';
 const REFRESH_MS = 60000;
 
 // Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
@@ -247,24 +274,66 @@ const DOC_CATEGORIES = [
   'Declaração de Importação (DI)', 'Contrato', 'Outro',
 ];
 
+// Status é uma lista fixa (nao vem de aba)
+const STATUS_OPTIONS = ['PRODUZINDO', 'EMBARCADO', 'CHEGOU'];
+
+// Cores conhecidas -> estilo de pintura da celula. Qualquer cor nova cai no fallback.
+const COR_STYLE = {
+  'natural':     {bg:'#c9ccd1', fg:'#16181d'},
+  'branco':      {bg:'#f5f5f0', fg:'#16181d'},
+  'preto':       {bg:'#161616', fg:'#ffffff'},
+  'madeira':     {bg:'#8b5a2b', fg:'#ffffff'},
+  'cinza medio': {bg:'#8a8f98', fg:'#ffffff'},
+  'ceramica':    {bg:'#c48a5a', fg:'#16181d'},
+};
+function corStyle(nome){
+  const key = String(nome || '').trim().toLowerCase();
+  if (COR_STYLE[key]) return COR_STYLE[key];
+  // fallback: gera uma cor estavel a partir do texto
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
+  const hue = Math.abs(hash) % 360;
+  return {bg:`hsl(${hue},45%,45%)`, fg:'#ffffff'};
+}
+
 // ID do cliente OAuth (tipo "Aplicativo da Web") criado no Google Cloud.
 // So funciona login para a conta autorizada como "usuario de teste".
 const CLIENT_ID = '446804769711-9d2f71d7mf1q464o0ffcu08prkldka32.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
 
 const EDITABLE_FIELDS = [
-  {key:'Processo', label:'Processo', type:'text'},
-  {key:'Fornecedor', label:'Fornecedor', type:'text'},
-  {key:'Produto', label:'Produto', type:'select'},
+  {key:'Processo Contr.', label:'Processo Contr.', type:'text'},
+  {key:'Fornecedor', label:'Fornecedor', type:'select', options:'FORNECEDOR_OPTIONS'},
+  {key:'Produto', label:'Produto', type:'select', options:'PRODUTO_OPTIONS'},
+  {key:'Revestimento', label:'Revestimento', type:'select', options:'REVESTIMENTO_OPTIONS'},
+  {key:'Cor', label:'Cor', type:'select', options:'COR_OPTIONS'},
+  {key:'NAVIO', label:'Navio', type:'text'},
+  {key:'Data de embarque', label:'Data de Embarque', type:'date'},
   {key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
   {key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
   {key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
   {key:'Valor Invoice (USD)', label:'Valor Invoice (USD)', type:'number', step:'any'},
-  {key:'Pago (USD)', label:'Pago (USD)', type:'number', step:'any'},
-  {key:'A Pagar (USD)', label:'A Pagar (USD)', type:'number', step:'any'},
   {key:'ETA', label:'ETA', type:'date'},
   {key:'ETB', label:'ETB', type:'date'},
-  {key:'Status', label:'Status', type:'text'},
+  {key:'Status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
+];
+
+// Campos do formulario "Novo Processo" — combo (select + opcao de digitar valor novo)
+const NEW_PROCESS_FIELDS = [
+  {key:'processo', label:'Processo Contr.', type:'text'},
+  {key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
+  {key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
+  {key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
+  {key:'cor', label:'Cor', type:'combo', options:'COR_OPTIONS', tab:'TAB_COR'},
+  {key:'navio', label:'Navio', type:'text'},
+  {key:'dataEmbarque', label:'Data de Embarque', type:'date'},
+  {key:'bobinas', label:'Bobinas', type:'number', step:'1'},
+  {key:'peso', label:'Peso (MTON)', type:'number', step:'any'},
+  {key:'precoUnit', label:'Preço Unit. (USD)', type:'number', step:'any'},
+  {key:'valorInvoice', label:'Valor Invoice (USD)', type:'number', step:'any'},
+  {key:'eta', label:'ETA', type:'date'},
+  {key:'etb', label:'ETB', type:'date'},
+  {key:'status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
 ];
 
 const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
@@ -272,7 +341,11 @@ const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
 let lastRows = [];
 let PROCESSOS_HEADERS = [];
 let PRODUTO_OPTIONS = [];
+let FORNECEDOR_OPTIONS = [];
+let COR_OPTIONS = [];
+let REVESTIMENTO_OPTIONS = [];
 let DOCUMENTOS = [];
+let FINIMP_ROWS = [];
 let currentDocsProcesso = null;
 let accessToken = null;
 let tokenClient = null;
@@ -321,6 +394,31 @@ function num(v){
   return isNaN(n) ? null : n;
 }
 
+// Numeros no formato brasileiro (aba FINIMP): "1.184.577,59" ou "- 1.184.577,59"
+function numBR(v){
+  if (v == null) return null;
+  let s = String(v).replace(/\s+/g, '').trim();
+  if (s === '' || s === '-') return null;
+  s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+// Datas da aba FINIMP vem em MM/DD/AAAA
+function parseMDY(str){
+  if (!str) return null;
+  const parts = String(str).trim().split('/');
+  if (parts.length !== 3) return null;
+  const mm = parseInt(parts[0], 10), dd = parseInt(parts[1], 10), yyyy = parseInt(parts[2], 10);
+  if (!mm || !dd || !yyyy) return null;
+  return new Date(yyyy, mm - 1, dd);
+}
+function fmtDateBR(d){
+  if (!d) return '—';
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+}
+
 const fmtUSD = n => n == null ? '—' : n.toLocaleString('en-US', {style:'currency', currency:'USD', maximumFractionDigits:0});
 const fmtBRL = n => n == null ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL', maximumFractionDigits:0});
 const fmtNum = (n, d=1) => n == null ? '—' : n.toLocaleString('pt-BR', {maximumFractionDigits:d});
@@ -329,103 +427,99 @@ function kpiCard(label, value, cls=''){
   return `<div class="kpi"><div class="label">${label}</div><div class="value ${cls}">${value}</div></div>`;
 }
 
-function uniqueProcessos(rows){
-  const map = new Map();
-  rows.forEach(r => { if (r.Processo && !map.has(r.Processo)) map.set(r.Processo, r); });
-  return [...map.values()];
-}
-
-function groupSum(rows, keyField, valField){
-  const m = new Map();
-  rows.forEach(r => {
-    const k = r[keyField] || '—';
-    const v = num(r[valField]) || 0;
-    m.set(k, (m.get(k) || 0) + v);
-  });
-  return m;
-}
-
-function renderBarList(containerId, items, color, formatter=fmtNum){
-  const el = document.getElementById(containerId);
-  if (!items.length){ el.innerHTML = '<div class="empty">Sem dados.</div>'; return; }
-  const max = Math.max(...items.map(i => i.value), 1);
-  el.innerHTML = items.map(i => `
-    <div class="bar-row">
-      <div class="bar-label"><span>${i.label}</span><span>${formatter(i.value)}</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${(i.value/max*100).toFixed(1)}%;background:${color};"></div></div>
-    </div>
-  `).join('');
-}
-
-function renderDonut(containerId, items){
-  const el = document.getElementById(containerId);
-  if (!items.length){ el.innerHTML = '<div class="empty">Sem dados.</div>'; return; }
-  const total = items.reduce((s, i) => s + i.value, 0) || 1;
-  let acc = 0;
-  const stops = items.map((it, idx) => {
-    const start = (acc / total * 360).toFixed(2);
-    acc += it.value;
-    const end = (acc / total * 360).toFixed(2);
-    return `${PALETTE[idx % PALETTE.length]} ${start}deg ${end}deg`;
-  }).join(', ');
-  el.innerHTML = `
-    <div style="display:flex; align-items:center; gap:28px; flex-wrap:wrap;">
-      <div style="width:150px; height:150px; border-radius:50%; background:conic-gradient(${stops}); position:relative; flex-shrink:0;">
-        <div style="position:absolute; inset:22px; background:var(--panel); border-radius:50%;"></div>
-      </div>
-      <div>
-        ${items.map((it, idx) => `
-          <div class="donut-legend">
-            <span class="donut-dot" style="background:${PALETTE[idx % PALETTE.length]};"></span>
-            ${it.label} (${it.value})
-          </div>`).join('')}
-      </div>
-    </div>`;
-}
-
 function statusBadge(s){
-  if (!s) return '<span class="badge default">Em andamento</span>';
-  const cls = s.toLowerCase() === 'atracando' ? 'atracando' : 'default';
-  return `<span class="badge ${cls}">${s}</span>`;
+  const key = String(s || '').trim().toUpperCase();
+  if (key === 'CHEGOU') return `<span class="badge chegou">${s}</span>`;
+  if (key === 'EMBARCADO') return `<span class="badge embarcado">${s}</span>`;
+  if (key === 'PRODUZINDO') return `<span class="badge produzindo">${s}</span>`;
+  if (!s) return '<span class="badge default">—</span>';
+  return `<span class="badge default">${s}</span>`;
 }
 
-function renderKPIs(rows, finimp){
-  const procs = uniqueProcessos(rows);
-  const valorInvoice = rows.reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
-  const pagoUsd = procs.reduce((s,r) => s + (num(r['Pago (USD)']) || 0), 0);
-  const faltaUsd = procs.reduce((s,r) => s + (num(r['A Pagar (USD)']) || 0), 0);
-  const pesoTotal = rows.reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
-  const ganhoOp = finimp.reduce((s,r) => s + (num(r['Ganho Op (R$)']) || 0), 0);
+function renderKPIs(rows){
+  const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
+
+  const isChegou = r => String(r.Status || '').trim().toUpperCase() === 'CHEGOU';
+
+  const valorChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+  const valorOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+
+  const pesoChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
+  const pesoOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
 
   document.getElementById('kpis').innerHTML = [
-    kpiCard('Processos Ativos', procs.length),
-    kpiCard('Valor Invoice Total', fmtUSD(valorInvoice)),
-    kpiCard('Pago (USD)', fmtUSD(pagoUsd)),
-    kpiCard('A Pagar (USD)', fmtUSD(faltaUsd)),
-    kpiCard('Peso Total (MTON)', fmtNum(pesoTotal)),
-    kpiCard('Ganho Operacional FINIMP', fmtBRL(ganhoOp), ganhoOp >= 0 ? 'pos' : 'neg'),
+    kpiCard('Número de Contratos', contratos),
+    kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
+    kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
+    kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
+    kpiCard('Peso — Em Andamento (MTON)', fmtNum(pesoOutros)),
   ].join('');
 }
 
-function renderCharts(rows){
-  const procs = uniqueProcessos(rows);
-
-  const byFornecedor = groupSum(rows, 'Fornecedor', 'Valor Invoice (USD)');
-  renderBarList('chartFornecedor',
-    [...byFornecedor.entries()].sort((a,b)=>b[1]-a[1]).map(([label,value]) => ({label, value})),
-    'var(--accent)', fmtUSD);
-
-  const byStatus = new Map();
-  procs.forEach(p => {
-    const s = p.Status || 'Sem status';
-    byStatus.set(s, (byStatus.get(s) || 0) + 1);
+function renderFornecedorTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const fornecedor = r.Fornecedor || '—';
+    const processo = r['Processo Contr.'] || '—';
+    const key = fornecedor + '|' + processo;
+    if (!groups.has(key)){
+      groups.set(key, {fornecedor, processo, valor:0, dataEmbarque: r['Data de embarque'] || ''});
+    }
+    const g = groups.get(key);
+    g.valor += (num(r['Valor Invoice (USD)']) || 0);
+    if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
   });
-  renderDonut('chartStatus', [...byStatus.entries()].map(([label,value]) => ({label, value})));
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.dataEmbarque && !b.dataEmbarque) return 0;
+    if (!a.dataEmbarque) return 1;
+    if (!b.dataEmbarque) return -1;
+    return a.dataEmbarque.localeCompare(b.dataEmbarque);
+  });
+  const tbody = document.querySelector('#tblFornecedor tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => `
+    <tr>
+      <td>${it.fornecedor}</td>
+      <td>${it.processo}</td>
+      <td>${fmtUSD(it.valor)}</td>
+      <td>${it.dataEmbarque || '—'}</td>
+    </tr>
+  `).join('');
+}
 
-  const byProduto = groupSum(rows, 'Produto', 'Peso (MTON)');
-  const sortedProduto = [...byProduto.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8)
-    .map(([label,value]) => ({label, value}));
-  renderBarList('chartProduto', sortedProduto, 'var(--violet)', v => fmtNum(v) + ' t');
+function renderProdutoEtaTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = r.Produto || '—';
+    const eta = r.ETA || '';
+    const key = produto + '|' + eta;
+    if (!groups.has(key)) groups.set(key, {produto, eta, peso:0, bobinas:0});
+    const g = groups.get(key);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.eta && !b.eta) return 0;
+    if (!a.eta) return 1;
+    if (!b.eta) return -1;
+    return a.eta.localeCompare(b.eta);
+  });
+  const tbody = document.querySelector('#tblProdutoEta tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${it.eta || '—'}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas, 0)}</td>
+    </tr>
+  `).join('');
 }
 
 function renderTable(rows){
@@ -433,73 +527,120 @@ function renderTable(rows){
   const tbody = document.querySelector('#tblProcessos tbody');
   const editing = !!accessToken;
   document.getElementById('thEditCol').style.display = editing ? '' : 'none';
+  document.getElementById('newProcessBtn').style.display = editing ? '' : 'none';
 
   if (!rows.length){
-    tbody.innerHTML = `<tr><td colspan="13" class="empty">Nenhum dado encontrado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="15" class="empty">Nenhum dado encontrado.</td></tr>`;
     return;
   }
-  tbody.innerHTML = rows.map(r => `
+  tbody.innerHTML = rows.map(r => {
+    const cs = corStyle(r.Cor);
+    const corCell = r.Cor
+      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${r.Cor}</span>`
+      : '—';
+    return `
     <tr>
-      <td>${r.Processo || '—'}</td>
+      <td>${r['Processo Contr.'] || '—'}</td>
       <td>${r.Fornecedor || '—'}</td>
       <td>${r.Produto || '—'}</td>
+      <td>${r.Revestimento || '—'}</td>
+      <td>${corCell}</td>
+      <td>${r.NAVIO || '—'}</td>
+      <td>${r['Data de embarque'] || '—'}</td>
       <td>${r.Bobinas || '—'}</td>
       <td>${fmtNum(num(r['Peso (MTON)']))}</td>
       <td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
       <td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
-      <td>${num(r['Pago (USD)']) != null ? fmtUSD(num(r['Pago (USD)'])) : '—'}</td>
-      <td>${num(r['A Pagar (USD)']) != null ? fmtUSD(num(r['A Pagar (USD)'])) : '—'}</td>
       <td>${r.ETA || '—'}</td>
       <td>${r.ETB || '—'}</td>
       <td>${statusBadge(r.Status)}</td>
       <td>${editing ? `
         <button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>
-        <button class="edit-btn" onclick="openDocsModal('${String(r.Processo ?? '').replace(/'/g, "\\'")}')">Documentos</button>
+        <button class="edit-btn" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">Documentos</button>
       ` : ''}</td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
-function renderFinimp(rows){
+function renderFinimp(){
+  const groups = new Map();
+  FINIMP_ROWS.forEach(r => {
+    const dataPgto = r['DATA PGTO'];
+    if (!dataPgto || !dataPgto.trim()) return;
+    if (!groups.has(dataPgto)) groups.set(dataPgto, {dataPgto, totalOp:0, colS:0});
+    const g = groups.get(dataPgto);
+    g.totalOp += (numBR(r['TOTAL OPERAÇÃO (USD)']) || 0);
+    g.colS += (numBR(r.__colS) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    const da = parseMDY(a.dataPgto), db = parseMDY(b.dataPgto);
+    if (!da && !db) return 0;
+    if (!da) return 1;
+    if (!db) return -1;
+    return da - db;
+  });
   const tbody = document.querySelector('#tblFinimp tbody');
-  if (!rows.length){
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados FINIMP.</td></tr>`;
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados FINIMP.</td></tr>`;
     return;
   }
-  tbody.innerHTML = rows.map(r => `
+  tbody.innerHTML = items.map(it => `
     <tr>
-      <td>${r['Data Inicial'] || '—'}</td>
-      <td>${r['Data Pgto'] || '—'}</td>
-      <td>${fmtUSD(num(r['Total Operacao (USD)']))}</td>
-      <td>${fmtBRL(num(r['Ganho Op (R$)']))}</td>
+      <td>${fmtDateBR(parseMDY(it.dataPgto))}</td>
+      <td>${fmtUSD(it.totalOp)}</td>
+      <td>${fmtBRL(it.colS)}</td>
     </tr>
   `).join('');
 }
 
 async function refresh(){
   try {
-    const [resP, resF, resPr, resD] = await Promise.all([
+    const [resP, resF, resPr, resD, resForn, resCor, resRev] = await Promise.all([
       fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
       fetch(csvUrl(GID_FINIMP), {cache:'no-store'}),
       fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'}),
-      fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'})
+      fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'}),
+      fetch(csvUrl(GID_FORNECEDORES), {cache:'no-store'}),
+      fetch(csvUrl(GID_COR), {cache:'no-store'}),
+      fetch(csvUrl(GID_REVESTIMENTO), {cache:'no-store'}),
     ]);
-    if (!resP.ok || !resF.ok) throw new Error('Falha ao buscar dados da planilha');
-    const [textP, textF] = await Promise.all([resP.text(), resF.text()]);
+    if (!resP.ok) throw new Error('Falha ao buscar dados da planilha');
+    const textP = await resP.text();
     const parsedP = parseCSV(textP);
-    const parsedF = parseCSV(textF);
     PROCESSOS_HEADERS = parsedP.headers;
 
     if (resPr.ok){
-      const textPr = await resPr.text();
-      const parsedPr = parseCSV(textPr);
+      const parsedPr = parseCSV(await resPr.text());
       const col = parsedPr.headers[0];
       PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
     }
-
+    if (resForn.ok){
+      const parsedForn = parseCSV(await resForn.text());
+      const col = parsedForn.headers[0];
+      FORNECEDOR_OPTIONS = parsedForn.data.map(r => r[col]).filter(v => v);
+    }
+    if (resCor.ok){
+      const parsedCor = parseCSV(await resCor.text());
+      const col = parsedCor.headers[0];
+      COR_OPTIONS = parsedCor.data.map(r => r[col]).filter(v => v);
+    }
+    if (resRev.ok){
+      const parsedRev = parseCSV(await resRev.text());
+      const col = parsedRev.headers[0];
+      REVESTIMENTO_OPTIONS = parsedRev.data.map(r => r[col]).filter(v => v);
+    }
     if (resD.ok){
-      const textD = await resD.text();
-      DOCUMENTOS = parseCSV(textD).data;
+      DOCUMENTOS = parseCSV(await resD.text()).data;
+    }
+    if (resF.ok){
+      const parsedF = parseCSV(await resF.text());
+      // Coluna S (indice 18, base 0) e a segunda ocorrencia de "FTS (R$)" — usada no resumo por pedido do usuario.
+      const headerAtS = parsedF.headers[18];
+      FINIMP_ROWS = parsedF.data.map(row => {
+        row.__colS = headerAtS !== undefined ? row[headerAtS] : '';
+        return row;
+      });
     }
 
     document.getElementById('sourceLabel').textContent =
@@ -507,10 +648,11 @@ async function refresh(){
     document.getElementById('statusDot').className = 'dot';
     document.getElementById('statusText').textContent = 'ao vivo';
 
-    renderKPIs(parsedP.data, parsedF.data);
-    renderCharts(parsedP.data);
+    renderKPIs(parsedP.data);
+    renderFornecedorTable(parsedP.data);
+    renderProdutoEtaTable(parsedP.data);
     renderTable(parsedP.data);
-    renderFinimp(parsedF.data);
+    renderFinimp();
   } catch (err) {
     document.getElementById('statusDot').className = 'dot err';
     document.getElementById('statusText').textContent = 'sem conexão';
@@ -615,6 +757,45 @@ async function writeCell(rowNum, field, value){
   return res.json();
 }
 
+async function appendRow(tabName, values){
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ values: [values] }),
+  });
+  if (!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
+  }
+  return res.json();
+}
+
+const OPTION_STORE = {
+  FORNECEDOR_OPTIONS: () => FORNECEDOR_OPTIONS,
+  PRODUTO_OPTIONS: () => PRODUTO_OPTIONS,
+  REVESTIMENTO_OPTIONS: () => REVESTIMENTO_OPTIONS,
+  COR_OPTIONS: () => COR_OPTIONS,
+  STATUS_OPTIONS: () => STATUS_OPTIONS,
+};
+const TAB_STORE = {
+  TAB_FORNECEDORES, TAB_PRODUTOS, TAB_REVESTIMENTO, TAB_COR,
+};
+
+// Garante que um valor exista na lista suspensa (aba de apoio); se nao existir, adiciona.
+async function ensureListValue(value, optionsArrayName, tabConstName){
+  const value2 = (value || '').trim();
+  if (!value2) return;
+  const arr = OPTION_STORE[optionsArrayName]();
+  if (arr.includes(value2)) return;
+  const tabName = TAB_STORE[tabConstName];
+  await appendRow(tabName, [value2]);
+  arr.push(value2);
+}
+
 function renderDocList(){
   const el = document.getElementById('docList');
   const docs = DOCUMENTOS.filter(d => (d['Processo'] ?? '') === currentDocsProcesso);
@@ -700,20 +881,8 @@ async function uploadToDrive(file, driveName){
 }
 
 async function appendDocumentRow(processo, categoria, filename, link){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(TAB_DOCUMENTOS + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
   const enviado_em = new Date().toISOString().slice(0,19).replace('T',' ');
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ values: [[processo, categoria, filename, link, enviado_em]] }),
-  });
-  if (!res.ok){
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao registrar na planilha`);
-  }
+  await appendRow(TAB_DOCUMENTOS, [processo, categoria, filename, link, enviado_em]);
 }
 
 async function submitUpload(){
@@ -748,29 +917,31 @@ async function submitUpload(){
   saveBtn.textContent = 'Enviar';
 }
 
+function buildSelectOptions(optionsArrayName, currentVal){
+  const opts = new Set(OPTION_STORE[optionsArrayName]());
+  if (currentVal) opts.add(currentVal);
+  return ['<option value="">—</option>'].concat(
+    [...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === currentVal ? 'selected' : ''}>${o}</option>`)
+  ).join('');
+}
+
 function openEditModal(rowId){
   const r = lastRows.find(x => x._row === rowId);
   if (!r) return;
 
   document.getElementById('editTitle').textContent =
-    `Editar processo ${r.Processo || ''} · linha ${rowId}`;
+    `Editar processo ${r['Processo Contr.'] || ''} · linha ${rowId}`;
 
   const form = document.getElementById('editForm');
   form.innerHTML = EDITABLE_FIELDS.map(f => {
     const val = r[f.key] ?? '';
 
     if (f.type === 'select'){
-      const opts = new Set(PRODUTO_OPTIONS);
-      if (val) opts.add(val);
-      const optionsHtml = ['<option value="">—</option>'].concat(
-        [...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === val ? 'selected' : ''}>${o}</option>`)
-      ).join('');
       return `
         <div class="field-row">
           <label>${f.label}</label>
-          <select data-field="${f.key}"
-                  style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;">
-            ${optionsHtml}
+          <select data-field="${f.key}">
+            ${buildSelectOptions(f.options, val)}
           </select>
         </div>`;
     }
@@ -832,6 +1003,84 @@ async function submitEdit(){
 
   closeEditModal();
   refresh();
+}
+
+// ---------------------------------------------------------------------
+// Novo Processo
+// ---------------------------------------------------------------------
+function openNewProcessModal(){
+  const form = document.getElementById('newProcessForm');
+  form.innerHTML = NEW_PROCESS_FIELDS.map(f => {
+    if (f.type === 'select'){
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <select data-field="${f.key}">${buildSelectOptions(f.options, '')}</select>
+        </div>`;
+    }
+    if (f.type === 'combo'){
+      const listId = 'dl_' + f.key;
+      const opts = OPTION_STORE[f.options]();
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <input type="text" data-field="${f.key}" list="${listId}" placeholder="Selecione ou digite um novo">
+          <datalist id="${listId}">
+            ${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')}
+          </datalist>
+        </div>`;
+    }
+    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+    return `
+      <div class="field-row">
+        <label>${f.label}</label>
+        <input type="${f.type}" ${attrs} data-field="${f.key}">
+      </div>`;
+  }).join('');
+  document.getElementById('newProcessOverlay').classList.add('open');
+}
+
+function closeNewProcessModal(){
+  document.getElementById('newProcessOverlay').classList.remove('open');
+}
+
+async function submitNewProcess(){
+  const form = document.getElementById('newProcessForm');
+  const vals = {};
+  [...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
+
+  const saveBtn = document.getElementById('newProcessSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Criando…';
+
+  try {
+    await ensureListValue(vals.fornecedor, 'FORNECEDOR_OPTIONS', 'TAB_FORNECEDORES');
+    await ensureListValue(vals.produto, 'PRODUTO_OPTIONS', 'TAB_PRODUTOS');
+    await ensureListValue(vals.revestimento, 'REVESTIMENTO_OPTIONS', 'TAB_REVESTIMENTO');
+    await ensureListValue(vals.cor, 'COR_OPTIONS', 'TAB_COR');
+
+    // Ordem exata das colunas na aba Processos:
+    // Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
+    // Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
+    const row = [
+      vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
+      vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
+      vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
+    ];
+    await appendRow(TAB_PROCESSOS, row);
+    showToast('Processo criado com sucesso.', true);
+    closeNewProcessModal();
+    await refresh();
+  } catch (e) {
+    if (String(e.message).includes('401')){
+      accessToken = null;
+      setEditingUI(false);
+    }
+    showToast(e.message, false);
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Criar Processo';
 }
 
 window.addEventListener('load', initGis);
