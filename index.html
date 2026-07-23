@@ -187,6 +187,18 @@
     </div>
   </div>
 
+  <div class="grid">
+    <div class="panel">
+      <h2>PPGL — Quantidades, Cores e ETA</h2>
+      <div class="chart-wrap table-scroll" id="tblPpglWrap">
+        <table id="tblPpgl">
+          <thead><tr><th>Produto</th><th>Cor</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <div class="panel">
     <h2>Detalhe dos Processos</h2>
     <div class="table-scroll">
@@ -400,7 +412,7 @@ function parseCSV(text){
   const headers = rows[0];
   const data = rows.slice(1).map((r, idx) => {
     const obj = {};
-    headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i] : '');
+    headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i].trim() : '');
     obj._row = idx + 2; // linha real na planilha (linha 1 = cabecalho)
     return obj;
   }).filter(o => headers.some(h => o[h] !== ''));
@@ -540,6 +552,47 @@ function renderProdutoTotalTable(rows){
       <td>${fmtNum(it.bobinas, 0)}</td>
     </tr>
   `).join('');
+}
+
+function renderPpglTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = (r.Produto || '').trim();
+    if (!produto.toUpperCase().startsWith('PPGL')) return;
+    const cor = r.Cor || '';
+    const eta = r.ETA || '';
+    const key = produto + '|' + cor + '|' + eta;
+    if (!groups.has(key)) groups.set(key, {produto, cor, eta, peso:0, bobinas:0});
+    const g = groups.get(key);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.eta && !b.eta) return 0;
+    if (!a.eta) return 1;
+    if (!b.eta) return -1;
+    return a.eta.localeCompare(b.eta);
+  });
+  const tbody = document.querySelector('#tblPpgl tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">Nenhum produto PPGL encontrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => {
+    const cs = corStyle(it.cor);
+    const corCell = it.cor
+      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>`
+      : '—';
+    return `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${corCell}</td>
+      <td>${fmtDateISOtoBR(it.eta)}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas, 0)}</td>
+    </tr>
+  `;
+  }).join('');
 }
 
 function renderProdutoEtaTable(rows){
@@ -704,6 +757,7 @@ async function refresh(){
     renderFornecedorTable(parsedP.data);
     renderProdutoTotalTable(parsedP.data);
     renderProdutoEtaTable(parsedP.data);
+    renderPpglTable(parsedP.data);
     renderTable(parsedP.data);
     renderFinimp();
   } catch (err) {
