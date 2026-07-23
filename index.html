@@ -436,6 +436,13 @@ function statusBadge(s){
   return `<span class="badge default">${s}</span>`;
 }
 
+// Link de rastreamento de navio (VesselFinder, busca por nome — carga a granel nao tem container/BL rastreavel).
+function navioCell(navio){
+  if (!navio || !navio.trim()) return '—';
+  const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
+  return `${navio} <a href="${url}" target="_blank" rel="noopener" class="edit-btn" style="text-decoration:none;">Rastrear</a>`;
+}
+
 function renderKPIs(rows){
   const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
 
@@ -545,7 +552,7 @@ function renderTable(rows){
       <td>${r.Produto || '—'}</td>
       <td>${r.Revestimento || '—'}</td>
       <td>${corCell}</td>
-      <td>${r.NAVIO || '—'}</td>
+      <td>${navioCell(r.NAVIO)}</td>
       <td>${r['Data de embarque'] || '—'}</td>
       <td>${r.Bobinas || '—'}</td>
       <td>${fmtNum(num(r['Peso (MTON)']))}</td>
