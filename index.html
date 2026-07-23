@@ -2,8 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard FUP Importação (Público)</title>
+<title>Dashboard FUP Importação</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --bg:#0f1420; --panel:#161d2e; --panel2:#1c2438; --border:#2a3348;
@@ -26,6 +27,11 @@
     background:rgba(245,185,66,.15); color:var(--amber); font-size:11px;
     padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
   }
+  .badge-edit{
+    background:rgba(47,208,138,.15); color:var(--green); font-size:11px;
+    padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
+  }
+  .right-controls{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
   .status{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--txt2); }
   .dot{
     width:9px; height:9px; border-radius:50%; background:var(--green);
@@ -67,18 +73,69 @@
   .badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
   .empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
   footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
+
+  .btn{
+    border:none; border-radius:8px; padding:8px 16px; font-size:13px; cursor:pointer;
+    font-weight:600;
+  }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-secondary{ background:var(--panel2); color:var(--txt2); border:1px solid var(--border); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .edit-btn{
+    background:var(--panel2); border:1px solid var(--border); color:var(--txt2);
+    border-radius:6px; padding:4px 9px; cursor:pointer; font-size:12px;
+  }
+  .edit-btn:hover{ color:var(--txt); border-color:var(--accent); }
+
+  .overlay{
+    display:none; position:fixed; inset:0; background:rgba(5,8,15,.65);
+    align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .overlay.open{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    width:100%; max-width:520px; max-height:85vh; overflow:auto;
+    padding:22px 24px;
+  }
+  .modal h3{ margin:0 0 4px; font-size:17px; }
+  .modal .modal-sub{ color:var(--txt2); font-size:13px; margin-bottom:18px; }
+  .field-row{ margin-bottom:14px; }
+  .field-row label{
+    display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2);
+    text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
+  }
+  .field-row input{
+    width:100%; background:var(--panel2); border:1px solid var(--border);
+    color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;
+  }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+
+  #toastBox{
+    position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
+    gap:8px; z-index:60;
+  }
+  .toast{
+    background:var(--panel2); border:1px solid var(--border); border-left:4px solid var(--accent);
+    color:var(--txt); padding:11px 16px; border-radius:8px; font-size:13px; max-width:340px;
+    box-shadow:0 6px 20px rgba(0,0,0,.3);
+  }
+  .toast.ok{ border-left-color:var(--green); }
+  .toast.err{ border-left-color:var(--red); }
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <h1>Dashboard FUP Importação <span class="badge-readonly">SOMENTE LEITURA</span></h1>
+    <h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
     <div class="sub" id="sourceLabel">carregando…</div>
   </div>
-  <div class="status">
-    <span class="dot" id="statusDot"></span>
-    <span id="statusText">conectando…</span>
+  <div class="right-controls">
+    <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">conectando…</span>
+    </div>
   </div>
 </header>
 
@@ -121,6 +178,7 @@
             <th>Processo</th><th>Fornecedor</th><th>Produto</th><th>Bobinas</th>
             <th>Peso (MTON)</th><th>Preço Unit. (USD)</th><th>Valor Invoice (USD)</th>
             <th>Pago (USD)</th><th>A Pagar (USD)</th><th>ETA</th><th>ETB</th><th>Status</th>
+            <th id="thEditCol" style="display:none;"></th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -129,17 +187,62 @@
   </div>
 </main>
 
-<footer>Dados vindos de uma planilha Google Sheets compartilhada · atualiza a cada 60s · edição só é possível no dashboard local</footer>
+<footer>Dados vindos de uma planilha Google Sheets · atualiza a cada 60s · clique em "Entrar para editar" para gravar direto na planilha (login com a conta autorizada)</footer>
+
+<div class="overlay" id="editOverlay">
+  <div class="modal">
+    <h3 id="editTitle">Editar processo</h3>
+    <div class="modal-sub">As alterações são gravadas direto na planilha do Google Sheets.</div>
+    <form id="editForm"></form>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="saveBtn" onclick="submitEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastBox"></div>
 
 <script>
-// IDs da planilha publicada (Google Sheets)
+// ---------------------------------------------------------------------
+// Configuracao
+// ---------------------------------------------------------------------
 const SHEET_ID = '17qjdmQwe5qK-B76RCOQ8v3fJmzdZHrfFnao3nDqVjAw';
 const GID_PROCESSOS = '0';
 const GID_FINIMP = '2096853513';
+const TAB_PROCESSOS = 'Processos';
 const REFRESH_MS = 60000;
+
+// ID do cliente OAuth (tipo "Aplicativo da Web") criado no Google Cloud.
+// So funciona login para a conta autorizada como "usuario de teste".
+const CLIENT_ID = '446804769711-9d2f71d7mf1q464o0ffcu08prkldka32.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+const EDITABLE_FIELDS = [
+  {key:'Processo', label:'Processo', type:'text'},
+  {key:'Fornecedor', label:'Fornecedor', type:'text'},
+  {key:'Produto', label:'Produto', type:'text'},
+  {key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
+  {key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
+  {key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
+  {key:'Valor Invoice (USD)', label:'Valor Invoice (USD)', type:'number', step:'any'},
+  {key:'Pago (USD)', label:'Pago (USD)', type:'number', step:'any'},
+  {key:'A Pagar (USD)', label:'A Pagar (USD)', type:'number', step:'any'},
+  {key:'ETA', label:'ETA', type:'date'},
+  {key:'ETB', label:'ETB', type:'date'},
+  {key:'Status', label:'Status', type:'text'},
+];
 
 const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
 
+let lastRows = [];
+let PROCESSOS_HEADERS = [];
+let accessToken = null;
+let tokenClient = null;
+
+// ---------------------------------------------------------------------
+// Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
+// ---------------------------------------------------------------------
 function csvUrl(gid){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}&t=${Date.now()}`;
 }
@@ -162,13 +265,15 @@ function parseCSV(text){
     }
   }
   if (field.length || row.length){ row.push(field); rows.push(row); }
-  if (!rows.length) return [];
+  if (!rows.length) return {headers: [], data: []};
   const headers = rows[0];
-  return rows.slice(1).filter(r => r.some(v => v !== '')).map(r => {
+  const data = rows.slice(1).map((r, idx) => {
     const obj = {};
     headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i] : '');
+    obj._row = idx + 2; // linha real na planilha (linha 1 = cabecalho)
     return obj;
-  });
+  }).filter(o => headers.some(h => o[h] !== ''));
+  return {headers, data};
 }
 
 function num(v){
@@ -287,9 +392,13 @@ function renderCharts(rows){
 }
 
 function renderTable(rows){
+  lastRows = rows;
   const tbody = document.querySelector('#tblProcessos tbody');
+  const editing = !!accessToken;
+  document.getElementById('thEditCol').style.display = editing ? '' : 'none';
+
   if (!rows.length){
-    tbody.innerHTML = `<tr><td colspan="12" class="empty">Nenhum dado encontrado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="empty">Nenhum dado encontrado.</td></tr>`;
     return;
   }
   tbody.innerHTML = rows.map(r => `
@@ -306,6 +415,7 @@ function renderTable(rows){
       <td>${r.ETA || '—'}</td>
       <td>${r.ETB || '—'}</td>
       <td>${statusBadge(r.Status)}</td>
+      <td>${editing ? `<button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>` : ''}</td>
     </tr>
   `).join('');
 }
@@ -334,18 +444,19 @@ async function refresh(){
     ]);
     if (!resP.ok || !resF.ok) throw new Error('Falha ao buscar dados da planilha');
     const [textP, textF] = await Promise.all([resP.text(), resF.text()]);
-    const rows = parseCSV(textP);
-    const finimp = parseCSV(textF);
+    const parsedP = parseCSV(textP);
+    const parsedF = parseCSV(textF);
+    PROCESSOS_HEADERS = parsedP.headers;
 
     document.getElementById('sourceLabel').textContent =
       `Fonte: Google Sheets · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
     document.getElementById('statusDot').className = 'dot';
     document.getElementById('statusText').textContent = 'ao vivo';
 
-    renderKPIs(rows, finimp);
-    renderCharts(rows);
-    renderTable(rows);
-    renderFinimp(finimp);
+    renderKPIs(parsedP.data, parsedF.data);
+    renderCharts(parsedP.data);
+    renderTable(parsedP.data);
+    renderFinimp(parsedF.data);
   } catch (err) {
     document.getElementById('statusDot').className = 'dot err';
     document.getElementById('statusText').textContent = 'sem conexão';
@@ -353,6 +464,173 @@ async function refresh(){
   }
 }
 
+// ---------------------------------------------------------------------
+// Login (Google Identity Services) + escrita direta na Sheets API
+// ---------------------------------------------------------------------
+function showToast(message, ok=true){
+  const box = document.getElementById('toastBox');
+  const el = document.createElement('div');
+  el.className = `toast ${ok ? 'ok' : 'err'}`;
+  el.textContent = message;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 6000);
+}
+
+function setEditingUI(on){
+  const badge = document.getElementById('modeBadge');
+  const btn = document.getElementById('authBtn');
+  if (on){
+    badge.textContent = 'MODO EDIÇÃO';
+    badge.className = 'badge-edit';
+    btn.textContent = 'Sair do modo edição';
+  } else {
+    badge.textContent = 'SOMENTE LEITURA';
+    badge.className = 'badge-readonly';
+    btn.textContent = 'Entrar para editar';
+  }
+  renderTable(lastRows);
+}
+
+function initGis(){
+  if (typeof google === 'undefined' || !google.accounts) {
+    setTimeout(initGis, 300);
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if (resp.error){
+        showToast('Não foi possível entrar: ' + resp.error, false);
+        return;
+      }
+      accessToken = resp.access_token;
+      setEditingUI(true);
+      showToast('Modo edição ativado.', true);
+    },
+  });
+}
+
+function handleAuthClick(){
+  if (accessToken){
+    google.accounts.oauth2.revoke(accessToken, () => {});
+    accessToken = null;
+    setEditingUI(false);
+    showToast('Modo edição desativado.', true);
+    return;
+  }
+  if (!tokenClient){
+    showToast('Ainda carregando o login do Google, tente de novo em instantes.', false);
+    return;
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function colLetter(n){
+  let s = '';
+  while (n > 0){
+    const m = (n - 1) % 26;
+    s = String.fromCharCode(65 + m) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+async function writeCell(rowNum, field, value){
+  const colIdx = PROCESSOS_HEADERS.indexOf(field) + 1;
+  if (colIdx < 1) throw new Error(`Campo '${field}' não encontrado na planilha.`);
+  const range = `${TAB_PROCESSOS}!${colLetter(colIdx)}${rowNum}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ values: [[value]] }),
+  });
+  if (!res.ok){
+    if (res.status === 401){
+      accessToken = null;
+      setEditingUI(false);
+      throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+    }
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function openEditModal(rowId){
+  const r = lastRows.find(x => x._row === rowId);
+  if (!r) return;
+
+  document.getElementById('editTitle').textContent =
+    `Editar processo ${r.Processo || ''} · linha ${rowId}`;
+
+  const form = document.getElementById('editForm');
+  form.innerHTML = EDITABLE_FIELDS.map(f => {
+    const val = r[f.key] ?? '';
+    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+    return `
+      <div class="field-row">
+        <label>${f.label}</label>
+        <input type="${f.type}" ${attrs} data-field="${f.key}"
+               value="${String(val).replace(/"/g,'&quot;')}">
+      </div>`;
+  }).join('');
+
+  form.dataset.row = rowId;
+  document.getElementById('editOverlay').classList.add('open');
+}
+
+function closeEditModal(){
+  document.getElementById('editOverlay').classList.remove('open');
+}
+
+async function submitEdit(){
+  const form = document.getElementById('editForm');
+  const rowId = parseInt(form.dataset.row, 10);
+  const original = lastRows.find(x => x._row === rowId) || {};
+  const inputs = [...form.querySelectorAll('input')];
+
+  const changed = inputs
+    .map(inp => ({ field: inp.dataset.field, value: inp.value }))
+    .filter(({field, value}) => String(original[field] ?? '') !== String(value ?? ''));
+
+  if (!changed.length){
+    closeEditModal();
+    return;
+  }
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Salvando…';
+
+  let okCount = 0;
+  let lastError = null;
+
+  for (const {field, value} of changed){
+    try {
+      await writeCell(rowId, field, value);
+      okCount++;
+    } catch (e) {
+      lastError = e.message;
+      break;
+    }
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Salvar';
+
+  if (okCount) showToast(`${okCount} campo(s) salvo(s) na planilha.`, true);
+  if (lastError) showToast(lastError, false);
+
+  closeEditModal();
+  refresh();
+}
+
+window.addEventListener('load', initGis);
 refresh();
 setInterval(refresh, REFRESH_MS);
 </script>
