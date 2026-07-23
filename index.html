@@ -210,6 +210,7 @@
 const SHEET_ID = '17qjdmQwe5qK-B76RCOQ8v3fJmzdZHrfFnao3nDqVjAw';
 const GID_PROCESSOS = '0';
 const GID_FINIMP = '2096853513';
+const GID_PRODUTOS = '632533681';
 const TAB_PROCESSOS = 'Processos';
 const REFRESH_MS = 60000;
 
@@ -221,7 +222,7 @@ const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 const EDITABLE_FIELDS = [
   {key:'Processo', label:'Processo', type:'text'},
   {key:'Fornecedor', label:'Fornecedor', type:'text'},
-  {key:'Produto', label:'Produto', type:'text'},
+  {key:'Produto', label:'Produto', type:'select'},
   {key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
   {key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
   {key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
@@ -237,6 +238,7 @@ const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
 
 let lastRows = [];
 let PROCESSOS_HEADERS = [];
+let PRODUTO_OPTIONS = [];
 let accessToken = null;
 let tokenClient = null;
 
@@ -438,15 +440,23 @@ function renderFinimp(rows){
 
 async function refresh(){
   try {
-    const [resP, resF] = await Promise.all([
+    const [resP, resF, resPr] = await Promise.all([
       fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
-      fetch(csvUrl(GID_FINIMP), {cache:'no-store'})
+      fetch(csvUrl(GID_FINIMP), {cache:'no-store'}),
+      fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'})
     ]);
     if (!resP.ok || !resF.ok) throw new Error('Falha ao buscar dados da planilha');
     const [textP, textF] = await Promise.all([resP.text(), resF.text()]);
     const parsedP = parseCSV(textP);
     const parsedF = parseCSV(textF);
     PROCESSOS_HEADERS = parsedP.headers;
+
+    if (resPr.ok){
+      const textPr = await resPr.text();
+      const parsedPr = parseCSV(textPr);
+      const col = parsedPr.headers[0];
+      PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
+    }
 
     document.getElementById('sourceLabel').textContent =
       `Fonte: Google Sheets · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
@@ -571,6 +581,23 @@ function openEditModal(rowId){
   const form = document.getElementById('editForm');
   form.innerHTML = EDITABLE_FIELDS.map(f => {
     const val = r[f.key] ?? '';
+
+    if (f.type === 'select'){
+      const opts = new Set(PRODUTO_OPTIONS);
+      if (val) opts.add(val);
+      const optionsHtml = ['<option value="">—</option>'].concat(
+        [...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === val ? 'selected' : ''}>${o}</option>`)
+      ).join('');
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <select data-field="${f.key}"
+                  style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;">
+            ${optionsHtml}
+          </select>
+        </div>`;
+    }
+
     const attrs = f.type === 'number' ? `step="${f.step}"` : '';
     return `
       <div class="field-row">
@@ -592,7 +619,7 @@ async function submitEdit(){
   const form = document.getElementById('editForm');
   const rowId = parseInt(form.dataset.row, 10);
   const original = lastRows.find(x => x._row === rowId) || {};
-  const inputs = [...form.querySelectorAll('input')];
+  const inputs = [...form.querySelectorAll('input, select')];
 
   const changed = inputs
     .map(inp => ({ field: inp.dataset.field, value: inp.value }))
