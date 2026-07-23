@@ -116,11 +116,16 @@
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;
   }
 
-  .icon-btn{ padding:4px 6px; font-size:13px; line-height:1; }
+  .icon-btn{ padding:4px 6px; font-size:13px; line-height:1; flex:0 0 auto; }
   .navio-name{
     display:inline-block; max-width:70px; overflow:hidden; text-overflow:ellipsis;
     white-space:nowrap; vertical-align:middle; font-size:12px;
   }
+  .navio-cell-wrap{
+    display:flex; align-items:center; gap:4px; width:100%; overflow:hidden;
+  }
+  .navio-cell-wrap .navio-name{ flex:1 1 auto; min-width:0; max-width:none; }
+  .navio-cell-wrap .icon-btn{ text-decoration:none; }
 
   /* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
   #tblProcessos{ font-size:11px; table-layout:fixed; width:100%; }
@@ -129,8 +134,9 @@
     white-space:normal; word-break:break-word; line-height:1.2;
     vertical-align:bottom; text-align:left; font-size:10px; overflow:visible;
   }
+  #tblProcessos td:has(.navio-cell-wrap){ overflow:visible; }
   #tblProcessos .cor-cell{ width:100%; max-width:64px; font-size:10.5px; padding:2px 4px; }
-  #tblProcessos .navio-name{ max-width:52px; font-size:10.5px; }
+  #tblProcessos .navio-name{ font-size:10.5px; }
   #tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
   #tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
 
@@ -273,9 +279,9 @@
       <table id="tblProcessos">
         <colgroup>
           <col style="width:9%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%">
-          <col style="width:6%"><col style="width:7%"><col style="width:5%">
+          <col style="width:9%"><col style="width:6%"><col style="width:4%">
           <col style="width:6%"><col style="width:7%"><col style="width:8%">
-          <col style="width:6%"><col style="width:6%"><col style="width:7%">
+          <col style="width:6%"><col style="width:5%"><col style="width:7%">
           <col style="width:6%">
         </colgroup>
         <thead>
@@ -550,7 +556,7 @@ function statusBadge(s){
 function navioCell(navio){
   if (!navio || !navio.trim()) return '—';
   const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
-  return `<span class="navio-name" title="${navio}">${navio}</span> <a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder" style="text-decoration:none;">🧭</a>`;
+  return `<span class="navio-cell-wrap"><span class="navio-name" title="${navio}">${navio}</span><a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder">🧭</a></span>`;
 }
 
 // ---------------------------------------------------------------------
