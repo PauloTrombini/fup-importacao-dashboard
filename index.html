@@ -529,22 +529,28 @@ function navioCell(navio){
 }
 
 // ---------------------------------------------------------------------
-// Filtro de ano (baseado no ETA) — "a partir de", nao mostra dados antes do ano escolhido
+// Filtro de ano+mes (baseado no ETA) — "a partir de", nao mostra dados antes do periodo escolhido
 // ---------------------------------------------------------------------
-function etaYear(row){
+const MES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function etaYearMonth(row){
   const eta = row && row.ETA ? row.ETA.trim() : '';
-  const m = eta.match(/^(\d{4})-/);
-  return m ? m[1] : null;
+  const m = eta.match(/^(\d{4})-(\d{2})/);
+  return m ? `${m[1]}-${m[2]}` : null;
 }
 
 function populateYearFilter(rows){
-  const years = [...new Set(rows.map(etaYear).filter(Boolean))].sort();
+  const yearMonths = [...new Set(rows.map(etaYearMonth).filter(Boolean))].sort();
   const sel = document.getElementById('yearFilter');
   const current = sel.value || 'all';
-  sel.innerHTML = ['<option value="all">Todos os anos</option>']
-    .concat(years.map(y => `<option value="${y}">A partir de ${y}</option>`))
+  sel.innerHTML = ['<option value="all">Todos os períodos</option>']
+    .concat(yearMonths.map(ym => {
+      const [y, mo] = ym.split('-');
+      const label = `${MES_ABREV[parseInt(mo, 10) - 1]}/${y}`;
+      return `<option value="${ym}">A partir de ${label}</option>`;
+    }))
     .join('');
-  // mantem a selecao anterior se o ano ainda existir na lista
+  // mantem a selecao anterior se o periodo ainda existir na lista
   if ([...sel.options].some(o => o.value === current)) sel.value = current;
   YEAR_FILTER = sel.value;
 }
@@ -557,9 +563,9 @@ function onYearFilterChange(){
 function applyYearFilter(rows){
   if (YEAR_FILTER === 'all') return rows;
   return rows.filter(r => {
-    const y = etaYear(r);
-    if (!y) return true; // sem ETA definido: nao exclui, so nao da pra classificar
-    return y >= YEAR_FILTER;
+    const ym = etaYearMonth(r);
+    if (!ym) return true; // sem ETA definido: nao exclui, so nao da pra classificar
+    return ym >= YEAR_FILTER;
   });
 }
 
