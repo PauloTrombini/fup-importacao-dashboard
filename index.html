@@ -51,7 +51,8 @@
   .kpi .value.pos{ color:var(--green); }
   .kpi .value.neg{ color:var(--red); }
   .grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
-  .grid3{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media (max-width:1100px){ .grid3 { grid-template-columns:1fr 1fr; } }
   @media (max-width:900px){ .grid, .grid3 { grid-template-columns:1fr; } }
   .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; }
   .panel h2{ font-size:14px; margin:0 0 14px; color:var(--txt2); font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
@@ -157,6 +158,15 @@
   </div>
 
   <div class="grid3">
+    <div class="panel">
+      <h2>Total por Produto</h2>
+      <div class="chart-wrap table-scroll" id="tblProdutoTotalWrap">
+        <table id="tblProdutoTotal">
+          <thead><tr><th>Produto</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
     <div class="panel">
       <h2>Produto × ETA (Data Estimada de Chegada)</h2>
       <div class="chart-wrap table-scroll" id="tblProdutoEtaWrap">
@@ -354,7 +364,18 @@ let tokenClient = null;
 // Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
 // ---------------------------------------------------------------------
 function csvUrl(gid){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}&t=${Date.now()}`;
+  // Usamos /export (nao /gviz/tq) porque o endpoint gviz fica com cache
+  // atrasado no lado do Google e pode mostrar valores antigos/vazios.
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+}
+
+// Converte data ISO (AAAA-MM-DD) para o padrao brasileiro (DD/MM/AAAA) so na exibicao.
+function fmtDateISOtoBR(iso){
+  if (!iso || !iso.trim()) return '—';
+  const parts = String(iso).trim().split('-');
+  if (parts.length !== 3) return iso;
+  const [y, m, d] = parts;
+  return `${d}/${m}/${y}`;
 }
 
 function parseCSV(text){
@@ -492,7 +513,31 @@ function renderFornecedorTable(rows){
       <td>${it.fornecedor}</td>
       <td>${it.processo}</td>
       <td>${fmtUSD(it.valor)}</td>
-      <td>${it.dataEmbarque || '—'}</td>
+      <td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderProdutoTotalTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = r.Produto || '—';
+    if (!groups.has(produto)) groups.set(produto, {produto, peso:0, bobinas:0});
+    const g = groups.get(produto);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => b.peso - a.peso);
+  const tbody = document.querySelector('#tblProdutoTotal tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas, 0)}</td>
     </tr>
   `).join('');
 }
@@ -522,7 +567,7 @@ function renderProdutoEtaTable(rows){
   tbody.innerHTML = items.map(it => `
     <tr>
       <td>${it.produto}</td>
-      <td>${it.eta || '—'}</td>
+      <td>${fmtDateISOtoBR(it.eta)}</td>
       <td>${fmtNum(it.peso)}</td>
       <td>${fmtNum(it.bobinas, 0)}</td>
     </tr>
@@ -553,13 +598,13 @@ function renderTable(rows){
       <td>${r.Revestimento || '—'}</td>
       <td>${corCell}</td>
       <td>${navioCell(r.NAVIO)}</td>
-      <td>${r['Data de embarque'] || '—'}</td>
+      <td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
       <td>${r.Bobinas || '—'}</td>
       <td>${fmtNum(num(r['Peso (MTON)']))}</td>
       <td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
       <td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
-      <td>${r.ETA || '—'}</td>
-      <td>${r.ETB || '—'}</td>
+      <td>${fmtDateISOtoBR(r.ETA)}</td>
+      <td>${fmtDateISOtoBR(r.ETB)}</td>
       <td>${statusBadge(r.Status)}</td>
       <td>${editing ? `
         <button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>
@@ -657,6 +702,7 @@ async function refresh(){
 
     renderKPIs(parsedP.data);
     renderFornecedorTable(parsedP.data);
+    renderProdutoTotalTable(parsedP.data);
     renderProdutoEtaTable(parsedP.data);
     renderTable(parsedP.data);
     renderFinimp();
