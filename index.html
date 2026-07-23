@@ -123,9 +123,13 @@
   }
 
   /* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
-  #tblProcessos{ font-size:11px; }
-  #tblProcessos th, #tblProcessos td{ padding:6px 6px; white-space:nowrap; }
-  #tblProcessos .cor-cell{ width:64px; font-size:10.5px; padding:2px 4px; }
+  #tblProcessos{ font-size:11px; table-layout:fixed; width:100%; }
+  #tblProcessos th, #tblProcessos td{ padding:6px 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #tblProcessos th{
+    white-space:normal; word-break:break-word; line-height:1.2;
+    vertical-align:bottom; text-align:left; font-size:10px; overflow:visible;
+  }
+  #tblProcessos .cor-cell{ width:100%; max-width:64px; font-size:10.5px; padding:2px 4px; }
   #tblProcessos .navio-name{ max-width:52px; font-size:10.5px; }
   #tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
   #tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
@@ -267,6 +271,13 @@
     <h2>Detalhe dos Processos</h2>
     <div class="table-scroll">
       <table id="tblProcessos">
+        <colgroup>
+          <col style="width:9%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%">
+          <col style="width:6%"><col style="width:7%"><col style="width:5%">
+          <col style="width:6%"><col style="width:7%"><col style="width:8%">
+          <col style="width:6%"><col style="width:6%"><col style="width:7%">
+          <col style="width:6%">
+        </colgroup>
         <thead>
           <tr>
             <th>Processo Contr.</th><th>Fornecedor</th><th>Produto</th><th>Revestimento</th><th>Cor</th>
@@ -769,10 +780,10 @@ function renderTable(rows){
       : '—';
     return `
     <tr>
-      <td>${r['Processo Contr.'] || '—'}</td>
-      <td>${r.Fornecedor || '—'}</td>
-      <td>${r.Produto || '—'}</td>
-      <td>${r.Revestimento || '—'}</td>
+      <td title="${r['Processo Contr.'] || ''}">${r['Processo Contr.'] || '—'}</td>
+      <td title="${r.Fornecedor || ''}">${r.Fornecedor || '—'}</td>
+      <td title="${r.Produto || ''}">${r.Produto || '—'}</td>
+      <td title="${r.Revestimento || ''}">${r.Revestimento || '—'}</td>
       <td>${corCell}</td>
       <td>${navioCell(r.NAVIO)}</td>
       <td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
