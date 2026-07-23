@@ -116,6 +116,20 @@
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;
   }
 
+  .icon-btn{ padding:4px 6px; font-size:13px; line-height:1; }
+  .navio-name{
+    display:inline-block; max-width:70px; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; vertical-align:middle; font-size:12px;
+  }
+
+  /* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
+  #tblProcessos{ font-size:11px; }
+  #tblProcessos th, #tblProcessos td{ padding:6px 6px; white-space:nowrap; }
+  #tblProcessos .cor-cell{ width:64px; font-size:10.5px; padding:2px 4px; }
+  #tblProcessos .navio-name{ max-width:52px; font-size:10.5px; }
+  #tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
+  #tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
+
   #toastBox{
     position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
     gap:8px; z-index:60;
@@ -525,7 +539,7 @@ function statusBadge(s){
 function navioCell(navio){
   if (!navio || !navio.trim()) return '—';
   const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
-  return `${navio} <a href="${url}" target="_blank" rel="noopener" class="edit-btn" style="text-decoration:none;">Rastrear</a>`;
+  return `<span class="navio-name" title="${navio}">${navio}</span> <a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder" style="text-decoration:none;">🧭</a>`;
 }
 
 // ---------------------------------------------------------------------
@@ -770,8 +784,8 @@ function renderTable(rows){
       <td>${fmtDateISOtoBR(r.ETB)}</td>
       <td>${statusBadge(r.Status)}</td>
       <td>${editing ? `
-        <button class="edit-btn" onclick="openEditModal(${r._row})">Editar</button>
-        <button class="edit-btn" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">Documentos</button>
+        <button class="edit-btn icon-btn" title="Editar" onclick="openEditModal(${r._row})">✏️</button>
+        <button class="edit-btn icon-btn" title="Documentos" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">📄</button>
       ` : ''}</td>
     </tr>
   `;
