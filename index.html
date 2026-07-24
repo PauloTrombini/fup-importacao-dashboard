@@ -631,10 +631,10 @@ function renderKPIs(rows){
 
   document.getElementById('kpis').innerHTML = [
     kpiCard('Número de Contratos', fmtNum(contratos)),
-    kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
     kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
-    kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
     kpiCard('Peso — Em Andamento (MTON)', fmtNum(pesoOutros)),
+    kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
+    kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
   ].join('');
 }
 
