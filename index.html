@@ -664,7 +664,7 @@ function renderFornecedorTable(rows){
     const statusCell = it.statuses.size
       ? [...it.statuses].map(statusBadge).join(' ')
       : statusBadge('');
-    const quitado = it.aPagar <= 0;
+    const quitado = Math.abs(it.aPagar) < 0.005;
     return `
     <tr class="${quitado ? 'row-paid' : ''}">
       <td>${it.fornecedor}</td>
