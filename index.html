@@ -67,6 +67,10 @@
   .badge.produzindo{ background:rgba(245,185,66,.15); color:var(--amber); }
   .badge.embarcado{ background:rgba(79,140,255,.15); color:var(--accent); }
   .badge.chegou{ background:rgba(47,208,138,.15); color:var(--green); }
+
+  .row-paid td{ background:rgba(47,208,138,.08); }
+  .row-paid:hover td{ background:rgba(47,208,138,.14); }
+  .paid-cell{ color:var(--green); font-weight:700; }
   .badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
   .empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
   footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
@@ -224,7 +228,7 @@
       <h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
       <div class="chart-wrap table-scroll" id="tblFornecedorWrap">
         <table id="tblFornecedor">
-          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>Data de Embarque</th></tr></thead>
+          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>A Pagar (USD)</th><th>Data de Embarque</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -535,9 +539,9 @@ function fmtDateBR(d){
   return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
 }
 
-const fmtUSD = n => n == null ? '—' : n.toLocaleString('en-US', {style:'currency', currency:'USD', maximumFractionDigits:0});
-const fmtBRL = n => n == null ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL', maximumFractionDigits:0});
-const fmtNum = (n, d=1) => n == null ? '—' : n.toLocaleString('pt-BR', {maximumFractionDigits:d});
+const fmtUSD = n => n == null ? '—' : n.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtBRL = n => n == null ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtNum = (n, d=2) => n == null ? '—' : n.toLocaleString('pt-BR', {minimumFractionDigits:d, maximumFractionDigits:d});
 
 function kpiCard(label, value, cls=''){
   return `<div class="kpi"><div class="label">${label}</div><div class="value ${cls}">${value}</div></div>`;
@@ -622,7 +626,7 @@ function renderKPIs(rows){
   const pesoOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
 
   document.getElementById('kpis').innerHTML = [
-    kpiCard('Número de Contratos', contratos),
+    kpiCard('Número de Contratos', fmtNum(contratos)),
     kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
     kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
     kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
@@ -637,10 +641,11 @@ function renderFornecedorTable(rows){
     const processo = r['Processo Contr.'] || '—';
     const key = fornecedor + '|' + processo;
     if (!groups.has(key)){
-      groups.set(key, {fornecedor, processo, valor:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
+      groups.set(key, {fornecedor, processo, valor:0, aPagar:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
     }
     const g = groups.get(key);
     g.valor += (num(r['Valor Invoice (USD)']) || 0);
+    g.aPagar += (num(r['A Pagar (USD)']) || 0);
     if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
     if (r.Status && r.Status.trim()) g.statuses.add(r.Status.trim());
   });
@@ -652,19 +657,21 @@ function renderFornecedorTable(rows){
   });
   const tbody = document.querySelector('#tblFornecedor tbody');
   if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="5" class="empty">Sem dados.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">Sem dados.</td></tr>`;
     return;
   }
   tbody.innerHTML = items.map(it => {
     const statusCell = it.statuses.size
       ? [...it.statuses].map(statusBadge).join(' ')
       : statusBadge('');
+    const quitado = it.aPagar <= 0;
     return `
-    <tr>
+    <tr class="${quitado ? 'row-paid' : ''}">
       <td>${it.fornecedor}</td>
       <td>${it.processo}</td>
       <td>${statusCell}</td>
       <td>${fmtUSD(it.valor)}</td>
+      <td class="${quitado ? 'paid-cell' : ''}">${quitado ? `${fmtUSD(it.aPagar)} · Quitado` : fmtUSD(it.aPagar)}</td>
       <td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
     </tr>
   `;
@@ -690,7 +697,7 @@ function renderProdutoTotalTable(rows){
     <tr>
       <td>${it.produto}</td>
       <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas, 0)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
     </tr>
   `).join('');
 }
@@ -730,7 +737,7 @@ function renderPpglTable(rows){
       <td>${corCell}</td>
       <td>${fmtDateISOtoBR(it.eta)}</td>
       <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas, 0)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
     </tr>
   `;
   }).join('');
@@ -763,7 +770,7 @@ function renderProdutoEtaTable(rows){
       <td>${it.produto}</td>
       <td>${fmtDateISOtoBR(it.eta)}</td>
       <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas, 0)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
     </tr>
   `).join('');
 }
@@ -793,7 +800,7 @@ function renderTable(rows){
       <td>${corCell}</td>
       <td>${navioCell(r.NAVIO)}</td>
       <td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
-      <td>${r.Bobinas || '—'}</td>
+      <td>${num(r.Bobinas) != null ? fmtNum(num(r.Bobinas)) : '—'}</td>
       <td>${fmtNum(num(r['Peso (MTON)']))}</td>
       <td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
       <td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
