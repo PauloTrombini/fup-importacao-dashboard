@@ -212,7 +212,7 @@
       <option value="all">Todos os anos</option>
     </select>
     <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
-    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Gerenciar acessos</a>
+    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a>
     <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
     <div class="status">
       <span class="dot" id="statusDot"></span>
@@ -785,6 +785,7 @@ function renderTable(rows){
   const editing = !!accessToken;
   document.getElementById('thEditCol').style.display = editing ? '' : 'none';
   document.getElementById('newProcessBtn').style.display = editing ? '' : 'none';
+  document.getElementById('manageAccessBtn').style.display = editing ? '' : 'none';
 
   if (!rows.length){
     tbody.innerHTML = `<tr><td colspan="15" class="empty">Nenhum dado encontrado.</td></tr>`;
