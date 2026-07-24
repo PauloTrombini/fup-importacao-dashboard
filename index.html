@@ -258,7 +258,10 @@
       <h2>Resumo FINIMP (por Data de Pagamento)</h2>
       <div class="table-scroll">
         <table id="tblFinimp">
-          <thead><tr><th>Data Pgto</th><th>Total Operação (USD)</th><th>FTS (R$)</th></tr></thead>
+          <thead><tr>
+            <th>Data Pgto</th><th>Total Operação (USD)</th><th>Nº FINIMP</th><th>Processo Contr.</th>
+            <th>Data Inicial</th><th>FTS (USD)</th><th>Merc. (USD)</th><th>TX Dólar Dia Merc</th>
+          </tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -816,33 +819,44 @@ function renderTable(rows){
   }).join('');
 }
 
+// Busca um campo pelo nome exato; se nao existir (ex: caractere especial diferente
+// no cabecalho da planilha, como o simbolo de grau em "N° FINIMP"), tenta achar uma
+// coluna cujo nome contenha o texto informado em fallbackContains.
+function ffield(row, exact, fallbackContains){
+  if (row[exact] !== undefined) return row[exact];
+  if (fallbackContains){
+    const k = Object.keys(row).find(k => k.toUpperCase().includes(fallbackContains.toUpperCase()));
+    if (k) return row[k];
+  }
+  return '';
+}
+
 function renderFinimp(){
-  const groups = new Map();
-  FINIMP_ROWS.forEach(r => {
-    const dataPgto = r['DATA PGTO'];
-    if (!dataPgto || !dataPgto.trim()) return;
-    if (!groups.has(dataPgto)) groups.set(dataPgto, {dataPgto, totalOp:0, colS:0});
-    const g = groups.get(dataPgto);
-    g.totalOp += (numBR(r['TOTAL OPERAÇÃO (USD)']) || 0);
-    g.colS += (numBR(r.__colS) || 0);
-  });
-  const items = [...groups.values()].sort((a,b) => {
-    const da = parseMDY(a.dataPgto), db = parseMDY(b.dataPgto);
-    if (!da && !db) return 0;
-    if (!da) return 1;
-    if (!db) return -1;
-    return da - db;
-  });
+  const items = FINIMP_ROWS
+    .filter(r => r['DATA PGTO'] && r['DATA PGTO'].trim())
+    .sort((a,b) => {
+      const da = parseMDY(a['DATA PGTO']), db = parseMDY(b['DATA PGTO']);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da - db;
+    });
   const tbody = document.querySelector('#tblFinimp tbody');
   if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados FINIMP.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">Sem dados FINIMP.</td></tr>`;
     return;
   }
-  tbody.innerHTML = items.map(it => `
+  // Ordem de colunas solicitada: D, H, A, B, C, E, F, G
+  tbody.innerHTML = items.map(r => `
     <tr>
-      <td>${fmtDateBR(parseMDY(it.dataPgto))}</td>
-      <td>${fmtUSD(it.totalOp)}</td>
-      <td>${fmtBRL(it.colS)}</td>
+      <td>${fmtDateBR(parseMDY(r['DATA PGTO']))}</td>
+      <td>${fmtUSD(numBR(r['TOTAL OPERAÇÃO (USD)']))}</td>
+      <td>${ffield(r, 'N° FINIMP', 'FINIMP') || '—'}</td>
+      <td>${r['Processo Contr.'] || '—'}</td>
+      <td>${fmtDateBR(parseMDY(r['DATA INICIAL']))}</td>
+      <td>${fmtUSD(numBR(r['FTS (USD)']))}</td>
+      <td>${fmtUSD(numBR(r['MERC. (USD)']))}</td>
+      <td>${fmtNum(numBR(r['TX DOLAR DIA MERC']))}</td>
     </tr>
   `).join('');
 }
@@ -888,11 +902,12 @@ async function refresh(){
     }
     if (resF.ok){
       const parsedF = parseCSV(await resF.text());
-      // Coluna S (indice 18, base 0) e a segunda ocorrencia de "FTS (R$)" — usada no resumo por pedido do usuario.
-      const headerAtS = parsedF.headers[18];
+      // Normaliza as chaves (alguns cabeçalhos da aba FINIMP têm espaços a mais) para
+      // que os campos (N° FINIMP, DATA PGTO, etc.) sejam sempre acessíveis pelo nome exato.
       FINIMP_ROWS = parsedF.data.map(row => {
-        row.__colS = headerAtS !== undefined ? row[headerAtS] : '';
-        return row;
+        const norm = { _row: row._row };
+        parsedF.headers.forEach(h => { norm[h.trim()] = row[h]; });
+        return norm;
       });
     }
 
