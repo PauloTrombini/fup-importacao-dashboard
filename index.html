@@ -6,352 +6,352 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  :root{
-    --bg:#0f1420; --panel:#161d2e; --panel2:#1c2438; --border:#2a3348;
-    --txt:#e8ecf5; --txt2:#8f9ac0; --accent:#4f8cff; --green:#2fd08a;
-    --amber:#f5b942; --red:#f5615c; --violet:#a78bfa;
-  }
-  *{box-sizing:border-box;}
-  html, body{ max-width:100%; overflow-x:hidden; }
-  body{
-    margin:0; font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:var(--bg); color:var(--txt);
-  }
-  header{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:20px 28px; border-bottom:1px solid var(--border);
-    flex-wrap:wrap; gap:12px;
-  }
-  header h1{ font-size:20px; margin:0; font-weight:600; }
-  header .sub{ color:var(--txt2); font-size:13px; margin-top:4px; }
-  .badge-readonly{
-    background:rgba(245,185,66,.15); color:var(--amber); font-size:11px;
-    padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
-  }
-  .badge-edit{
-    background:rgba(47,208,138,.15); color:var(--green); font-size:11px;
-    padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
-  }
-  .right-controls{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-  .status{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--txt2); }
-  .dot{
-    width:9px; height:9px; border-radius:50%; background:var(--green);
-    box-shadow:0 0 0 0 rgba(47,208,138,.6); animation:pulse 2s infinite;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(47,208,138,.5);}
-    70%{box-shadow:0 0 0 8px rgba(47,208,138,0);}
-    100%{box-shadow:0 0 0 0 rgba(47,208,138,0);}
-  }
-  .dot.err{ background:var(--red); animation:none; }
-  main{ padding:24px 28px 60px; max-width:1500px; margin:0 auto; }
-  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:24px; }
-  .kpi{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
-  .kpi .label{ color:var(--txt2); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
-  .kpi .value{ font-size:22px; font-weight:700; margin-top:6px; }
-  .kpi .value.pos{ color:var(--green); }
-  .kpi .value.neg{ color:var(--red); }
-  .grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
-  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
-  main > .panel{ margin-bottom:16px; }
-  @media (max-width:1100px){ .grid3 { grid-template-columns:1fr 1fr; } }
-  @media (max-width:900px){ .grid, .grid3 { grid-template-columns:1fr; } }
-  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; }
-  .panel h2{ font-size:14px; margin:0 0 14px; color:var(--txt2); font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
-  .chart-wrap{ position:relative; min-height:120px; overflow:auto; padding-top:4px; }
-  table{ width:100%; border-collapse:collapse; font-size:13px; }
-  th,td{ padding:9px 10px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
-  th{ color:var(--txt2); font-weight:600; font-size:11px; text-transform:uppercase; position:sticky; top:0; background:var(--panel); }
-  tr:hover td{ background:var(--panel2); }
-  .table-scroll{ max-height:440px; overflow:auto; }
-  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
-  .badge.produzindo{ background:rgba(245,185,66,.15); color:var(--amber); }
-  .badge.embarcado{ background:rgba(79,140,255,.15); color:var(--accent); }
-  .badge.chegou{ background:rgba(47,208,138,.15); color:var(--green); }
+:root{
+--bg:#0f1420; --panel:#161d2e; --panel2:#1c2438; --border:#2a3348;
+--txt:#e8ecf5; --txt2:#8f9ac0; --accent:#4f8cff; --green:#2fd08a;
+--amber:#f5b942; --red:#f5615c; --violet:#a78bfa;
+}
+*{box-sizing:border-box;}
+html, body{ max-width:100%; overflow-x:hidden; }
+body{
+margin:0; font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+background:var(--bg); color:var(--txt);
+}
+header{
+display:flex; justify-content:space-between; align-items:center;
+padding:20px 28px; border-bottom:1px solid var(--border);
+flex-wrap:wrap; gap:12px;
+}
+header h1{ font-size:20px; margin:0; font-weight:600; }
+header .sub{ color:var(--txt2); font-size:13px; margin-top:4px; }
+.badge-readonly{
+background:rgba(245,185,66,.15); color:var(--amber); font-size:11px;
+padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
+}
+.badge-edit{
+background:rgba(47,208,138,.15); color:var(--green); font-size:11px;
+padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
+}
+.right-controls{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.status{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--txt2); }
+.dot{
+width:9px; height:9px; border-radius:50%; background:var(--green);
+box-shadow:0 0 0 0 rgba(47,208,138,.6); animation:pulse 2s infinite;
+}
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(47,208,138,.5);}
+70%{box-shadow:0 0 0 8px rgba(47,208,138,0);}
+100%{box-shadow:0 0 0 0 rgba(47,208,138,0);}
+}
+.dot.err{ background:var(--red); animation:none; }
+main{ padding:24px 28px 60px; max-width:1500px; margin:0 auto; }
+.kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:24px; }
+.kpi{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+.kpi .label{ color:var(--txt2); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+.kpi .value{ font-size:22px; font-weight:700; margin-top:6px; }
+.kpi .value.pos{ color:var(--green); }
+.kpi .value.neg{ color:var(--red); }
+.grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
+.grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+main > .panel{ margin-bottom:16px; }
+@media (max-width:1100px){ .grid3 { grid-template-columns:1fr 1fr; } }
+@media (max-width:900px){ .grid, .grid3 { grid-template-columns:1fr; } }
+.panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.panel h2{ font-size:14px; margin:0 0 14px; color:var(--txt2); font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
+.chart-wrap{ position:relative; min-height:120px; overflow:auto; padding-top:4px; }
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+th,td{ padding:9px 10px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+th{ color:var(--txt2); font-weight:600; font-size:11px; text-transform:uppercase; position:sticky; top:0; background:var(--panel); }
+tr:hover td{ background:var(--panel2); }
+.table-scroll{ max-height:440px; overflow:auto; }
+.badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge.produzindo{ background:rgba(245,185,66,.15); color:var(--amber); }
+.badge.embarcado{ background:rgba(79,140,255,.15); color:var(--accent); }
+.badge.chegou{ background:rgba(47,208,138,.15); color:var(--green); }
 
-  .row-paid td{ background:rgba(47,208,138,.08); }
-  .row-paid:hover td{ background:rgba(47,208,138,.14); }
-  .paid-cell{ color:var(--green); font-weight:700; }
-  .badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
-  .empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
-  footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
+.row-paid td{ background:rgba(47,208,138,.08); }
+.row-paid:hover td{ background:rgba(47,208,138,.14); }
+.paid-cell{ color:var(--green); font-weight:700; }
+.badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
+.empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
+footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
 
-  .btn{
-    border:none; border-radius:8px; padding:8px 16px; font-size:13px; cursor:pointer;
-    font-weight:600;
-  }
-  .btn-primary{ background:var(--accent); color:#fff; }
-  .btn-secondary{ background:var(--panel2); color:var(--txt2); border:1px solid var(--border); }
-  .btn:disabled{ opacity:.5; cursor:not-allowed; }
-  .edit-btn{
-    background:var(--panel2); border:1px solid var(--border); color:var(--txt2);
-    border-radius:6px; padding:4px 9px; cursor:pointer; font-size:12px;
-  }
-  .edit-btn:hover{ color:var(--txt); border-color:var(--accent); }
+.btn{
+border:none; border-radius:8px; padding:8px 16px; font-size:13px; cursor:pointer;
+font-weight:600;
+}
+.btn-primary{ background:var(--accent); color:#fff; }
+.btn-secondary{ background:var(--panel2); color:var(--txt2); border:1px solid var(--border); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.edit-btn{
+background:var(--panel2); border:1px solid var(--border); color:var(--txt2);
+border-radius:6px; padding:4px 9px; cursor:pointer; font-size:12px;
+}
+.edit-btn:hover{ color:var(--txt); border-color:var(--accent); }
 
-  .overlay{
-    display:none; position:fixed; inset:0; background:rgba(5,8,15,.65);
-    align-items:center; justify-content:center; z-index:50; padding:20px;
-  }
-  .overlay.open{ display:flex; }
-  .modal{
-    background:var(--panel); border:1px solid var(--border); border-radius:14px;
-    width:100%; max-width:560px; max-height:88vh; overflow:auto;
-    padding:22px 24px;
-  }
-  .modal.wide{ max-width:720px; }
-  .modal h3{ margin:0 0 4px; font-size:17px; }
-  .modal .modal-sub{ color:var(--txt2); font-size:13px; margin-bottom:18px; }
-  .field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:560px){ .field-grid{ grid-template-columns:1fr; } }
-  .field-row{ margin-bottom:14px; }
-  .field-row label{
-    display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2);
-    text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
-  }
-  .field-row input, .field-row select{
-    width:100%; background:var(--panel2); border:1px solid var(--border);
-    color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;
-  }
-  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+.overlay{
+display:none; position:fixed; inset:0; background:rgba(5,8,15,.65);
+align-items:center; justify-content:center; z-index:50; padding:20px;
+}
+.overlay.open{ display:flex; }
+.modal{
+background:var(--panel); border:1px solid var(--border); border-radius:14px;
+width:100%; max-width:560px; max-height:88vh; overflow:auto;
+padding:22px 24px;
+}
+.modal.wide{ max-width:720px; }
+.modal h3{ margin:0 0 4px; font-size:17px; }
+.modal .modal-sub{ color:var(--txt2); font-size:13px; margin-bottom:18px; }
+.field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:560px){ .field-grid{ grid-template-columns:1fr; } }
+.field-row{ margin-bottom:14px; }
+.field-row label{
+display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2);
+text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
+}
+.field-row input, .field-row select{
+width:100%; background:var(--panel2); border:1px solid var(--border);
+color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;
+}
+.modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
 
-  .cor-cell{
-    border-radius:6px; padding:3px 6px; font-size:12px; font-weight:600;
-    display:inline-block; width:88px; text-align:center; box-sizing:border-box;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;
-  }
+.cor-cell{
+border-radius:6px; padding:3px 6px; font-size:12px; font-weight:600;
+display:inline-block; width:88px; text-align:center; box-sizing:border-box;
+overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;
+}
 
-  .icon-btn{ padding:4px 6px; font-size:13px; line-height:1; flex:0 0 auto; }
-  .navio-name{
-    display:inline-block; max-width:70px; overflow:hidden; text-overflow:ellipsis;
-    white-space:nowrap; vertical-align:middle; font-size:12px;
-  }
-  .navio-cell-wrap{
-    display:flex; align-items:center; gap:4px; width:100%; overflow:hidden;
-  }
-  .navio-cell-wrap .navio-name{ flex:1 1 auto; min-width:0; max-width:none; }
-  .navio-cell-wrap .icon-btn{ text-decoration:none; }
+.icon-btn{ padding:4px 6px; font-size:13px; line-height:1; flex:0 0 auto; }
+.navio-name{
+display:inline-block; max-width:70px; overflow:hidden; text-overflow:ellipsis;
+white-space:nowrap; vertical-align:middle; font-size:12px;
+}
+.navio-cell-wrap{
+display:flex; align-items:center; gap:4px; width:100%; overflow:hidden;
+}
+.navio-cell-wrap .navio-name{ flex:1 1 auto; min-width:0; max-width:none; }
+.navio-cell-wrap .icon-btn{ text-decoration:none; }
 
-  /* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
-  #tblProcessos{ font-size:11px; table-layout:fixed; width:100%; }
-  #tblProcessos th, #tblProcessos td{ padding:6px 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  #tblProcessos th{
-    white-space:normal; word-break:break-word; line-height:1.2;
-    vertical-align:bottom; text-align:left; font-size:10px; overflow:visible;
-  }
-  #tblProcessos td:has(.navio-cell-wrap){ overflow:visible; }
-  #tblProcessos .cor-cell{ width:100%; max-width:64px; font-size:10.5px; padding:2px 4px; }
-  #tblProcessos .navio-name{ font-size:10.5px; }
-  #tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
-  #tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
+/* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
+#tblProcessos{ font-size:11px; table-layout:fixed; width:100%; }
+#tblProcessos th, #tblProcessos td{ padding:6px 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#tblProcessos th{
+white-space:normal; word-break:break-word; line-height:1.2;
+vertical-align:bottom; text-align:left; font-size:10px; overflow:visible;
+}
+#tblProcessos td:has(.navio-cell-wrap){ overflow:visible; }
+#tblProcessos .cor-cell{ width:100%; max-width:64px; font-size:10.5px; padding:2px 4px; }
+#tblProcessos .navio-name{ font-size:10.5px; }
+#tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
+#tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
 
-  #toastBox{
-    position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
-    gap:8px; z-index:60;
-  }
-  .toast{
-    background:var(--panel2); border:1px solid var(--border); border-left:4px solid var(--accent);
-    color:var(--txt); padding:11px 16px; border-radius:8px; font-size:13px; max-width:340px;
-    box-shadow:0 6px 20px rgba(0,0,0,.3);
-  }
-  .toast.ok{ border-left-color:var(--green); }
-  .toast.err{ border-left-color:var(--red); }
+#toastBox{
+position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
+gap:8px; z-index:60;
+}
+.toast{
+background:var(--panel2); border:1px solid var(--border); border-left:4px solid var(--accent);
+color:var(--txt); padding:11px 16px; border-radius:8px; font-size:13px; max-width:340px;
+box-shadow:0 6px 20px rgba(0,0,0,.3);
+}
+.toast.ok{ border-left-color:var(--green); }
+.toast.err{ border-left-color:var(--red); }
 
-  /* ---------- Layout específico para celular ---------- */
-  @media (max-width:640px){
-    header{ padding:14px 16px; gap:8px; }
-    header h1{ font-size:16px; line-height:1.3; }
-    header .sub{ font-size:11px; }
-    .badge-readonly, .badge-edit{ font-size:10px; padding:2px 7px; margin-left:6px; }
-    .right-controls{ width:100%; gap:8px; }
-    .right-controls .btn, .right-controls a.btn{
-      flex:1 1 auto; text-align:center; padding:8px 10px; font-size:12px;
-    }
-    .status{ width:100%; justify-content:center; font-size:12px; }
+/* ---------- Layout específico para celular ---------- */
+@media (max-width:640px){
+header{ padding:14px 16px; gap:8px; }
+header h1{ font-size:16px; line-height:1.3; }
+header .sub{ font-size:11px; }
+.badge-readonly, .badge-edit{ font-size:10px; padding:2px 7px; margin-left:6px; }
+.right-controls{ width:100%; gap:8px; }
+.right-controls .btn, .right-controls a.btn{
+flex:1 1 auto; text-align:center; padding:8px 10px; font-size:12px;
+}
+.status{ width:100%; justify-content:center; font-size:12px; }
 
-    main{ padding:14px 12px 40px; }
-    .kpis{ grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:16px; }
-    .kpi{ padding:12px 12px; }
-    .kpi .label{ font-size:10px; }
-    .kpi .value{ font-size:17px; margin-top:4px; }
+main{ padding:14px 12px 40px; }
+.kpis{ grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:16px; }
+.kpi{ padding:12px 12px; }
+.kpi .label{ font-size:10px; }
+.kpi .value{ font-size:17px; margin-top:4px; }
 
-    .grid, .grid3{ gap:12px; margin-bottom:12px; }
-    .panel{ padding:12px; border-radius:10px; }
-    .panel h2{ font-size:12px; margin-bottom:10px; }
+.grid, .grid3{ gap:12px; margin-bottom:12px; }
+.panel{ padding:12px; border-radius:10px; }
+.panel h2{ font-size:12px; margin-bottom:10px; }
 
-    table{ font-size:12px; }
-    th, td{ padding:7px 8px; }
-    .table-scroll{
-      max-height:360px; overflow-x:auto; overflow-y:auto;
-      -webkit-overflow-scrolling:touch;
-    }
+table{ font-size:12px; }
+th, td{ padding:7px 8px; }
+.table-scroll{
+max-height:360px; overflow-x:auto; overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+}
 
-    .cor-cell{ width:72px; font-size:11px; }
-    .badge{ font-size:10px; padding:2px 7px; }
-    .edit-btn{ font-size:11px; padding:4px 7px; }
+.cor-cell{ width:72px; font-size:11px; }
+.badge{ font-size:10px; padding:2px 7px; }
+.edit-btn{ font-size:11px; padding:4px 7px; }
 
-    .overlay{ padding:10px; align-items:flex-start; }
-    .modal, .modal.wide{ max-width:100%; padding:16px; max-height:92vh; margin-top:10px; }
-    .field-grid{ grid-template-columns:1fr; gap:10px; }
-    .modal-actions{ flex-wrap:wrap; }
-    .modal-actions .btn{ flex:1 1 auto; }
+.overlay{ padding:10px; align-items:flex-start; }
+.modal, .modal.wide{ max-width:100%; padding:16px; max-height:92vh; margin-top:10px; }
+.field-grid{ grid-template-columns:1fr; gap:10px; }
+.modal-actions{ flex-wrap:wrap; }
+.modal-actions .btn{ flex:1 1 auto; }
 
-    footer{ font-size:11px; padding:14px 12px; }
-  }
+footer{ font-size:11px; padding:14px 12px; }
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
-    <div class="sub" id="sourceLabel">carregando…</div>
-  </div>
-  <div class="right-controls">
-    <select id="yearFilter" class="btn btn-secondary" onchange="onYearFilterChange()" title="Filtra o dashboard a partir do ano selecionado (baseado no ETA)">
-      <option value="all">Todos os anos</option>
-    </select>
-    <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
-    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a>
-    <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
-    <div class="status">
-      <span class="dot" id="statusDot"></span>
-      <span id="statusText">conectando…</span>
-    </div>
-  </div>
+<div>
+<h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
+<div class="sub" id="sourceLabel">carregando…</div>
+</div>
+<div class="right-controls">
+<select id="yearFilter" class="btn btn-secondary" onchange="onYearFilterChange()" title="Filtra o dashboard a partir do ano selecionado (baseado no ETA)">
+<option value="all">Todos os anos</option>
+</select>
+<button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
+<a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a>
+<button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
+<div class="status">
+<span class="dot" id="statusDot"></span>
+<span id="statusText">conectando…</span>
+</div>
+</div>
 </header>
 
 <main>
-  <div class="kpis" id="kpis"></div>
+<div class="kpis" id="kpis"></div>
 
-  <div class="grid">
-    <div class="panel">
-      <h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
-      <div class="chart-wrap table-scroll" id="tblFornecedorWrap">
-        <table id="tblFornecedor">
-          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>A Pagar (USD)</th><th>Data de Embarque</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="grid">
+<div class="panel">
+<h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
+<div class="chart-wrap table-scroll" id="tblFornecedorWrap">
+<table id="tblFornecedor">
+<thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>A Pagar (USD)</th><th>Data de Embarque</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+</div>
 
-  <div class="grid3">
-    <div class="panel">
-      <h2>Total por Produto</h2>
-      <div class="chart-wrap table-scroll" id="tblProdutoTotalWrap">
-        <table id="tblProdutoTotal">
-          <thead><tr><th>Produto</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="panel">
-      <h2>Produto × ETA (Data Estimada de Chegada)</h2>
-      <div class="chart-wrap table-scroll" id="tblProdutoEtaWrap">
-        <table id="tblProdutoEta">
-          <thead><tr><th>Produto</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="panel">
-      <h2>PPGL — Quantidades, Cores e ETA</h2>
-      <div class="chart-wrap table-scroll" id="tblPpglWrap">
-        <table id="tblPpgl">
-          <thead><tr><th>Produto</th><th>Cor</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="grid3">
+<div class="panel">
+<h2>Total por Produto</h2>
+<div class="chart-wrap table-scroll" id="tblProdutoTotalWrap">
+<table id="tblProdutoTotal">
+<thead><tr><th>Produto</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<div class="panel">
+<h2>Produto × ETA (Data Estimada de Chegada)</h2>
+<div class="chart-wrap table-scroll" id="tblProdutoEtaWrap">
+<table id="tblProdutoEta">
+<thead><tr><th>Produto</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<div class="panel">
+<h2>PPGL — Quantidades, Cores e ETA</h2>
+<div class="chart-wrap table-scroll" id="tblPpglWrap">
+<table id="tblPpgl">
+<thead><tr><th>Produto</th><th>Cor</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+</div>
 
-  <div class="panel">
-    <h2>Resumo FINIMP (por Data de Pagamento)</h2>
-    <div class="table-scroll">
-      <table id="tblFinimp">
-        <thead><tr>
-          <th>Data Pgto</th><th>Total Operação (USD)</th><th>Nº FINIMP</th><th>Processo Contr.</th>
-          <th>Data Inicial</th><th>FTS (USD)</th><th>Merc. (USD)</th><th>TX Dólar Dia Merc</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+<div class="panel">
+<h2>Resumo FINIMP (por Data de Pagamento)</h2>
+<div class="table-scroll">
+<table id="tblFinimp">
+<thead><tr>
+<th>Data Pgto</th><th>Total Operação (USD)</th><th>Nº FINIMP</th><th>Processo Contr.</th>
+<th>Data Inicial</th><th>FTS (USD)</th><th>Merc. (USD)</th><th>TX Dólar Dia Merc</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
 
-  <div class="panel">
-    <h2>Detalhe dos Processos</h2>
-    <div class="table-scroll">
-      <table id="tblProcessos">
-        <colgroup>
-          <col style="width:9%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%">
-          <col style="width:9%"><col style="width:6%"><col style="width:4%">
-          <col style="width:6%"><col style="width:7%"><col style="width:8%">
-          <col style="width:6%"><col style="width:5%"><col style="width:7%">
-          <col style="width:6%">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>Processo Contr.</th><th>Fornecedor</th><th>Produto</th><th>Revestimento</th><th>Cor</th>
-            <th>Navio</th><th>Data Embarque</th><th>Bobinas</th>
-            <th>Peso (MTON)</th><th>Preço Unit. (USD)</th><th>Valor Invoice (USD)</th>
-            <th>ETA</th><th>ETB</th><th>Status</th>
-            <th id="thEditCol" style="display:none;"></th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+<div class="panel">
+<h2>Detalhe dos Processos</h2>
+<div class="table-scroll">
+<table id="tblProcessos">
+<colgroup>
+<col style="width:9%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%">
+<col style="width:9%"><col style="width:6%"><col style="width:4%">
+<col style="width:6%"><col style="width:7%"><col style="width:8%">
+<col style="width:6%"><col style="width:5%"><col style="width:7%">
+<col style="width:6%">
+</colgroup>
+<thead>
+<tr>
+<th>Processo Contr.</th><th>Fornecedor</th><th>Produto</th><th>Revestimento</th><th>Cor</th>
+<th>Navio</th><th>Data Embarque</th><th>Bobinas</th>
+<th>Peso (MTON)</th><th>Preço Unit. (USD)</th><th>Valor Invoice (USD)</th>
+<th>ETA</th><th>ETB</th><th>Status</th>
+<th id="thEditCol" style="display:none;"></th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
 </main>
 
 <footer>Dados vindos de uma planilha Google Sheets · atualiza a cada 60s · clique em "Entrar para editar" para gravar direto na planilha (login com a conta autorizada)</footer>
 
 <div class="overlay" id="editOverlay">
-  <div class="modal">
-    <h3 id="editTitle">Editar processo</h3>
-    <div class="modal-sub">As alterações são gravadas direto na planilha do Google Sheets.</div>
-    <form id="editForm"></form>
-    <div class="modal-actions">
-      <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
-      <button type="button" class="btn btn-primary" id="saveBtn" onclick="submitEdit()">Salvar</button>
-    </div>
-  </div>
+<div class="modal">
+<h3 id="editTitle">Editar processo</h3>
+<div class="modal-sub">As alterações são gravadas direto na planilha do Google Sheets.</div>
+<form id="editForm"></form>
+<div class="modal-actions">
+<button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+<button type="button" class="btn btn-primary" id="saveBtn" onclick="submitEdit()">Salvar</button>
+</div>
+</div>
 </div>
 
 <div class="overlay" id="newProcessOverlay">
-  <div class="modal wide">
-    <h3>Novo Processo de Importação</h3>
-    <div class="modal-sub">Cria uma linha completa na aba Processos. Se digitar um Produto/Fornecedor/Cor/Revestimento novo, ele é adicionado automaticamente na respectiva lista suspensa.</div>
-    <form id="newProcessForm" class="field-grid"></form>
-    <div class="modal-actions">
-      <button type="button" class="btn btn-secondary" onclick="closeNewProcessModal()">Cancelar</button>
-      <button type="button" class="btn btn-primary" id="newProcessSaveBtn" onclick="submitNewProcess()">Criar Processo</button>
-    </div>
-  </div>
+<div class="modal wide">
+<h3>Novo Processo de Importação</h3>
+<div class="modal-sub">Cria uma linha completa na aba Processos. Se digitar um Produto/Fornecedor/Cor/Revestimento novo, ele é adicionado automaticamente na respectiva lista suspensa.</div>
+<form id="newProcessForm" class="field-grid"></form>
+<div class="modal-actions">
+<button type="button" class="btn btn-secondary" onclick="closeNewProcessModal()">Cancelar</button>
+<button type="button" class="btn btn-primary" id="newProcessSaveBtn" onclick="submitNewProcess()">Criar Processo</button>
+</div>
+</div>
 </div>
 
 <div class="overlay" id="docOverlay">
-  <div class="modal">
-    <h3 id="docTitle">Documentos do processo</h3>
-    <div class="modal-sub">PDFs ficam guardados no Google Drive; o link fica registrado na planilha.</div>
+<div class="modal">
+<h3 id="docTitle">Documentos do processo</h3>
+<div class="modal-sub">PDFs ficam guardados no Google Drive; o link fica registrado na planilha.</div>
 
-    <div id="docList" style="margin-bottom:18px;"></div>
+<div id="docList" style="margin-bottom:18px;"></div>
 
-    <div class="field-row">
-      <label>Categoria</label>
-      <select id="docCategoria" style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;"></select>
-    </div>
-    <div class="field-row">
-      <label>Arquivo (PDF)</label>
-      <input type="file" id="docFile" accept="application/pdf">
-    </div>
+<div class="field-row">
+<label>Categoria</label>
+<select id="docCategoria" style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;"></select>
+</div>
+<div class="field-row">
+<label>Arquivo (PDF)</label>
+<input type="file" id="docFile" accept="application/pdf">
+</div>
 
-    <div class="modal-actions">
-      <button type="button" class="btn btn-secondary" onclick="closeDocsModal()">Fechar</button>
-      <button type="button" class="btn btn-primary" id="docSaveBtn" onclick="submitUpload()">Enviar</button>
-    </div>
-  </div>
+<div class="modal-actions">
+<button type="button" class="btn btn-secondary" onclick="closeDocsModal()">Fechar</button>
+<button type="button" class="btn btn-primary" id="docSaveBtn" onclick="submitUpload()">Enviar</button>
+</div>
+</div>
 </div>
 
 <div id="toastBox"></div>
@@ -379,8 +379,8 @@ const REFRESH_MS = 60000;
 // Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
 const DRIVE_FOLDER_ID = '16WWIdaJBE3QMLNjKexvZ1mKmeXXxUSRv';
 const DOC_CATEGORIES = [
-  'Invoice', 'Bill of Lading (BL)', 'Packing List',
-  'Declaração de Importação (DI)', 'Contrato', 'Outro',
+'Invoice', 'Bill of Lading (BL)', 'Packing List',
+'Declaração de Importação (DI)', 'Contrato', 'Outro',
 ];
 
 // Status é uma lista fixa (nao vem de aba)
@@ -388,21 +388,21 @@ const STATUS_OPTIONS = ['PRODUZINDO', 'EMBARCADO', 'CHEGOU'];
 
 // Cores conhecidas -> estilo de pintura da celula. Qualquer cor nova cai no fallback.
 const COR_STYLE = {
-  'natural':     {bg:'#c9ccd1', fg:'#16181d'},
-  'branco':      {bg:'#f5f5f0', fg:'#16181d'},
-  'preto':       {bg:'#161616', fg:'#ffffff'},
-  'madeira':     {bg:'#8b5a2b', fg:'#ffffff'},
-  'cinza medio': {bg:'#8a8f98', fg:'#ffffff'},
-  'ceramica':    {bg:'#c48a5a', fg:'#16181d'},
+'natural': {bg:'#c9ccd1', fg:'#16181d'},
+'branco': {bg:'#f5f5f0', fg:'#16181d'},
+'preto': {bg:'#161616', fg:'#ffffff'},
+'madeira': {bg:'#8b5a2b', fg:'#ffffff'},
+'cinza medio': {bg:'#8a8f98', fg:'#ffffff'},
+'ceramica': {bg:'#c48a5a', fg:'#16181d'},
 };
 function corStyle(nome){
-  const key = String(nome || '').trim().toLowerCase();
-  if (COR_STYLE[key]) return COR_STYLE[key];
-  // fallback: gera uma cor estavel a partir do texto
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
-  const hue = Math.abs(hash) % 360;
-  return {bg:`hsl(${hue},45%,45%)`, fg:'#ffffff'};
+const key = String(nome || '').trim().toLowerCase();
+if (COR_STYLE[key]) return COR_STYLE[key];
+// fallback: gera uma cor estavel a partir do texto
+let hash = 0;
+for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
+const hue = Math.abs(hash) % 360;
+return {bg:`hsl(${hue},45%,45%)`, fg:'#ffffff'};
 }
 
 // ID do cliente OAuth (tipo "Aplicativo da Web") criado no Google Cloud.
@@ -411,38 +411,38 @@ const CLIENT_ID = '446804769711-9d2f71d7mf1q464o0ffcu08prkldka32.apps.googleuser
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
 
 const EDITABLE_FIELDS = [
-  {key:'Processo Contr.', label:'Processo Contr.', type:'text'},
-  {key:'Fornecedor', label:'Fornecedor', type:'select', options:'FORNECEDOR_OPTIONS'},
-  {key:'Produto', label:'Produto', type:'select', options:'PRODUTO_OPTIONS'},
-  {key:'Revestimento', label:'Revestimento', type:'select', options:'REVESTIMENTO_OPTIONS'},
-  {key:'Cor', label:'Cor', type:'select', options:'COR_OPTIONS'},
-  {key:'NAVIO', label:'Navio', type:'text'},
-  {key:'Data de embarque', label:'Data de Embarque', type:'date'},
-  {key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
-  {key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
-  {key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
-  {key:'Valor Invoice (USD)', label:'Valor Invoice (USD)', type:'number', step:'any'},
-  {key:'ETA', label:'ETA', type:'date'},
-  {key:'ETB', label:'ETB', type:'date'},
-  {key:'Status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
+{key:'Processo Contr.', label:'Processo Contr.', type:'text'},
+{key:'Fornecedor', label:'Fornecedor', type:'select', options:'FORNECEDOR_OPTIONS'},
+{key:'Produto', label:'Produto', type:'select', options:'PRODUTO_OPTIONS'},
+{key:'Revestimento', label:'Revestimento', type:'select', options:'REVESTIMENTO_OPTIONS'},
+{key:'Cor', label:'Cor', type:'select', options:'COR_OPTIONS'},
+{key:'NAVIO', label:'Navio', type:'text'},
+{key:'Data de embarque', label:'Data de Embarque', type:'date'},
+{key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
+{key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
+{key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
+{key:'Valor Invoice (USD)', label:'Valor Invoice (USD)', type:'number', step:'any'},
+{key:'ETA', label:'ETA', type:'date'},
+{key:'ETB', label:'ETB', type:'date'},
+{key:'Status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
 ];
 
 // Campos do formulario "Novo Processo" — combo (select + opcao de digitar valor novo)
 const NEW_PROCESS_FIELDS = [
-  {key:'processo', label:'Processo Contr.', type:'text'},
-  {key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
-  {key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
-  {key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
-  {key:'cor', label:'Cor', type:'combo', options:'COR_OPTIONS', tab:'TAB_COR'},
-  {key:'navio', label:'Navio', type:'text'},
-  {key:'dataEmbarque', label:'Data de Embarque', type:'date'},
-  {key:'bobinas', label:'Bobinas', type:'number', step:'1'},
-  {key:'peso', label:'Peso (MTON)', type:'number', step:'any'},
-  {key:'precoUnit', label:'Preço Unit. (USD)', type:'number', step:'any'},
-  {key:'valorInvoice', label:'Valor Invoice (USD)', type:'number', step:'any'},
-  {key:'eta', label:'ETA', type:'date'},
-  {key:'etb', label:'ETB', type:'date'},
-  {key:'status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
+{key:'processo', label:'Processo Contr.', type:'text'},
+{key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
+{key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
+{key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
+{key:'cor', label:'Cor', type:'combo', options:'COR_OPTIONS', tab:'TAB_COR'},
+{key:'navio', label:'Navio', type:'text'},
+{key:'dataEmbarque', label:'Data de Embarque', type:'date'},
+{key:'bobinas', label:'Bobinas', type:'number', step:'1'},
+{key:'peso', label:'Peso (MTON)', type:'number', step:'any'},
+{key:'precoUnit', label:'Preço Unit. (USD)', type:'number', step:'any'},
+{key:'valorInvoice', label:'Valor Invoice (USD)', type:'number', step:'any'},
+{key:'eta', label:'ETA', type:'date'},
+{key:'etb', label:'ETB', type:'date'},
+{key:'status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
 ];
 
 const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
@@ -465,80 +465,80 @@ let tokenClient = null;
 // Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
 // ---------------------------------------------------------------------
 function csvUrl(gid){
-  // Usamos /export (nao /gviz/tq) porque o endpoint gviz fica com cache
-  // atrasado no lado do Google e pode mostrar valores antigos/vazios.
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+// Usamos /export (nao /gviz/tq) porque o endpoint gviz fica com cache
+// atrasado no lado do Google e pode mostrar valores antigos/vazios.
+return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
 }
 
 // Converte data ISO (AAAA-MM-DD) para o padrao brasileiro (DD/MM/AAAA) so na exibicao.
 function fmtDateISOtoBR(iso){
-  if (!iso || !iso.trim()) return '—';
-  const parts = String(iso).trim().split('-');
-  if (parts.length !== 3) return iso;
-  const [y, m, d] = parts;
-  return `${d}/${m}/${y}`;
+if (!iso || !iso.trim()) return '—';
+const parts = String(iso).trim().split('-');
+if (parts.length !== 3) return iso;
+const [y, m, d] = parts;
+return `${d}/${m}/${y}`;
 }
 
 function parseCSV(text){
-  const rows = [];
-  let row = [], field = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++){
-    const c = text[i], next = text[i+1];
-    if (inQuotes){
-      if (c === '"' && next === '"'){ field += '"'; i++; }
-      else if (c === '"'){ inQuotes = false; }
-      else { field += c; }
-    } else {
-      if (c === '"'){ inQuotes = true; }
-      else if (c === ','){ row.push(field); field = ''; }
-      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
-      else if (c === '\r'){ /* skip */ }
-      else { field += c; }
-    }
-  }
-  if (field.length || row.length){ row.push(field); rows.push(row); }
-  if (!rows.length) return {headers: [], data: []};
-  const headers = rows[0];
-  const data = rows.slice(1).map((r, idx) => {
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i].trim() : '');
-    obj._row = idx + 2; // linha real na planilha (linha 1 = cabecalho)
-    return obj;
-  }).filter(o => headers.some(h => o[h] !== ''));
-  return {headers, data};
+const rows = [];
+let row = [], field = '', inQuotes = false;
+for (let i = 0; i < text.length; i++){
+const c = text[i], next = text[i+1];
+if (inQuotes){
+if (c === '"' && next === '"'){ field += '"'; i++; }
+else if (c === '"'){ inQuotes = false; }
+else { field += c; }
+} else {
+if (c === '"'){ inQuotes = true; }
+else if (c === ','){ row.push(field); field = ''; }
+else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+else if (c === '\r'){ /* skip */ }
+else { field += c; }
+}
+}
+if (field.length || row.length){ row.push(field); rows.push(row); }
+if (!rows.length) return {headers: [], data: []};
+const headers = rows[0];
+const data = rows.slice(1).map((r, idx) => {
+const obj = {};
+headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i].trim() : '');
+obj._row = idx + 2; // linha real na planilha (linha 1 = cabecalho)
+return obj;
+}).filter(o => headers.some(h => o[h] !== ''));
+return {headers, data};
 }
 
 function num(v){
-  if (v == null) return null;
-  const cleaned = String(v).replace(/,/g, '').trim();
-  if (cleaned === '' || cleaned === '-') return null;
-  const n = parseFloat(cleaned);
-  return isNaN(n) ? null : n;
+if (v == null) return null;
+const cleaned = String(v).replace(/,/g, '').trim();
+if (cleaned === '' || cleaned === '-') return null;
+const n = parseFloat(cleaned);
+return isNaN(n) ? null : n;
 }
 
 // Numeros no formato brasileiro (aba FINIMP): "1.184.577,59" ou "- 1.184.577,59"
 function numBR(v){
-  if (v == null) return null;
-  let s = String(v).replace(/\s+/g, '').trim();
-  if (s === '' || s === '-') return null;
-  s = s.replace(/\./g, '').replace(',', '.');
-  const n = parseFloat(s);
-  return isNaN(n) ? null : n;
+if (v == null) return null;
+let s = String(v).replace(/\s+/g, '').trim();
+if (s === '' || s === '-') return null;
+s = s.replace(/\./g, '').replace(',', '.');
+const n = parseFloat(s);
+return isNaN(n) ? null : n;
 }
 
 // Datas da aba FINIMP vem em MM/DD/AAAA
 function parseMDY(str){
-  if (!str) return null;
-  const parts = String(str).trim().split('/');
-  if (parts.length !== 3) return null;
-  const mm = parseInt(parts[0], 10), dd = parseInt(parts[1], 10), yyyy = parseInt(parts[2], 10);
-  if (!mm || !dd || !yyyy) return null;
-  return new Date(yyyy, mm - 1, dd);
+if (!str) return null;
+const parts = String(str).trim().split('/');
+if (parts.length !== 3) return null;
+const mm = parseInt(parts[0], 10), dd = parseInt(parts[1], 10), yyyy = parseInt(parts[2], 10);
+if (!mm || !dd || !yyyy) return null;
+return new Date(yyyy, mm - 1, dd);
 }
 function fmtDateBR(d){
-  if (!d) return '—';
-  const pad = n => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+if (!d) return '—';
+const pad = n => String(n).padStart(2, '0');
+return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
 }
 
 const fmtUSD = n => n == null ? '—' : n.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2, maximumFractionDigits:2});
@@ -546,23 +546,23 @@ const fmtBRL = n => n == null ? '—' : n.toLocaleString('pt-BR', {style:'curren
 const fmtNum = (n, d=2) => n == null ? '—' : n.toLocaleString('pt-BR', {minimumFractionDigits:d, maximumFractionDigits:d});
 
 function kpiCard(label, value, cls=''){
-  return `<div class="kpi"><div class="label">${label}</div><div class="value ${cls}">${value}</div></div>`;
+return `<div class="kpi"><div class="label">${label}</div><div class="value ${cls}">${value}</div></div>`;
 }
 
 function statusBadge(s){
-  const key = String(s || '').trim().toUpperCase();
-  if (key === 'CHEGOU') return `<span class="badge chegou">${s}</span>`;
-  if (key === 'EMBARCADO') return `<span class="badge embarcado">${s}</span>`;
-  if (key === 'PRODUZINDO') return `<span class="badge produzindo">${s}</span>`;
-  if (!s) return '<span class="badge default">—</span>';
-  return `<span class="badge default">${s}</span>`;
+const key = String(s || '').trim().toUpperCase();
+if (key === 'CHEGOU') return `<span class="badge chegou">${s}</span>`;
+if (key === 'EMBARCADO') return `<span class="badge embarcado">${s}</span>`;
+if (key === 'PRODUZINDO') return `<span class="badge produzindo">${s}</span>`;
+if (!s) return '<span class="badge default">—</span>';
+return `<span class="badge default">${s}</span>`;
 }
 
 // Link de rastreamento de navio (VesselFinder, busca por nome — carga a granel nao tem container/BL rastreavel).
 function navioCell(navio){
-  if (!navio || !navio.trim()) return '—';
-  const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
-  return `<span class="navio-cell-wrap"><span class="navio-name" title="${navio}">${navio}</span><a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder">🧭</a></span>`;
+if (!navio || !navio.trim()) return '—';
+const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
+return `<span class="navio-cell-wrap"><span class="navio-name" title="${navio}">${navio}</span><a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder">🧭</a></span>`;
 }
 
 // ---------------------------------------------------------------------
@@ -571,785 +571,822 @@ function navioCell(navio){
 const MES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 function etaYearMonth(row){
-  const eta = row && row.ETA ? row.ETA.trim() : '';
-  const m = eta.match(/^(\d{4})-(\d{2})/);
-  return m ? `${m[1]}-${m[2]}` : null;
+const eta = row && row.ETA ? row.ETA.trim() : '';
+const m = eta.match(/^(\d{4})-(\d{2})/);
+return m ? `${m[1]}-${m[2]}` : null;
 }
 
 function populateYearFilter(rows){
-  const yearMonths = [...new Set(rows.map(etaYearMonth).filter(Boolean))].sort();
-  const sel = document.getElementById('yearFilter');
-  const current = sel.value || 'all';
-  sel.innerHTML = ['<option value="all">Todos os períodos</option>']
-    .concat(yearMonths.map(ym => {
-      const [y, mo] = ym.split('-');
-      const label = `${MES_ABREV[parseInt(mo, 10) - 1]}/${y}`;
-      return `<option value="${ym}">A partir de ${label}</option>`;
-    }))
-    .join('');
-  // mantem a selecao anterior se o periodo ainda existir na lista
-  if ([...sel.options].some(o => o.value === current)) sel.value = current;
-  YEAR_FILTER = sel.value;
+const yearMonths = [...new Set(rows.map(etaYearMonth).filter(Boolean))].sort();
+const sel = document.getElementById('yearFilter');
+const current = sel.value || 'all';
+sel.innerHTML = ['<option value="all">Todos os períodos</option>']
+.concat(yearMonths.map(ym => {
+const [y, mo] = ym.split('-');
+const label = `${MES_ABREV[parseInt(mo, 10) - 1]}/${y}`;
+return `<option value="${ym}">A partir de ${label}</option>`;
+}))
+.join('');
+// mantem a selecao anterior se o periodo ainda existir na lista
+if ([...sel.options].some(o => o.value === current)) sel.value = current;
+YEAR_FILTER = sel.value;
 }
 
 function onYearFilterChange(){
-  YEAR_FILTER = document.getElementById('yearFilter').value;
-  renderAll();
+YEAR_FILTER = document.getElementById('yearFilter').value;
+renderAll();
 }
 
 function applyYearFilter(rows){
-  if (YEAR_FILTER === 'all') return rows;
-  return rows.filter(r => {
-    const ym = etaYearMonth(r);
-    if (!ym) return true; // sem ETA definido: nao exclui, so nao da pra classificar
-    return ym >= YEAR_FILTER;
-  });
+if (YEAR_FILTER === 'all') return rows;
+return rows.filter(r => {
+const ym = etaYearMonth(r);
+if (!ym) return true; // sem ETA definido: nao exclui, so nao da pra classificar
+return ym >= YEAR_FILTER;
+});
 }
 
 function renderAll(){
-  // Linhas sem Fornecedor preenchido nao sao exibidas em nenhum dash (geralmente sao linhas vazias/incompletas na planilha).
-  const comFornecedor = ALL_PROCESSOS.filter(r => r.Fornecedor && r.Fornecedor.trim() !== '');
-  const filtered = applyYearFilter(comFornecedor);
-  renderKPIs(filtered);
-  renderFornecedorTable(filtered);
-  renderProdutoTotalTable(filtered);
-  renderProdutoEtaTable(filtered);
-  renderPpglTable(filtered);
-  renderTable(filtered);
+// Linhas sem Fornecedor preenchido nao sao exibidas em nenhum dash (geralmente sao linhas vazias/incompletas na planilha).
+const comFornecedor = ALL_PROCESSOS.filter(r => r.Fornecedor && r.Fornecedor.trim() !== '');
+const filtered = applyYearFilter(comFornecedor);
+renderKPIs(filtered);
+renderFornecedorTable(filtered);
+renderProdutoTotalTable(filtered);
+renderProdutoEtaTable(filtered);
+renderPpglTable(filtered);
+renderTable(filtered);
 }
 
 function renderKPIs(rows){
-  const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
+const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
 
-  const isChegou = r => String(r.Status || '').trim().toUpperCase() === 'CHEGOU';
+const isChegou = r => String(r.Status || '').trim().toUpperCase() === 'CHEGOU';
 
-  const valorChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
-  const valorOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+const valorChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+const valorOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
 
-  const pesoChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
-  const pesoOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
+const pesoChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
+const pesoOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
 
-  document.getElementById('kpis').innerHTML = [
-    kpiCard('Número de Contratos', fmtNum(contratos)),
-    kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
-    kpiCard('Peso — Em Andamento (MTON)', fmtNum(pesoOutros)),
-    kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
-    kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
-  ].join('');
+document.getElementById('kpis').innerHTML = [
+kpiCard('Número de Contratos', fmtNum(contratos)),
+kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
+kpiCard('Peso — Em Andamento (MTON)', fmtNum(pesoOutros)),
+kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
+kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
+].join('');
 }
 
 function renderFornecedorTable(rows){
-  const groups = new Map();
-  rows.forEach(r => {
-    const fornecedor = r.Fornecedor || '—';
-    const processo = r['Processo Contr.'] || '—';
-    const key = fornecedor + '|' + processo;
-    if (!groups.has(key)){
-      groups.set(key, {fornecedor, processo, valor:0, aPagar:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
-    }
-    const g = groups.get(key);
-    g.valor += (num(r['Valor Invoice (USD)']) || 0);
-    g.aPagar += (num(r['A Pagar (USD)']) || 0);
-    if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
-    if (r.Status && r.Status.trim()) g.statuses.add(r.Status.trim());
-  });
-  const items = [...groups.values()].sort((a,b) => {
-    if (!a.dataEmbarque && !b.dataEmbarque) return 0;
-    if (!a.dataEmbarque) return 1;
-    if (!b.dataEmbarque) return -1;
-    return a.dataEmbarque.localeCompare(b.dataEmbarque);
-  });
-  const tbody = document.querySelector('#tblFornecedor tbody');
-  if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="6" class="empty">Sem dados.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = items.map(it => {
-    const statusCell = it.statuses.size
-      ? [...it.statuses].map(statusBadge).join(' ')
-      : statusBadge('');
-    const quitado = Math.abs(it.aPagar) < 0.005;
-    return `
-    <tr class="${quitado ? 'row-paid' : ''}">
-      <td>${it.fornecedor}</td>
-      <td>${it.processo}</td>
-      <td>${statusCell}</td>
-      <td>${fmtUSD(it.valor)}</td>
-      <td class="${quitado ? 'paid-cell' : ''}">${quitado ? `${fmtUSD(it.aPagar)} · Quitado` : fmtUSD(it.aPagar)}</td>
-      <td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
-    </tr>
-  `;
-  }).join('');
+const groups = new Map();
+rows.forEach(r => {
+const fornecedor = r.Fornecedor || '—';
+const processo = r['Processo Contr.'] || '—';
+const key = fornecedor + '|' + processo;
+if (!groups.has(key)){
+groups.set(key, {fornecedor, processo, valor:0, aPagar:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
+}
+const g = groups.get(key);
+g.valor += (num(r['Valor Invoice (USD)']) || 0);
+g.aPagar += (num(r['A Pagar (USD)']) || 0);
+if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
+if (r.Status && r.Status.trim()) g.statuses.add(r.Status.trim());
+});
+const items = [...groups.values()].sort((a,b) => {
+if (!a.dataEmbarque && !b.dataEmbarque) return 0;
+if (!a.dataEmbarque) return 1;
+if (!b.dataEmbarque) return -1;
+return a.dataEmbarque.localeCompare(b.dataEmbarque);
+});
+const tbody = document.querySelector('#tblFornecedor tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="6" class="empty">Sem dados.</td></tr>`;
+return;
+}
+tbody.innerHTML = items.map(it => {
+const statusCell = it.statuses.size
+? [...it.statuses].map(statusBadge).join(' ')
+: statusBadge('');
+const quitado = Math.abs(it.aPagar) < 0.005;
+return `
+<tr class="${quitado ? 'row-paid' : ''}">
+<td>${it.fornecedor}</td>
+<td>${it.processo}</td>
+<td>${statusCell}</td>
+<td>${fmtUSD(it.valor)}</td>
+<td class="${quitado ? 'paid-cell' : ''}">${quitado ? `${fmtUSD(it.aPagar)} · Quitado` : fmtUSD(it.aPagar)}</td>
+<td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
+</tr>
+`;
+}).join('');
 }
 
 function renderProdutoTotalTable(rows){
-  const groups = new Map();
-  rows.forEach(r => {
-    const produto = r.Produto || '—';
-    if (!groups.has(produto)) groups.set(produto, {produto, peso:0, bobinas:0});
-    const g = groups.get(produto);
-    g.peso += (num(r['Peso (MTON)']) || 0);
-    g.bobinas += (num(r.Bobinas) || 0);
-  });
-  const items = [...groups.values()].sort((a,b) => b.peso - a.peso);
-  const tbody = document.querySelector('#tblProdutoTotal tbody');
-  if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = items.map(it => `
-    <tr>
-      <td>${it.produto}</td>
-      <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas)}</td>
-    </tr>
-  `).join('');
+const groups = new Map();
+rows.forEach(r => {
+const produto = r.Produto || '—';
+if (!groups.has(produto)) groups.set(produto, {produto, peso:0, bobinas:0});
+const g = groups.get(produto);
+g.peso += (num(r['Peso (MTON)']) || 0);
+g.bobinas += (num(r.Bobinas) || 0);
+});
+const items = [...groups.values()].sort((a,b) => b.peso - a.peso);
+const tbody = document.querySelector('#tblProdutoTotal tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados.</td></tr>`;
+return;
+}
+tbody.innerHTML = items.map(it => `
+<tr>
+<td>${it.produto}</td>
+<td>${fmtNum(it.peso)}</td>
+<td>${fmtNum(it.bobinas)}</td>
+</tr>
+`).join('');
 }
 
 function renderPpglTable(rows){
-  const groups = new Map();
-  rows.forEach(r => {
-    const produto = (r.Produto || '').trim();
-    if (!produto.toUpperCase().startsWith('PPGL')) return;
-    const cor = r.Cor || '';
-    const eta = r.ETA || '';
-    const key = produto + '|' + cor + '|' + eta;
-    if (!groups.has(key)) groups.set(key, {produto, cor, eta, peso:0, bobinas:0});
-    const g = groups.get(key);
-    g.peso += (num(r['Peso (MTON)']) || 0);
-    g.bobinas += (num(r.Bobinas) || 0);
-  });
-  const items = [...groups.values()].sort((a,b) => {
-    if (!a.eta && !b.eta) return 0;
-    if (!a.eta) return 1;
-    if (!b.eta) return -1;
-    return a.eta.localeCompare(b.eta);
-  });
-  const tbody = document.querySelector('#tblPpgl tbody');
-  if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="5" class="empty">Nenhum produto PPGL encontrado.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = items.map(it => {
-    const cs = corStyle(it.cor);
-    const corCell = it.cor
-      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>`
-      : '—';
-    return `
-    <tr>
-      <td>${it.produto}</td>
-      <td>${corCell}</td>
-      <td>${fmtDateISOtoBR(it.eta)}</td>
-      <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas)}</td>
-    </tr>
-  `;
-  }).join('');
+const groups = new Map();
+rows.forEach(r => {
+const produto = (r.Produto || '').trim();
+if (!produto.toUpperCase().startsWith('PPGL')) return;
+const cor = r.Cor || '';
+const eta = r.ETA || '';
+const key = produto + '|' + cor + '|' + eta;
+if (!groups.has(key)) groups.set(key, {produto, cor, eta, peso:0, bobinas:0});
+const g = groups.get(key);
+g.peso += (num(r['Peso (MTON)']) || 0);
+g.bobinas += (num(r.Bobinas) || 0);
+});
+const items = [...groups.values()].sort((a,b) => {
+if (!a.eta && !b.eta) return 0;
+if (!a.eta) return 1;
+if (!b.eta) return -1;
+return a.eta.localeCompare(b.eta);
+});
+const tbody = document.querySelector('#tblPpgl tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="5" class="empty">Nenhum produto PPGL encontrado.</td></tr>`;
+return;
+}
+tbody.innerHTML = items.map(it => {
+const cs = corStyle(it.cor);
+const corCell = it.cor
+? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>`
+: '—';
+return `
+<tr>
+<td>${it.produto}</td>
+<td>${corCell}</td>
+<td>${fmtDateISOtoBR(it.eta)}</td>
+<td>${fmtNum(it.peso)}</td>
+<td>${fmtNum(it.bobinas)}</td>
+</tr>
+`;
+}).join('');
 }
 
 function renderProdutoEtaTable(rows){
-  const groups = new Map();
-  rows.forEach(r => {
-    const produto = r.Produto || '—';
-    const eta = r.ETA || '';
-    const key = produto + '|' + eta;
-    if (!groups.has(key)) groups.set(key, {produto, eta, peso:0, bobinas:0});
-    const g = groups.get(key);
-    g.peso += (num(r['Peso (MTON)']) || 0);
-    g.bobinas += (num(r.Bobinas) || 0);
-  });
-  const items = [...groups.values()].sort((a,b) => {
-    if (!a.eta && !b.eta) return 0;
-    if (!a.eta) return 1;
-    if (!b.eta) return -1;
-    return a.eta.localeCompare(b.eta);
-  });
-  const tbody = document.querySelector('#tblProdutoEta tbody');
-  if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = items.map(it => `
-    <tr>
-      <td>${it.produto}</td>
-      <td>${fmtDateISOtoBR(it.eta)}</td>
-      <td>${fmtNum(it.peso)}</td>
-      <td>${fmtNum(it.bobinas)}</td>
-    </tr>
-  `).join('');
+const groups = new Map();
+rows.forEach(r => {
+const produto = r.Produto || '—';
+const eta = r.ETA || '';
+const key = produto + '|' + eta;
+if (!groups.has(key)) groups.set(key, {produto, eta, peso:0, bobinas:0});
+const g = groups.get(key);
+g.peso += (num(r['Peso (MTON)']) || 0);
+g.bobinas += (num(r.Bobinas) || 0);
+});
+const items = [...groups.values()].sort((a,b) => {
+if (!a.eta && !b.eta) return 0;
+if (!a.eta) return 1;
+if (!b.eta) return -1;
+return a.eta.localeCompare(b.eta);
+});
+const tbody = document.querySelector('#tblProdutoEta tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
+return;
+}
+tbody.innerHTML = items.map(it => `
+<tr>
+<td>${it.produto}</td>
+<td>${fmtDateISOtoBR(it.eta)}</td>
+<td>${fmtNum(it.peso)}</td>
+<td>${fmtNum(it.bobinas)}</td>
+</tr>
+`).join('');
 }
 
 function renderTable(rows){
-  lastRows = rows;
-  const tbody = document.querySelector('#tblProcessos tbody');
-  const editing = !!accessToken;
-  document.getElementById('thEditCol').style.display = editing ? '' : 'none';
-  document.getElementById('newProcessBtn').style.display = editing ? '' : 'none';
-  document.getElementById('manageAccessBtn').style.display = editing ? '' : 'none';
+lastRows = rows;
+const tbody = document.querySelector('#tblProcessos tbody');
+const editing = !!accessToken;
+document.getElementById('thEditCol').style.display = editing ? '' : 'none';
+document.getElementById('newProcessBtn').style.display = editing ? '' : 'none';
+document.getElementById('manageAccessBtn').style.display = editing ? '' : 'none';
 
-  if (!rows.length){
-    tbody.innerHTML = `<tr><td colspan="15" class="empty">Nenhum dado encontrado.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = rows.map(r => {
-    const cs = corStyle(r.Cor);
-    const corCell = r.Cor
-      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${r.Cor}</span>`
-      : '—';
-    return `
-    <tr>
-      <td title="${r['Processo Contr.'] || ''}">${r['Processo Contr.'] || '—'}</td>
-      <td title="${r.Fornecedor || ''}">${r.Fornecedor || '—'}</td>
-      <td title="${r.Produto || ''}">${r.Produto || '—'}</td>
-      <td title="${r.Revestimento || ''}">${r.Revestimento || '—'}</td>
-      <td>${corCell}</td>
-      <td>${navioCell(r.NAVIO)}</td>
-      <td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
-      <td>${num(r.Bobinas) != null ? fmtNum(num(r.Bobinas)) : '—'}</td>
-      <td>${fmtNum(num(r['Peso (MTON)']))}</td>
-      <td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
-      <td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
-      <td>${fmtDateISOtoBR(r.ETA)}</td>
-      <td>${fmtDateISOtoBR(r.ETB)}</td>
-      <td>${statusBadge(r.Status)}</td>
-      <td>${editing ? `
-        <button class="edit-btn icon-btn" title="Editar" onclick="openEditModal(${r._row})">✏️</button>
-        <button class="edit-btn icon-btn" title="Documentos" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">📄</button>
-      ` : ''}</td>
-    </tr>
-  `;
-  }).join('');
+if (!rows.length){
+tbody.innerHTML = `<tr><td colspan="15" class="empty">Nenhum dado encontrado.</td></tr>`;
+return;
+}
+tbody.innerHTML = rows.map(r => {
+const cs = corStyle(r.Cor);
+const corCell = r.Cor
+? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${r.Cor}</span>`
+: '—';
+return `
+<tr>
+<td title="${r['Processo Contr.'] || ''}">${r['Processo Contr.'] || '—'}</td>
+<td title="${r.Fornecedor || ''}">${r.Fornecedor || '—'}</td>
+<td title="${r.Produto || ''}">${r.Produto || '—'}</td>
+<td title="${r.Revestimento || ''}">${r.Revestimento || '—'}</td>
+<td>${corCell}</td>
+<td>${navioCell(r.NAVIO)}</td>
+<td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
+<td>${num(r.Bobinas) != null ? fmtNum(num(r.Bobinas)) : '—'}</td>
+<td>${fmtNum(num(r['Peso (MTON)']))}</td>
+<td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
+<td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
+<td>${fmtDateISOtoBR(r.ETA)}</td>
+<td>${fmtDateISOtoBR(r.ETB)}</td>
+<td>${statusBadge(r.Status)}</td>
+<td>${editing ? `
+<button class="edit-btn icon-btn" title="Editar" onclick="openEditModal(${r._row})">✏️</button>
+<button class="edit-btn icon-btn" title="Documentos" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">📄</button>
+` : ''}</td>
+</tr>
+`;
+}).join('');
 }
 
 // Busca um campo pelo nome exato; se nao existir (ex: caractere especial diferente
 // no cabecalho da planilha, como o simbolo de grau em "N° FINIMP"), tenta achar uma
 // coluna cujo nome contenha o texto informado em fallbackContains.
 function ffield(row, exact, fallbackContains){
-  if (row[exact] !== undefined) return row[exact];
-  if (fallbackContains){
-    const k = Object.keys(row).find(k => k.toUpperCase().includes(fallbackContains.toUpperCase()));
-    if (k) return row[k];
-  }
-  return '';
+if (row[exact] !== undefined) return row[exact];
+if (fallbackContains){
+const k = Object.keys(row).find(k => k.toUpperCase().includes(fallbackContains.toUpperCase()));
+if (k) return row[k];
+}
+return '';
 }
 
 function renderFinimp(){
-  const items = FINIMP_ROWS
-    .filter(r => r['DATA PGTO'] && r['DATA PGTO'].trim())
-    .sort((a,b) => {
-      const da = parseMDY(a['DATA PGTO']), db = parseMDY(b['DATA PGTO']);
-      if (!da && !db) return 0;
-      if (!da) return 1;
-      if (!db) return -1;
-      return da - db;
-    });
-  const tbody = document.querySelector('#tblFinimp tbody');
-  if (!items.length){
-    tbody.innerHTML = `<tr><td colspan="8" class="empty">Sem dados FINIMP.</td></tr>`;
-    return;
-  }
-  // Ordem de colunas solicitada: D, H, A, B, C, E, F, G
-  tbody.innerHTML = items.map(r => `
-    <tr>
-      <td>${fmtDateBR(parseMDY(r['DATA PGTO']))}</td>
-      <td>${fmtUSD(numBR(r['TOTAL OPERAÇÃO (USD)']))}</td>
-      <td>${ffield(r, 'N° FINIMP', 'FINIMP') || '—'}</td>
-      <td>${r['Processo Contr.'] || '—'}</td>
-      <td>${fmtDateBR(parseMDY(r['DATA INICIAL']))}</td>
-      <td>${fmtUSD(numBR(r['FTS (USD)']))}</td>
-      <td>${fmtUSD(numBR(r['MERC. (USD)']))}</td>
-      <td>${fmtNum(numBR(r['TX DOLAR DIA MERC']))}</td>
-    </tr>
-  `).join('');
+const items = FINIMP_ROWS
+.filter(r => r['DATA PGTO'] && r['DATA PGTO'].trim())
+.sort((a,b) => {
+const da = parseMDY(a['DATA PGTO']), db = parseMDY(b['DATA PGTO']);
+if (!da && !db) return 0;
+if (!da) return 1;
+if (!db) return -1;
+return da - db;
+});
+const tbody = document.querySelector('#tblFinimp tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="8" class="empty">Sem dados FINIMP.</td></tr>`;
+return;
+}
+// Ordem de colunas solicitada: D, H, A, B, C, E, F, G
+tbody.innerHTML = items.map(r => `
+<tr>
+<td>${fmtDateBR(parseMDY(r['DATA PGTO']))}</td>
+<td>${fmtUSD(numBR(r['TOTAL OPERAÇÃO (USD)']))}</td>
+<td>${ffield(r, 'N° FINIMP', 'FINIMP') || '—'}</td>
+<td>${r['Processo Contr.'] || '—'}</td>
+<td>${fmtDateBR(parseMDY(r['DATA INICIAL']))}</td>
+<td>${fmtUSD(numBR(r['FTS (USD)']))}</td>
+<td>${fmtUSD(numBR(r['MERC. (USD)']))}</td>
+<td>${fmtNum(numBR(r['TX DOLAR DIA MERC']))}</td>
+</tr>
+`).join('');
 }
 
 async function refresh(){
-  try {
-    const [resP, resF, resPr, resD, resForn, resCor, resRev] = await Promise.all([
-      fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
-      fetch(csvUrl(GID_FINIMP), {cache:'no-store'}),
-      fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'}),
-      fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'}),
-      fetch(csvUrl(GID_FORNECEDORES), {cache:'no-store'}),
-      fetch(csvUrl(GID_COR), {cache:'no-store'}),
-      fetch(csvUrl(GID_REVESTIMENTO), {cache:'no-store'}),
-    ]);
-    if (!resP.ok) throw new Error('Falha ao buscar dados da planilha');
-    const textP = await resP.text();
-    const parsedP = parseCSV(textP);
-    PROCESSOS_HEADERS = parsedP.headers;
+try {
+const [resP, resF, resPr, resD, resForn, resCor, resRev] = await Promise.all([
+fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
+fetch(csvUrl(GID_FINIMP), {cache:'no-store'}),
+fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'}),
+fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'}),
+fetch(csvUrl(GID_FORNECEDORES), {cache:'no-store'}),
+fetch(csvUrl(GID_COR), {cache:'no-store'}),
+fetch(csvUrl(GID_REVESTIMENTO), {cache:'no-store'}),
+]);
+if (!resP.ok) throw new Error('Falha ao buscar dados da planilha');
+const textP = await resP.text();
+const parsedP = parseCSV(textP);
+PROCESSOS_HEADERS = parsedP.headers;
 
-    if (resPr.ok){
-      const parsedPr = parseCSV(await resPr.text());
-      const col = parsedPr.headers[0];
-      PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
-    }
-    if (resForn.ok){
-      const parsedForn = parseCSV(await resForn.text());
-      const col = parsedForn.headers[0];
-      FORNECEDOR_OPTIONS = parsedForn.data.map(r => r[col]).filter(v => v);
-    }
-    if (resCor.ok){
-      const parsedCor = parseCSV(await resCor.text());
-      const col = parsedCor.headers[0];
-      COR_OPTIONS = parsedCor.data.map(r => r[col]).filter(v => v);
-    }
-    if (resRev.ok){
-      const parsedRev = parseCSV(await resRev.text());
-      const col = parsedRev.headers[0];
-      REVESTIMENTO_OPTIONS = parsedRev.data.map(r => r[col]).filter(v => v);
-    }
-    if (resD.ok){
-      DOCUMENTOS = parseCSV(await resD.text()).data;
-    }
-    if (resF.ok){
-      const parsedF = parseCSV(await resF.text());
-      // Normaliza as chaves (alguns cabeçalhos da aba FINIMP têm espaços a mais) para
-      // que os campos (N° FINIMP, DATA PGTO, etc.) sejam sempre acessíveis pelo nome exato.
-      FINIMP_ROWS = parsedF.data.map(row => {
-        const norm = { _row: row._row };
-        parsedF.headers.forEach(h => { norm[h.trim()] = row[h]; });
-        return norm;
-      });
-    }
+if (resPr.ok){
+const parsedPr = parseCSV(await resPr.text());
+const col = parsedPr.headers[0];
+PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
+}
+if (resForn.ok){
+const parsedForn = parseCSV(await resForn.text());
+const col = parsedForn.headers[0];
+FORNECEDOR_OPTIONS = parsedForn.data.map(r => r[col]).filter(v => v);
+}
+if (resCor.ok){
+const parsedCor = parseCSV(await resCor.text());
+const col = parsedCor.headers[0];
+COR_OPTIONS = parsedCor.data.map(r => r[col]).filter(v => v);
+}
+if (resRev.ok){
+const parsedRev = parseCSV(await resRev.text());
+const col = parsedRev.headers[0];
+REVESTIMENTO_OPTIONS = parsedRev.data.map(r => r[col]).filter(v => v);
+}
+if (resD.ok){
+DOCUMENTOS = parseCSV(await resD.text()).data;
+}
+if (resF.ok){
+const parsedF = parseCSV(await resF.text());
+// Normaliza as chaves (alguns cabeçalhos da aba FINIMP têm espaços a mais) para
+// que os campos (N° FINIMP, DATA PGTO, etc.) sejam sempre acessíveis pelo nome exato.
+FINIMP_ROWS = parsedF.data.map(row => {
+const norm = { _row: row._row };
+parsedF.headers.forEach(h => { norm[h.trim()] = row[h]; });
+return norm;
+});
+}
 
-    document.getElementById('sourceLabel').textContent =
-      `Fonte: Google Sheets · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
-    document.getElementById('statusDot').className = 'dot';
-    document.getElementById('statusText').textContent = 'ao vivo';
+document.getElementById('sourceLabel').textContent =
+`Fonte: Google Sheets · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
+document.getElementById('statusDot').className = 'dot';
+document.getElementById('statusText').textContent = 'ao vivo';
 
-    ALL_PROCESSOS = parsedP.data;
-    populateYearFilter(ALL_PROCESSOS);
-    renderAll();
-    renderFinimp();
-  } catch (err) {
-    document.getElementById('statusDot').className = 'dot err';
-    document.getElementById('statusText').textContent = 'sem conexão';
-    console.error(err);
-  }
+ALL_PROCESSOS = parsedP.data;
+populateYearFilter(ALL_PROCESSOS);
+renderAll();
+renderFinimp();
+} catch (err) {
+document.getElementById('statusDot').className = 'dot err';
+document.getElementById('statusText').textContent = 'sem conexão';
+console.error(err);
+}
 }
 
 // ---------------------------------------------------------------------
 // Login (Google Identity Services) + escrita direta na Sheets API
 // ---------------------------------------------------------------------
 function showToast(message, ok=true){
-  const box = document.getElementById('toastBox');
-  const el = document.createElement('div');
-  el.className = `toast ${ok ? 'ok' : 'err'}`;
-  el.textContent = message;
-  box.appendChild(el);
-  setTimeout(() => el.remove(), 6000);
+const box = document.getElementById('toastBox');
+const el = document.createElement('div');
+el.className = `toast ${ok ? 'ok' : 'err'}`;
+el.textContent = message;
+box.appendChild(el);
+setTimeout(() => el.remove(), 6000);
 }
 
 function setEditingUI(on){
-  const badge = document.getElementById('modeBadge');
-  const btn = document.getElementById('authBtn');
-  if (on){
-    badge.textContent = 'MODO EDIÇÃO';
-    badge.className = 'badge-edit';
-    btn.textContent = 'Sair do modo edição';
-  } else {
-    badge.textContent = 'SOMENTE LEITURA';
-    badge.className = 'badge-readonly';
-    btn.textContent = 'Entrar para editar';
-  }
-  renderTable(lastRows);
+const badge = document.getElementById('modeBadge');
+const btn = document.getElementById('authBtn');
+if (on){
+badge.textContent = 'MODO EDIÇÃO';
+badge.className = 'badge-edit';
+btn.textContent = 'Sair do modo edição';
+} else {
+badge.textContent = 'SOMENTE LEITURA';
+badge.className = 'badge-readonly';
+btn.textContent = 'Entrar para editar';
+}
+renderTable(lastRows);
 }
 
 function initGis(){
-  if (typeof google === 'undefined' || !google.accounts) {
-    setTimeout(initGis, 300);
-    return;
-  }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (resp) => {
-      if (resp.error){
-        showToast('Não foi possível entrar: ' + resp.error, false);
-        return;
-      }
-      accessToken = resp.access_token;
-      setEditingUI(true);
-      showToast('Modo edição ativado.', true);
-    },
-  });
+if (typeof google === 'undefined' || !google.accounts) {
+setTimeout(initGis, 300);
+return;
+}
+tokenClient = google.accounts.oauth2.initTokenClient({
+client_id: CLIENT_ID,
+scope: SCOPES,
+callback: (resp) => {
+if (resp.error){
+showToast('Não foi possível entrar: ' + resp.error, false);
+return;
+}
+accessToken = resp.access_token;
+setEditingUI(true);
+showToast('Modo edição ativado.', true);
+},
+});
 }
 
 function handleAuthClick(){
-  if (accessToken){
-    google.accounts.oauth2.revoke(accessToken, () => {});
-    accessToken = null;
-    setEditingUI(false);
-    showToast('Modo edição desativado.', true);
-    return;
-  }
-  if (!tokenClient){
-    showToast('Ainda carregando o login do Google, tente de novo em instantes.', false);
-    return;
-  }
-  tokenClient.requestAccessToken({ prompt: 'consent' });
+if (accessToken){
+google.accounts.oauth2.revoke(accessToken, () => {});
+accessToken = null;
+setEditingUI(false);
+showToast('Modo edição desativado.', true);
+return;
+}
+if (!tokenClient){
+showToast('Ainda carregando o login do Google, tente de novo em instantes.', false);
+return;
+}
+tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
 function colLetter(n){
-  let s = '';
-  while (n > 0){
-    const m = (n - 1) % 26;
-    s = String.fromCharCode(65 + m) + s;
-    n = Math.floor((n - 1) / 26);
-  }
-  return s;
+let s = '';
+while (n > 0){
+const m = (n - 1) % 26;
+s = String.fromCharCode(65 + m) + s;
+n = Math.floor((n - 1) / 26);
+}
+return s;
 }
 
 async function writeCell(rowNum, field, value){
-  const colIdx = PROCESSOS_HEADERS.indexOf(field) + 1;
-  if (colIdx < 1) throw new Error(`Campo '${field}' não encontrado na planilha.`);
-  const range = `${TAB_PROCESSOS}!${colLetter(colIdx)}${rowNum}`;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ values: [[value]] }),
-  });
-  if (!res.ok){
-    if (res.status === 401){
-      accessToken = null;
-      setEditingUI(false);
-      throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
-    }
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
-  }
-  return res.json();
+const colIdx = PROCESSOS_HEADERS.indexOf(field) + 1;
+if (colIdx < 1) throw new Error(`Campo '${field}' não encontrado na planilha.`);
+const range = `${TAB_PROCESSOS}!${colLetter(colIdx)}${rowNum}`;
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+const res = await fetch(url, {
+method: 'PUT',
+headers: {
+'Authorization': `Bearer ${accessToken}`,
+'Content-Type': 'application/json',
+},
+body: JSON.stringify({ values: [[value]] }),
+});
+if (!res.ok){
+if (res.status === 401){
+accessToken = null;
+setEditingUI(false);
+throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+}
+const errBody = await res.json().catch(() => ({}));
+throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
+}
+return res.json();
 }
 
 async function appendRow(tabName, values){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ values: [values] }),
-  });
-  if (!res.ok){
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
-  }
-  return res.json();
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+const res = await fetch(url, {
+method: 'POST',
+headers: {
+'Authorization': `Bearer ${accessToken}`,
+'Content-Type': 'application/json',
+},
+body: JSON.stringify({ values: [values] }),
+});
+if (!res.ok){
+const errBody = await res.json().catch(() => ({}));
+throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
+}
+return res.json();
+}
+
+// Calcula a próxima linha realmente vazia (de cima para baixo) na aba Processos,
+// olhando os números de linha reais (_row) das linhas já preenchidas. Evita o bug
+// do :append pular pra depois de linhas com formatação/fórmulas residuais.
+function nextEmptyRowProcessos(){
+const used = new Set(ALL_PROCESSOS.map(r => r._row));
+let row = 2; // linha 1 é o cabeçalho
+while (used.has(row)) row++;
+return row;
+}
+
+// Grava uma linha inteira numa posição exata (PUT), em vez de usar :append (que decide
+// sozinho onde inserir e pode pular linhas vazias no meio da planilha).
+async function writeRowAt(tabName, rowNum, values){
+const endCol = colLetter(values.length);
+const range = `${tabName}!A${rowNum}:${endCol}${rowNum}`;
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+const res = await fetch(url, {
+method: 'PUT',
+headers: {
+'Authorization': `Bearer ${accessToken}`,
+'Content-Type': 'application/json',
+},
+body: JSON.stringify({ values: [values] }),
+});
+if (!res.ok){
+if (res.status === 401){
+accessToken = null;
+setEditingUI(false);
+throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+}
+const errBody = await res.json().catch(() => ({}));
+throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
+}
+return res.json();
 }
 
 const OPTION_STORE = {
-  FORNECEDOR_OPTIONS: () => FORNECEDOR_OPTIONS,
-  PRODUTO_OPTIONS: () => PRODUTO_OPTIONS,
-  REVESTIMENTO_OPTIONS: () => REVESTIMENTO_OPTIONS,
-  COR_OPTIONS: () => COR_OPTIONS,
-  STATUS_OPTIONS: () => STATUS_OPTIONS,
+FORNECEDOR_OPTIONS: () => FORNECEDOR_OPTIONS,
+PRODUTO_OPTIONS: () => PRODUTO_OPTIONS,
+REVESTIMENTO_OPTIONS: () => REVESTIMENTO_OPTIONS,
+COR_OPTIONS: () => COR_OPTIONS,
+STATUS_OPTIONS: () => STATUS_OPTIONS,
 };
 const TAB_STORE = {
-  TAB_FORNECEDORES, TAB_PRODUTOS, TAB_REVESTIMENTO, TAB_COR,
+TAB_FORNECEDORES, TAB_PRODUTOS, TAB_REVESTIMENTO, TAB_COR,
 };
 
 // Garante que um valor exista na lista suspensa (aba de apoio); se nao existir, adiciona.
 async function ensureListValue(value, optionsArrayName, tabConstName){
-  const value2 = (value || '').trim();
-  if (!value2) return;
-  const arr = OPTION_STORE[optionsArrayName]();
-  if (arr.includes(value2)) return;
-  const tabName = TAB_STORE[tabConstName];
-  await appendRow(tabName, [value2]);
-  arr.push(value2);
+const value2 = (value || '').trim();
+if (!value2) return;
+const arr = OPTION_STORE[optionsArrayName]();
+if (arr.includes(value2)) return;
+const tabName = TAB_STORE[tabConstName];
+await appendRow(tabName, [value2]);
+arr.push(value2);
 }
 
 function renderDocList(){
-  const el = document.getElementById('docList');
-  const docs = DOCUMENTOS.filter(d => (d['Processo'] ?? '') === currentDocsProcesso);
-  if (!docs.length){
-    el.innerHTML = '<div class="empty">Nenhum documento enviado ainda.</div>';
-    return;
-  }
-  el.innerHTML = docs.map(d => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
-      <div>
-        <div style="font-size:13px;">${d['Categoria'] ?? '—'}</div>
-        <div style="font-size:12px; color:var(--txt2);">${d['Nome do Arquivo'] ?? ''} · ${d['Enviado em'] ?? ''}</div>
-      </div>
-      <a href="${d['Link']}" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Abrir</a>
-    </div>
-  `).join('');
+const el = document.getElementById('docList');
+const docs = DOCUMENTOS.filter(d => (d['Processo'] ?? '') === currentDocsProcesso);
+if (!docs.length){
+el.innerHTML = '<div class="empty">Nenhum documento enviado ainda.</div>';
+return;
+}
+el.innerHTML = docs.map(d => `
+<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+<div>
+<div style="font-size:13px;">${d['Categoria'] ?? '—'}</div>
+<div style="font-size:12px; color:var(--txt2);">${d['Nome do Arquivo'] ?? ''} · ${d['Enviado em'] ?? ''}</div>
+</div>
+<a href="${d['Link']}" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Abrir</a>
+</div>
+`).join('');
 }
 
 function openDocsModal(processo){
-  currentDocsProcesso = processo;
-  document.getElementById('docTitle').textContent = `Documentos · ${processo || ''}`;
-  const sel = document.getElementById('docCategoria');
-  sel.innerHTML = DOC_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
-  document.getElementById('docFile').value = '';
-  renderDocList();
-  document.getElementById('docOverlay').classList.add('open');
+currentDocsProcesso = processo;
+document.getElementById('docTitle').textContent = `Documentos · ${processo || ''}`;
+const sel = document.getElementById('docCategoria');
+sel.innerHTML = DOC_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+document.getElementById('docFile').value = '';
+renderDocList();
+document.getElementById('docOverlay').classList.add('open');
 }
 
 function closeDocsModal(){
-  document.getElementById('docOverlay').classList.remove('open');
+document.getElementById('docOverlay').classList.remove('open');
 }
 
 function arrayBufferToBase64(buffer){
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
+let binary = '';
+const bytes = new Uint8Array(buffer);
+for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+return btoa(binary);
 }
 
 async function uploadToDrive(file, driveName){
-  const metadata = { name: driveName, parents: [DRIVE_FOLDER_ID] };
-  const boundary = '-------fupimportacao314159265';
-  const delimiter = `\r\n--${boundary}\r\n`;
-  const closeDelim = `\r\n--${boundary}--`;
-  const base64Data = arrayBufferToBase64(await file.arrayBuffer());
+const metadata = { name: driveName, parents: [DRIVE_FOLDER_ID] };
+const boundary = '-------fupimportacao314159265';
+const delimiter = `\r\n--${boundary}\r\n`;
+const closeDelim = `\r\n--${boundary}--`;
+const base64Data = arrayBufferToBase64(await file.arrayBuffer());
 
-  const multipartBody =
-    delimiter +
-    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-    JSON.stringify(metadata) +
-    delimiter +
-    'Content-Type: application/pdf\r\n' +
-    'Content-Transfer-Encoding: base64\r\n\r\n' +
-    base64Data +
-    closeDelim;
+const multipartBody =
+delimiter +
+'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+JSON.stringify(metadata) +
+delimiter +
+'Content-Type: application/pdf\r\n' +
+'Content-Transfer-Encoding: base64\r\n\r\n' +
+base64Data +
+closeDelim;
 
-  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': `multipart/related; boundary=${boundary}`,
-    },
-    body: multipartBody,
-  });
-  if (!res.ok){
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao enviar para o Drive`);
-  }
-  const created = await res.json();
+const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+method: 'POST',
+headers: {
+'Authorization': `Bearer ${accessToken}`,
+'Content-Type': `multipart/related; boundary=${boundary}`,
+},
+body: multipartBody,
+});
+if (!res.ok){
+const errBody = await res.json().catch(() => ({}));
+throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao enviar para o Drive`);
+}
+const created = await res.json();
 
-  try {
-    await fetch(`https://www.googleapis.com/drive/v3/files/${created.id}/permissions`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ role: 'reader', type: 'anyone' }),
-    });
-  } catch (e) { /* nao bloqueia se falhar */ }
+try {
+await fetch(`https://www.googleapis.com/drive/v3/files/${created.id}/permissions`, {
+method: 'POST',
+headers: {
+'Authorization': `Bearer ${accessToken}`,
+'Content-Type': 'application/json',
+},
+body: JSON.stringify({ role: 'reader', type: 'anyone' }),
+});
+} catch (e) { /* nao bloqueia se falhar */ }
 
-  return created.webViewLink || `https://drive.google.com/file/d/${created.id}/view`;
+return created.webViewLink || `https://drive.google.com/file/d/${created.id}/view`;
 }
 
 async function appendDocumentRow(processo, categoria, filename, link){
-  const enviado_em = new Date().toISOString().slice(0,19).replace('T',' ');
-  await appendRow(TAB_DOCUMENTOS, [processo, categoria, filename, link, enviado_em]);
+const enviado_em = new Date().toISOString().slice(0,19).replace('T',' ');
+await appendRow(TAB_DOCUMENTOS, [processo, categoria, filename, link, enviado_em]);
 }
 
 async function submitUpload(){
-  const fileInput = document.getElementById('docFile');
-  const file = fileInput.files[0];
-  if (!file){
-    showToast('Escolha um arquivo PDF.', false);
-    return;
-  }
-  const categoria = document.getElementById('docCategoria').value;
-  const saveBtn = document.getElementById('docSaveBtn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = 'Enviando…';
+const fileInput = document.getElementById('docFile');
+const file = fileInput.files[0];
+if (!file){
+showToast('Escolha um arquivo PDF.', false);
+return;
+}
+const categoria = document.getElementById('docCategoria').value;
+const saveBtn = document.getElementById('docSaveBtn');
+saveBtn.disabled = true;
+saveBtn.textContent = 'Enviando…';
 
-  try {
-    const driveName = `${currentDocsProcesso} - ${categoria} - ${file.name}`;
-    const link = await uploadToDrive(file, driveName);
-    await appendDocumentRow(currentDocsProcesso, categoria, file.name, link);
-    showToast('Documento enviado com sucesso.', true);
-    await refresh();
-    renderDocList();
-    fileInput.value = '';
-  } catch (e) {
-    if (String(e.message).includes('401')){
-      accessToken = null;
-      setEditingUI(false);
-    }
-    showToast(e.message, false);
-  }
+try {
+const driveName = `${currentDocsProcesso} - ${categoria} - ${file.name}`;
+const link = await uploadToDrive(file, driveName);
+await appendDocumentRow(currentDocsProcesso, categoria, file.name, link);
+showToast('Documento enviado com sucesso.', true);
+await refresh();
+renderDocList();
+fileInput.value = '';
+} catch (e) {
+if (String(e.message).includes('401')){
+accessToken = null;
+setEditingUI(false);
+}
+showToast(e.message, false);
+}
 
-  saveBtn.disabled = false;
-  saveBtn.textContent = 'Enviar';
+saveBtn.disabled = false;
+saveBtn.textContent = 'Enviar';
 }
 
 function buildSelectOptions(optionsArrayName, currentVal){
-  const opts = new Set(OPTION_STORE[optionsArrayName]());
-  if (currentVal) opts.add(currentVal);
-  return ['<option value="">—</option>'].concat(
-    [...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === currentVal ? 'selected' : ''}>${o}</option>`)
-  ).join('');
+const opts = new Set(OPTION_STORE[optionsArrayName]());
+if (currentVal) opts.add(currentVal);
+return ['<option value="">—</option>'].concat(
+[...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === currentVal ? 'selected' : ''}>${o}</option>`)
+).join('');
 }
 
 function openEditModal(rowId){
-  const r = lastRows.find(x => x._row === rowId);
-  if (!r) return;
+const r = lastRows.find(x => x._row === rowId);
+if (!r) return;
 
-  document.getElementById('editTitle').textContent =
-    `Editar processo ${r['Processo Contr.'] || ''} · linha ${rowId}`;
+document.getElementById('editTitle').textContent =
+`Editar processo ${r['Processo Contr.'] || ''} · linha ${rowId}`;
 
-  const form = document.getElementById('editForm');
-  form.innerHTML = EDITABLE_FIELDS.map(f => {
-    const val = r[f.key] ?? '';
+const form = document.getElementById('editForm');
+form.innerHTML = EDITABLE_FIELDS.map(f => {
+const val = r[f.key] ?? '';
 
-    if (f.type === 'select'){
-      return `
-        <div class="field-row">
-          <label>${f.label}</label>
-          <select data-field="${f.key}">
-            ${buildSelectOptions(f.options, val)}
-          </select>
-        </div>`;
-    }
+if (f.type === 'select'){
+return `
+<div class="field-row">
+<label>${f.label}</label>
+<select data-field="${f.key}">
+${buildSelectOptions(f.options, val)}
+</select>
+</div>`;
+}
 
-    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
-    return `
-      <div class="field-row">
-        <label>${f.label}</label>
-        <input type="${f.type}" ${attrs} data-field="${f.key}"
-               value="${String(val).replace(/"/g,'&quot;')}">
-      </div>`;
-  }).join('');
+const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+return `
+<div class="field-row">
+<label>${f.label}</label>
+<input type="${f.type}" ${attrs} data-field="${f.key}"
+value="${String(val).replace(/"/g,'&quot;')}">
+</div>`;
+}).join('');
 
-  form.dataset.row = rowId;
-  document.getElementById('editOverlay').classList.add('open');
+form.dataset.row = rowId;
+document.getElementById('editOverlay').classList.add('open');
 }
 
 function closeEditModal(){
-  document.getElementById('editOverlay').classList.remove('open');
+document.getElementById('editOverlay').classList.remove('open');
 }
 
 async function submitEdit(){
-  const form = document.getElementById('editForm');
-  const rowId = parseInt(form.dataset.row, 10);
-  const original = lastRows.find(x => x._row === rowId) || {};
-  const inputs = [...form.querySelectorAll('input, select')];
+const form = document.getElementById('editForm');
+const rowId = parseInt(form.dataset.row, 10);
+const original = lastRows.find(x => x._row === rowId) || {};
+const inputs = [...form.querySelectorAll('input, select')];
 
-  const changed = inputs
-    .map(inp => ({ field: inp.dataset.field, value: inp.value }))
-    .filter(({field, value}) => String(original[field] ?? '') !== String(value ?? ''));
+const changed = inputs
+.map(inp => ({ field: inp.dataset.field, value: inp.value }))
+.filter(({field, value}) => String(original[field] ?? '') !== String(value ?? ''));
 
-  if (!changed.length){
-    closeEditModal();
-    return;
-  }
+if (!changed.length){
+closeEditModal();
+return;
+}
 
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = 'Salvando…';
+const saveBtn = document.getElementById('saveBtn');
+saveBtn.disabled = true;
+saveBtn.textContent = 'Salvando…';
 
-  let okCount = 0;
-  let lastError = null;
+let okCount = 0;
+let lastError = null;
 
-  for (const {field, value} of changed){
-    try {
-      await writeCell(rowId, field, value);
-      okCount++;
-    } catch (e) {
-      lastError = e.message;
-      break;
-    }
-  }
+for (const {field, value} of changed){
+try {
+await writeCell(rowId, field, value);
+okCount++;
+} catch (e) {
+lastError = e.message;
+break;
+}
+}
 
-  saveBtn.disabled = false;
-  saveBtn.textContent = 'Salvar';
+saveBtn.disabled = false;
+saveBtn.textContent = 'Salvar';
 
-  if (okCount) showToast(`${okCount} campo(s) salvo(s) na planilha.`, true);
-  if (lastError) showToast(lastError, false);
+if (okCount) showToast(`${okCount} campo(s) salvo(s) na planilha.`, true);
+if (lastError) showToast(lastError, false);
 
-  closeEditModal();
-  refresh();
+closeEditModal();
+refresh();
 }
 
 // ---------------------------------------------------------------------
 // Novo Processo
 // ---------------------------------------------------------------------
 function openNewProcessModal(){
-  const form = document.getElementById('newProcessForm');
-  form.innerHTML = NEW_PROCESS_FIELDS.map(f => {
-    if (f.type === 'select'){
-      return `
-        <div class="field-row">
-          <label>${f.label}</label>
-          <select data-field="${f.key}">${buildSelectOptions(f.options, '')}</select>
-        </div>`;
-    }
-    if (f.type === 'combo'){
-      const listId = 'dl_' + f.key;
-      const opts = OPTION_STORE[f.options]();
-      return `
-        <div class="field-row">
-          <label>${f.label}</label>
-          <input type="text" data-field="${f.key}" list="${listId}" placeholder="Selecione ou digite um novo">
-          <datalist id="${listId}">
-            ${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')}
-          </datalist>
-        </div>`;
-    }
-    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
-    return `
-      <div class="field-row">
-        <label>${f.label}</label>
-        <input type="${f.type}" ${attrs} data-field="${f.key}">
-      </div>`;
-  }).join('');
-  document.getElementById('newProcessOverlay').classList.add('open');
+const form = document.getElementById('newProcessForm');
+form.innerHTML = NEW_PROCESS_FIELDS.map(f => {
+if (f.type === 'select'){
+return `
+<div class="field-row">
+<label>${f.label}</label>
+<select data-field="${f.key}">${buildSelectOptions(f.options, '')}</select>
+</div>`;
+}
+if (f.type === 'combo'){
+const listId = 'dl_' + f.key;
+const opts = OPTION_STORE[f.options]();
+return `
+<div class="field-row">
+<label>${f.label}</label>
+<input type="text" data-field="${f.key}" list="${listId}" placeholder="Selecione ou digite um novo">
+<datalist id="${listId}">
+${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')}
+</datalist>
+</div>`;
+}
+const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+return `
+<div class="field-row">
+<label>${f.label}</label>
+<input type="${f.type}" ${attrs} data-field="${f.key}">
+</div>`;
+}).join('');
+document.getElementById('newProcessOverlay').classList.add('open');
 }
 
 function closeNewProcessModal(){
-  document.getElementById('newProcessOverlay').classList.remove('open');
+document.getElementById('newProcessOverlay').classList.remove('open');
 }
 
 async function submitNewProcess(){
-  const form = document.getElementById('newProcessForm');
-  const vals = {};
-  [...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
+const form = document.getElementById('newProcessForm');
+const vals = {};
+[...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
 
-  const saveBtn = document.getElementById('newProcessSaveBtn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = 'Criando…';
+const saveBtn = document.getElementById('newProcessSaveBtn');
+saveBtn.disabled = true;
+saveBtn.textContent = 'Criando…';
 
-  try {
-    await ensureListValue(vals.fornecedor, 'FORNECEDOR_OPTIONS', 'TAB_FORNECEDORES');
-    await ensureListValue(vals.produto, 'PRODUTO_OPTIONS', 'TAB_PRODUTOS');
-    await ensureListValue(vals.revestimento, 'REVESTIMENTO_OPTIONS', 'TAB_REVESTIMENTO');
-    await ensureListValue(vals.cor, 'COR_OPTIONS', 'TAB_COR');
+try {
+await ensureListValue(vals.fornecedor, 'FORNECEDOR_OPTIONS', 'TAB_FORNECEDORES');
+await ensureListValue(vals.produto, 'PRODUTO_OPTIONS', 'TAB_PRODUTOS');
+await ensureListValue(vals.revestimento, 'REVESTIMENTO_OPTIONS', 'TAB_REVESTIMENTO');
+await ensureListValue(vals.cor, 'COR_OPTIONS', 'TAB_COR');
 
-    // Ordem exata das colunas na aba Processos:
-    // Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
-    // Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
-    const row = [
-      vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
-      vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
-      vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
-    ];
-    await appendRow(TAB_PROCESSOS, row);
-    showToast('Processo criado com sucesso.', true);
-    closeNewProcessModal();
-    await refresh();
-  } catch (e) {
-    if (String(e.message).includes('401')){
-      accessToken = null;
-      setEditingUI(false);
-    }
-    showToast(e.message, false);
-  }
+// Ordem exata das colunas na aba Processos:
+// Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
+// Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
+const row = [
+vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
+vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
+vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
+];
+const targetRow = nextEmptyRowProcessos();
+await writeRowAt(TAB_PROCESSOS, targetRow, row);
+showToast('Processo criado com sucesso.', true);
+closeNewProcessModal();
+await refresh();
+} catch (e) {
+if (String(e.message).includes('401')){
+accessToken = null;
+setEditingUI(false);
+}
+showToast(e.message, false);
+}
 
-  saveBtn.disabled = false;
-  saveBtn.textContent = 'Criar Processo';
+saveBtn.disabled = false;
+saveBtn.textContent = 'Criar Processo';
 }
 
 window.addEventListener('load', initGis);
