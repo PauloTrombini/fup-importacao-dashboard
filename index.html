@@ -607,7 +607,9 @@ function applyYearFilter(rows){
 }
 
 function renderAll(){
-  const filtered = applyYearFilter(ALL_PROCESSOS);
+  // Linhas sem Fornecedor preenchido nao sao exibidas em nenhum dash (geralmente sao linhas vazias/incompletas na planilha).
+  const comFornecedor = ALL_PROCESSOS.filter(r => r.Fornecedor && r.Fornecedor.trim() !== '');
+  const filtered = applyYearFilter(comFornecedor);
   renderKPIs(filtered);
   renderFornecedorTable(filtered);
   renderProdutoTotalTable(filtered);
