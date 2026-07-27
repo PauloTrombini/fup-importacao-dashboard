@@ -1044,10 +1044,15 @@ return res.json();
 }
 
 // Calcula a próxima linha realmente vazia (de cima para baixo) na aba Processos,
-// olhando os números de linha reais (_row) das linhas já preenchidas. Evita o bug
-// do :append pular pra depois de linhas com formatação/fórmulas residuais.
+// olhando os números de linha reais (_row) das linhas que têm 'Processo Contr.'
+// preenchido. Importante: NÃO basear isso em "qualquer campo preenchido", porque a
+// coluna 'A Pagar (USD)' tem fórmula copiada para baixo muito além dos dados reais
+// (aparece "0.0" em linhas totalmente vazias) — isso fazia a função achar que essas
+// linhas já estavam ocupadas e pular pra frente (ex: gravar na linha 270 em vez da 260).
 function nextEmptyRowProcessos(){
-const used = new Set(ALL_PROCESSOS.map(r => r._row));
+const used = new Set(
+ALL_PROCESSOS.filter(r => (r['Processo Contr.'] || '').trim() !== '').map(r => r._row)
+);
 let row = 2; // linha 1 é o cabeçalho
 while (used.has(row)) row++;
 return row;
