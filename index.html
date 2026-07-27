@@ -1058,11 +1058,14 @@ while (used.has(row)) row++;
 return row;
 }
 
-// Grava uma linha inteira numa posição exata (PUT), em vez de usar :append (que decide
-// sozinho onde inserir e pode pular linhas vazias no meio da planilha).
-async function writeRowAt(tabName, rowNum, values){
-const endCol = colLetter(values.length);
-const range = `${tabName}!A${rowNum}:${endCol}${rowNum}`;
+// Grava uma linha inteira (ou um pedaço dela) numa posição exata (PUT), em vez de usar
+// :append (que decide sozinho onde inserir e pode pular linhas vazias no meio da planilha).
+// startCol (1 = coluna A) permite gravar só um trecho de colunas, pra poder pular colunas
+// com fórmula (ex: 'A Pagar (USD)') sem apagá-las.
+async function writeRowAt(tabName, rowNum, values, startCol = 1){
+const startLetter = colLetter(startCol);
+const endLetter = colLetter(startCol + values.length - 1);
+const range = `${tabName}!${startLetter}${rowNum}:${endLetter}${rowNum}`;
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
 const res = await fetch(url, {
 method: 'PUT',
@@ -1378,7 +1381,13 @@ vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
 vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
 ];
 const targetRow = nextEmptyRowProcessos();
-await writeRowAt(TAB_PROCESSOS, targetRow, row);
+// A coluna M ('A Pagar (USD)') tem uma fórmula (=L-K) já preenchida na planilha para
+// cada linha. Gravamos em dois pedaços (A:L e N:P), pulando a coluna M, para não
+// sobrescrever/apagar essa fórmula com uma string vazia.
+const rowAL = row.slice(0, 12); // A..L
+const rowNP = row.slice(13, 16); // N..P
+await writeRowAt(TAB_PROCESSOS, targetRow, rowAL, 1);
+await writeRowAt(TAB_PROCESSOS, targetRow, rowNP, 14);
 showToast('Processo criado com sucesso.', true);
 closeNewProcessModal();
 await refresh();
