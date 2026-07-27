@@ -429,7 +429,7 @@ const EDITABLE_FIELDS = [
 
 // Campos do formulario "Novo Processo" — combo (select + opcao de digitar valor novo)
 const NEW_PROCESS_FIELDS = [
-{key:'processo', label:'Processo Contr.', type:'text'},
+{key:'processo', label:'Processo Contr.', type:'text', required:true},
 {key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
 {key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
 {key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
@@ -1043,19 +1043,23 @@ throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em
 return res.json();
 }
 
-// Calcula a próxima linha realmente vazia (de cima para baixo) na aba Processos,
-// olhando os números de linha reais (_row) das linhas que têm 'Processo Contr.'
-// preenchido. Importante: NÃO basear isso em "qualquer campo preenchido", porque a
-// coluna 'A Pagar (USD)' tem fórmula copiada para baixo muito além dos dados reais
-// (aparece "0.0" em linhas totalmente vazias) — isso fazia a função achar que essas
-// linhas já estavam ocupadas e pular pra frente (ex: gravar na linha 270 em vez da 260).
+// Calcula a próxima linha vazia na aba Processos buscando de baixo para cima a
+// primeira linha que tenha valor em 'Processo Contr.' (a coluna que sempre marca um
+// processo real) e retorna a linha logo depois dela. Importante: NÃO usar "qualquer
+// campo preenchido" pra decidir se a linha está ocupada, porque a coluna 'A Pagar
+// (USD)' tem fórmula copiada para baixo muito além dos dados reais (aparece "0.0" em
+// linhas totalmente vazias) — isso fazia a função achar que essas linhas já estavam
+// ocupadas e pular pra frente (ex: gravar na linha 271 em vez da linha certa).
 function nextEmptyRowProcessos(){
-const used = new Set(
-ALL_PROCESSOS.filter(r => (r['Processo Contr.'] || '').trim() !== '').map(r => r._row)
-);
-let row = 2; // linha 1 é o cabeçalho
-while (used.has(row)) row++;
-return row;
+let lastUsedRow = 1; // linha 1 é o cabeçalho
+for (let i = ALL_PROCESSOS.length - 1; i >= 0; i--){
+const r = ALL_PROCESSOS[i];
+if ((r['Processo Contr.'] || '').trim() !== ''){
+lastUsedRow = r._row;
+break;
+}
+}
+return lastUsedRow + 1;
 }
 
 // Grava uma linha inteira (ou um pedaço dela) numa posição exata (PUT), em vez de usar
@@ -1344,10 +1348,12 @@ ${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')
 </div>`;
 }
 const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+const reqAttr = f.required ? 'required' : '';
+const reqMark = f.required ? ' *' : '';
 return `
 <div class="field-row">
-<label>${f.label}</label>
-<input type="${f.type}" ${attrs} data-field="${f.key}">
+<label>${f.label}${reqMark}</label>
+<input type="${f.type}" ${attrs} ${reqAttr} data-field="${f.key}">
 </div>`;
 }).join('');
 document.getElementById('newProcessOverlay').classList.add('open');
@@ -1361,6 +1367,15 @@ async function submitNewProcess(){
 const form = document.getElementById('newProcessForm');
 const vals = {};
 [...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
+
+// Trava obrigatória: sem número de Processo Contr. não grava nada (senão a linha
+// fica "invisível" pra próxima checagem de linha vazia e some qualquer controle de sequência).
+if (!vals.processo){
+showToast('Informe o número do Processo Contr. antes de salvar.', false);
+const campoProcesso = form.querySelector('[data-field="processo"]');
+if (campoProcesso) campoProcesso.focus();
+return;
+}
 
 const saveBtn = document.getElementById('newProcessSaveBtn');
 saveBtn.disabled = true;
