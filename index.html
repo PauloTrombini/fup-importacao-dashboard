@@ -267,6 +267,17 @@ footer{ font-size:11px; padding:14px 12px; }
 </div>
 
 <div class="panel">
+<h2>Produto × ETA — Quadro de Chegadas (Peso MTON)</h2>
+<div class="modal-sub" style="margin-bottom:12px;">Cada linha é um Produto/Revestimento/Cor; cada coluna é uma data de ETA. As células mais escuras indicam as maiores quantidades chegando naquela data.</div>
+<div class="table-scroll" id="tblEtaMatrixWrap">
+<table id="tblEtaMatrix">
+<thead id="tblEtaMatrixHead"></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
+<div class="panel">
 <h2>Resumo FINIMP (por Data de Pagamento)</h2>
 <div class="table-scroll">
 <table id="tblFinimp">
@@ -380,7 +391,7 @@ const REFRESH_MS = 60000;
 const DRIVE_FOLDER_ID = '16WWIdaJBE3QMLNjKexvZ1mKmeXXxUSRv';
 const DOC_CATEGORIES = [
 'Invoice', 'Bill of Lading (BL)', 'Packing List',
-'Declaração de Importação (DI)', 'Contrato', 'Outro',
+'Declaração de Importação (DI)', 'Contrato', 'Numerário', 'Outro',
 ];
 
 // Status é uma lista fixa (nao vem de aba)
@@ -429,7 +440,7 @@ const EDITABLE_FIELDS = [
 
 // Campos do formulario "Novo Processo" — combo (select + opcao de digitar valor novo)
 const NEW_PROCESS_FIELDS = [
-{key:'processo', label:'Processo Contr.', type:'text', required:true},
+{key:'processo', label:'Processo Contr.', type:'text'},
 {key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
 {key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
 {key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
@@ -615,6 +626,7 @@ renderFornecedorTable(filtered);
 renderProdutoTotalTable(filtered);
 renderProdutoEtaTable(filtered);
 renderPpglTable(filtered);
+renderEtaMatrix(filtered);
 renderTable(filtered);
 }
 
@@ -777,6 +789,103 @@ tbody.innerHTML = items.map(it => `
 <td>${fmtNum(it.bobinas)}</td>
 </tr>
 `).join('');
+}
+
+// Quadro (pivot) Produto/Revestimento/Cor × ETA — criado em 2026-07-29 a pedido
+// do usuario, no mesmo formato do exemplo que ele enviou (linhas = combinacao
+// Produto+Revestimento+Cor, colunas = cada data de ETA distinta, valor = soma
+// do Peso (MTON)). So' LEITURA: nao grava nada na planilha, e nao mexe em
+// nenhuma outra tabela/funcao ja existente.
+function renderEtaMatrix(rows){
+const groups = new Map();
+const etaSet = new Set();
+rows.forEach(r => {
+const produto = (r.Produto || '').trim();
+if (!produto) return;
+const revestimento = (r.Revestimento || '').trim();
+const cor = (r.Cor || '').trim();
+const key = produto + '|' + revestimento + '|' + cor;
+if (!groups.has(key)) groups.set(key, {produto, revestimento, cor, byEta: new Map(), total: 0});
+const g = groups.get(key);
+const eta = (r.ETA || '').trim();
+const peso = num(r['Peso (MTON)']) || 0;
+if (eta){
+etaSet.add(eta);
+g.byEta.set(eta, (g.byEta.get(eta) || 0) + peso);
+}
+g.total += peso;
+});
+
+const etas = [...etaSet].sort((a,b) => a.localeCompare(b));
+const items = [...groups.values()].sort((a,b) => {
+const pa = a.produto.localeCompare(b.produto);
+if (pa) return pa;
+const ra = a.revestimento.localeCompare(b.revestimento);
+if (ra) return ra;
+return a.cor.localeCompare(b.cor);
+});
+
+const thead = document.getElementById('tblEtaMatrixHead');
+thead.innerHTML = `
+<tr>
+<th rowspan="2">Produto</th><th rowspan="2">Revestimento</th><th rowspan="2">Cor</th>
+<th colspan="${etas.length || 1}" style="text-align:center;">ETA</th>
+<th rowspan="2">Total Geral</th>
+</tr>
+<tr>
+${etas.length ? etas.map(e => `<th style="text-align:center;">${fmtDateISOtoBR(e)}</th>`).join('') : '<th>—</th>'}
+</tr>
+`;
+
+const tbody = document.querySelector('#tblEtaMatrix tbody');
+if (!items.length){
+tbody.innerHTML = `<tr><td colspan="${4 + etas.length}" class="empty">Sem dados.</td></tr>`;
+return;
+}
+
+const maxVal = Math.max(1, ...items.flatMap(it => [...it.byEta.values()]), 1);
+const heatCell = v => {
+if (!v) return '';
+const ratio = Math.min(1, v / maxVal);
+const alpha = (0.12 + ratio * 0.55).toFixed(2);
+return `background:rgba(79,140,255,${alpha}); font-weight:600;`;
+};
+
+const colTotals = new Map(etas.map(e => [e, 0]));
+let grandTotal = 0;
+
+const rowsHtml = items.map(it => {
+const cs = corStyle(it.cor);
+const corCell = it.cor
+? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>`
+: '—';
+const cells = etas.map(e => {
+const v = it.byEta.get(e) || 0;
+if (v) colTotals.set(e, colTotals.get(e) + v);
+return `<td style="text-align:center; ${heatCell(v)}">${v ? fmtNum(v) : ''}</td>`;
+}).join('');
+grandTotal += it.total;
+return `
+<tr>
+<td>${it.produto || '—'}</td>
+<td>${it.revestimento || '—'}</td>
+<td>${corCell}</td>
+${cells}
+<td style="text-align:center; font-weight:700;">${fmtNum(it.total)}</td>
+</tr>
+`;
+}).join('');
+
+const totalRowCells = etas.map(e => `<td style="text-align:center; font-weight:700;">${fmtNum(colTotals.get(e))}</td>`).join('');
+const totalRow = `
+<tr style="background:var(--panel2);">
+<td colspan="3" style="font-weight:700;">Total Geral</td>
+${totalRowCells}
+<td style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td>
+</tr>
+`;
+
+tbody.innerHTML = rowsHtml + totalRow;
 }
 
 function renderTable(rows){
@@ -1043,33 +1152,21 @@ throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em
 return res.json();
 }
 
-// Calcula a próxima linha vazia na aba Processos buscando de baixo para cima a
-// primeira linha que tenha valor em 'Processo Contr.' (a coluna que sempre marca um
-// processo real) e retorna a linha logo depois dela. Importante: NÃO usar "qualquer
-// campo preenchido" pra decidir se a linha está ocupada, porque a coluna 'A Pagar
-// (USD)' tem fórmula copiada para baixo muito além dos dados reais (aparece "0.0" em
-// linhas totalmente vazias) — isso fazia a função achar que essas linhas já estavam
-// ocupadas e pular pra frente (ex: gravar na linha 271 em vez da linha certa).
+// Calcula a próxima linha realmente vazia (de cima para baixo) na aba Processos,
+// olhando os números de linha reais (_row) das linhas já preenchidas. Evita o bug
+// do :append pular pra depois de linhas com formatação/fórmulas residuais.
 function nextEmptyRowProcessos(){
-let lastUsedRow = 1; // linha 1 é o cabeçalho
-for (let i = ALL_PROCESSOS.length - 1; i >= 0; i--){
-const r = ALL_PROCESSOS[i];
-if ((r['Processo Contr.'] || '').trim() !== ''){
-lastUsedRow = r._row;
-break;
-}
-}
-return lastUsedRow + 1;
+const used = new Set(ALL_PROCESSOS.map(r => r._row));
+let row = 2; // linha 1 é o cabeçalho
+while (used.has(row)) row++;
+return row;
 }
 
-// Grava uma linha inteira (ou um pedaço dela) numa posição exata (PUT), em vez de usar
-// :append (que decide sozinho onde inserir e pode pular linhas vazias no meio da planilha).
-// startCol (1 = coluna A) permite gravar só um trecho de colunas, pra poder pular colunas
-// com fórmula (ex: 'A Pagar (USD)') sem apagá-las.
-async function writeRowAt(tabName, rowNum, values, startCol = 1){
-const startLetter = colLetter(startCol);
-const endLetter = colLetter(startCol + values.length - 1);
-const range = `${tabName}!${startLetter}${rowNum}:${endLetter}${rowNum}`;
+// Grava uma linha inteira numa posição exata (PUT), em vez de usar :append (que decide
+// sozinho onde inserir e pode pular linhas vazias no meio da planilha).
+async function writeRowAt(tabName, rowNum, values){
+const endCol = colLetter(values.length);
+const range = `${tabName}!A${rowNum}:${endCol}${rowNum}`;
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
 const res = await fetch(url, {
 method: 'PUT',
@@ -1348,12 +1445,10 @@ ${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')
 </div>`;
 }
 const attrs = f.type === 'number' ? `step="${f.step}"` : '';
-const reqAttr = f.required ? 'required' : '';
-const reqMark = f.required ? ' *' : '';
 return `
 <div class="field-row">
-<label>${f.label}${reqMark}</label>
-<input type="${f.type}" ${attrs} ${reqAttr} data-field="${f.key}">
+<label>${f.label}</label>
+<input type="${f.type}" ${attrs} data-field="${f.key}">
 </div>`;
 }).join('');
 document.getElementById('newProcessOverlay').classList.add('open');
@@ -1367,15 +1462,6 @@ async function submitNewProcess(){
 const form = document.getElementById('newProcessForm');
 const vals = {};
 [...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
-
-// Trava obrigatória: sem número de Processo Contr. não grava nada (senão a linha
-// fica "invisível" pra próxima checagem de linha vazia e some qualquer controle de sequência).
-if (!vals.processo){
-showToast('Informe o número do Processo Contr. antes de salvar.', false);
-const campoProcesso = form.querySelector('[data-field="processo"]');
-if (campoProcesso) campoProcesso.focus();
-return;
-}
 
 const saveBtn = document.getElementById('newProcessSaveBtn');
 saveBtn.disabled = true;
@@ -1396,13 +1482,7 @@ vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
 vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
 ];
 const targetRow = nextEmptyRowProcessos();
-// A coluna M ('A Pagar (USD)') tem uma fórmula (=L-K) já preenchida na planilha para
-// cada linha. Gravamos em dois pedaços (A:L e N:P), pulando a coluna M, para não
-// sobrescrever/apagar essa fórmula com uma string vazia.
-const rowAL = row.slice(0, 12); // A..L
-const rowNP = row.slice(13, 16); // N..P
-await writeRowAt(TAB_PROCESSOS, targetRow, rowAL, 1);
-await writeRowAt(TAB_PROCESSOS, targetRow, rowNP, 14);
+await writeRowAt(TAB_PROCESSOS, targetRow, row);
 showToast('Processo criado com sucesso.', true);
 closeNewProcessModal();
 await refresh();
