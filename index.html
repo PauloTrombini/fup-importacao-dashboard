@@ -371,7 +371,7 @@
     </div>
     <div class="field-row">
       <label>TX Dólar Merc.</label>
-      <input type="number" step="any" id="finimpEditTx">
+      <input type="text" inputmode="decimal" placeholder="Ex: 5,1150" id="finimpEditTx">
     </div>
     <div class="modal-actions">
       <button type="button" class="btn btn-secondary" onclick="closeEditFinimpModal()">Cancelar</button>
@@ -381,33 +381,123 @@
 </div>
 
 <div class="overlay" id="addFinimpOverlay">
-  <div class="modal">
+  <div class="modal wide">
     <h3>Adicionar FINIMP</h3>
-    <div class="modal-sub">Cria uma linha nova na aba FINIMP da planilha do Google Sheets.</div>
-    <div class="field-row">
-      <label>Processo Contr.</label>
-      <input type="text" id="finimpAddProcesso" list="finimpProcessoOptions" autocomplete="off">
-      <datalist id="finimpProcessoOptions"></datalist>
-    </div>
-    <div class="field-row">
-      <label>Data Pgto</label>
-      <input type="date" id="finimpAddDataPgto">
-    </div>
-    <div class="field-row">
-      <label>Total Finimp (USD)</label>
-      <input type="number" step="any" id="finimpAddTotalUsd">
-    </div>
-    <div class="field-row">
-      <label>TX Dólar Merc.</label>
-      <input type="number" step="any" id="finimpAddTx">
-    </div>
-    <div class="field-row">
-      <label>Status</label>
-      <select id="finimpAddStatus">
-        <option value="">—</option>
-        <option value="aberto">aberto</option>
-        <option value="pago">pago</option>
-      </select>
+    <div class="modal-sub">Cria uma linha nova na aba FINIMP da planilha do Google Sheets. Preencha os campos que tiver — os demais ficam em branco. Total R$ é calculado sozinho a partir de Total Finimp (USD) x TX Dólar Merc.</div>
+    <div class="field-grid">
+      <div class="field-row">
+        <label>N° FINIMP</label>
+        <input type="text" id="finimpAddNFinimp">
+      </div>
+      <div class="field-row">
+        <label>Processo Contr.</label>
+        <input type="text" id="finimpAddProcesso" list="finimpProcessoOptions" autocomplete="off">
+        <datalist id="finimpProcessoOptions"></datalist>
+      </div>
+      <div class="field-row">
+        <label>Data Inicial</label>
+        <input type="date" id="finimpAddDataInicial">
+      </div>
+      <div class="field-row">
+        <label>Data Pgto</label>
+        <input type="date" id="finimpAddDataPgto">
+      </div>
+      <div class="field-row">
+        <label>FTS (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 160.387,68" id="finimpAddFtsUsd">
+      </div>
+      <div class="field-row">
+        <label>MERC. (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 229.125,26" id="finimpAddMercUsd">
+      </div>
+      <div class="field-row">
+        <label>TX Dólar Dia Merc.</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 5,17" id="finimpAddTxDolarDiaMerc">
+      </div>
+      <div class="field-row">
+        <label>Juros a.a.</label>
+        <input type="text" placeholder="Ex: 6,16%" id="finimpAddJurosAA">
+      </div>
+      <div class="field-row">
+        <label>IR s/ Juros</label>
+        <input type="text" placeholder="Ex: 2,05%" id="finimpAddIrJuros">
+      </div>
+      <div class="field-row">
+        <label>CPG %</label>
+        <input type="text" placeholder="Ex: 0,40%" id="finimpAddCpgPct">
+      </div>
+      <div class="field-row">
+        <label>Custo All-in</label>
+        <input type="text" placeholder="Ex: 8,61%" id="finimpAddCustoAllIn">
+      </div>
+      <div class="field-row">
+        <label>CPG Inicial (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 159,49" id="finimpAddCpgInicial">
+      </div>
+      <div class="field-row">
+        <label>DC</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 20" id="finimpAddDc">
+      </div>
+      <div class="field-row">
+        <label>Juros Merc. (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddJurosMerc">
+      </div>
+      <div class="field-row">
+        <label>IR Merc. (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddIrMerc">
+      </div>
+      <div class="field-row">
+        <label>Juros FTS (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddJurosFts">
+      </div>
+      <div class="field-row">
+        <label>IR FTS (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddIrFts">
+      </div>
+      <div class="field-row">
+        <label>Total Operação (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddTotalOperacao">
+      </div>
+      <div class="field-row">
+        <label>FTS (R$)</label>
+        <input type="text" inputmode="decimal" id="finimpAddFtsRs">
+      </div>
+      <div class="field-row">
+        <label>TX Dólar FTS</label>
+        <input type="text" inputmode="decimal" id="finimpAddTxDolarFts">
+      </div>
+      <div class="field-row">
+        <label>Total Finimp (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 400.211,57" id="finimpAddTotalUsd">
+      </div>
+      <div class="field-row">
+        <label>TX Dólar Merc.</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 5,1150" id="finimpAddTx">
+      </div>
+      <div class="field-row">
+        <label>Status</label>
+        <select id="finimpAddStatus">
+          <option value="">—</option>
+          <option value="aberto">aberto</option>
+          <option value="pago">pago</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Valor Merc Teórico (R$)</label>
+        <input type="text" inputmode="decimal" id="finimpAddValorMercTeorico">
+      </div>
+      <div class="field-row">
+        <label>FTS (R$) [Z]</label>
+        <input type="text" inputmode="decimal" id="finimpAddFtsRsZ">
+      </div>
+      <div class="field-row">
+        <label>Valor Teórico (R$)</label>
+        <input type="text" inputmode="decimal" id="finimpAddValorTeorico">
+      </div>
+      <div class="field-row">
+        <label>Ganho Op.</label>
+        <input type="text" inputmode="decimal" id="finimpAddGanhoOp">
+      </div>
     </div>
     <div class="modal-actions">
       <button type="button" class="btn btn-secondary" onclick="closeAddFinimpModal()">Cancelar</button>
@@ -585,6 +675,22 @@ function numBR(v){
   let s = String(v).replace(/\s+/g, '').trim();
   if (s === '' || s === '-') return null;
   s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+// Parser tolerante para campos digitados pelo usuario nos formularios de
+// Editar/Adicionar FINIMP: aceita tanto virgula decimal (padrao BR, "5,1150")
+// quanto ponto decimal ("5.1150"), sem limite de casas decimais. Usado so
+// para os campos em que fazemos conta no proprio dashboard (TX Dolar Merc x
+// Total Finimp = Total R$) — os demais campos vao para a planilha como o
+// usuario digitou, e o Google Sheets interpreta como se ele tivesse digitado
+// direto na celula (mesma logica BR ja usada em toda a aba FINIMP).
+function parseDecimalInput(v){
+  if (v == null) return null;
+  let s = String(v).trim();
+  if (s === '') return null;
+  if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
   const n = parseFloat(s);
   return isNaN(n) ? null : n;
 }
@@ -1011,7 +1117,8 @@ function openEditFinimpModal(rowId){
     `Editar FINIMP ${r['Processo Contr.'] || ''} · linha ${rowId}`;
   document.getElementById('finimpEditStatus').value = (r['Status'] || '').trim().toLowerCase();
   const tx = numBR(r['TX DOLAR MERC.']);
-  document.getElementById('finimpEditTx').value = tx != null ? tx : '';
+  // Mostra com virgula (padrao BR), que e' o formato que o campo agora aceita digitar.
+  document.getElementById('finimpEditTx').value = tx != null ? String(tx).replace('.', ',') : '';
   document.getElementById('editFinimpOverlay').dataset.row = rowId;
   document.getElementById('editFinimpOverlay').classList.add('open');
 }
@@ -1029,9 +1136,12 @@ async function submitFinimpEdit(){
   const newTxStr = document.getElementById('finimpEditTx').value;
   const origStatus = (original['Status'] || '').trim().toLowerCase();
   const origTx = numBR(original['TX DOLAR MERC.']);
+  const newTx = parseDecimalInput(newTxStr);
 
   const statusChanged = origStatus !== newStatus;
-  const txChanged = String(origTx ?? '') !== String(newTxStr ?? '');
+  // Compara valores numericos (nao strings) pra nao disparar gravacao a toa
+  // so por causa de diferenca de formatacao (5.115 vs 5,1150 etc).
+  const txChanged = (origTx ?? null) !== (newTx ?? null);
 
   if (!statusChanged && !txChanged){
     closeEditFinimpModal();
@@ -1049,14 +1159,15 @@ async function submitFinimpEdit(){
       okCount++;
     }
     if (txChanged){
-      await writeFinimpCell(rowId, 'V', newTxStr);
+      // Envia como numero de verdade (nao string) pra evitar qualquer
+      // ambiguidade de locale na hora do Google Sheets interpretar o valor.
+      await writeFinimpCell(rowId, 'V', newTx != null ? newTx : '');
       okCount++;
       // Total R$ (coluna X) = TX Dolar Merc x Total Finimp (USD) — recalcula
       // e grava sozinho na planilha (pedido do usuario em 2026-08-03).
       const totalFinimpUsd = numBR(original['Total Finimp(USD)']);
-      const tx = numBR(newTxStr);
-      if (tx != null && totalFinimpUsd != null){
-        const totalRs = Math.round(tx * totalFinimpUsd * 100) / 100;
+      if (newTx != null && totalFinimpUsd != null){
+        const totalRs = Math.round(newTx * totalFinimpUsd * 100) / 100;
         await writeFinimpCell(rowId, 'X', totalRs);
       }
     }
@@ -1074,12 +1185,44 @@ async function submitFinimpEdit(){
   refresh();
 }
 
+// IDs dos campos de texto livre do formulario "Adicionar FINIMP", na ordem
+// exata das colunas da planilha (A..AB). Campos ausentes daqui (datas,
+// Processo Contr., Status, Total R$) tem tratamento proprio em submitAddFinimp.
+const FINIMP_ADD_TEXT_FIELD_IDS = {
+  0: 'finimpAddNFinimp',        // A: N° FINIMP
+  4: 'finimpAddFtsUsd',         // E: FTS (USD)
+  5: 'finimpAddMercUsd',        // F: MERC. (USD)
+  6: 'finimpAddTxDolarDiaMerc', // G: TX DOLAR DIA MERC
+  7: 'finimpAddJurosAA',        // H: Juros a.a.
+  8: 'finimpAddIrJuros',        // I: IR s/ Juros
+  9: 'finimpAddCpgPct',         // J: CPG %
+  10: 'finimpAddCustoAllIn',    // K: Custo All-in
+  11: 'finimpAddCpgInicial',    // L: CPG Inicial (USD)
+  12: 'finimpAddDc',            // M: DC
+  13: 'finimpAddJurosMerc',     // N: Juros Merc. (USD)
+  14: 'finimpAddIrMerc',        // O: IR Merc. (USD)
+  15: 'finimpAddJurosFts',      // P: Juros FTS (USD)
+  16: 'finimpAddIrFts',         // Q: IR FTS (USD)
+  17: 'finimpAddTotalOperacao', // R: TOTAL OPERAÇÃO (USD)
+  18: 'finimpAddFtsRs',         // S: FTS (R$)
+  19: 'finimpAddTxDolarFts',    // T: TX DOLAR FTS
+  24: 'finimpAddValorMercTeorico', // Y: Valor merc teorico (R$)
+  25: 'finimpAddFtsRsZ',        // Z: FTS (R$)
+  26: 'finimpAddValorTeorico',  // AA: VALOR TEORICO (R$)
+  27: 'finimpAddGanhoOp',       // AB: Ganho op
+};
+
 function openAddFinimpModal(){
   document.getElementById('finimpAddProcesso').value = '';
   document.getElementById('finimpAddDataPgto').value = '';
+  document.getElementById('finimpAddDataInicial').value = '';
   document.getElementById('finimpAddTotalUsd').value = '';
   document.getElementById('finimpAddTx').value = '';
   document.getElementById('finimpAddStatus').value = '';
+  Object.values(FINIMP_ADD_TEXT_FIELD_IDS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   const options = [...new Set(FINIMP_ROWS.map(r => (r['Processo Contr.'] || '').trim()).filter(Boolean))].sort();
   document.getElementById('finimpProcessoOptions').innerHTML =
     options.map(p => `<option value="${String(p).replace(/"/g,'&quot;')}">`).join('');
@@ -1090,9 +1233,18 @@ function closeAddFinimpModal(){
   document.getElementById('addFinimpOverlay').classList.remove('open');
 }
 
+// Converte AAAA-MM-DD (valor nativo do <input type="date">) para MM/DD/AAAA,
+// que e' o formato usado nas colunas de data da aba FINIMP (ver parseMDY acima).
+function isoDateToMDY(iso){
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${m}/${d}/${y}`;
+}
+
 async function submitAddFinimp(){
   const processo = document.getElementById('finimpAddProcesso').value.trim();
   const dataPgtoIso = document.getElementById('finimpAddDataPgto').value; // AAAA-MM-DD
+  const dataInicialIso = document.getElementById('finimpAddDataInicial').value;
   const totalUsdStr = document.getElementById('finimpAddTotalUsd').value;
   const txStr = document.getElementById('finimpAddTx').value;
   const status = document.getElementById('finimpAddStatus').value;
@@ -1107,26 +1259,29 @@ async function submitAddFinimp(){
   saveBtn.textContent = 'Adicionando…';
 
   try {
-    // Data Pgto na aba FINIMP vem em MM/DD/AAAA (ver parseMDY acima) — converte
-    // o valor AAAA-MM-DD do <input type="date"> pra esse formato antes de gravar.
-    let dataPgtoMDY = '';
-    if (dataPgtoIso){
-      const [y, m, d] = dataPgtoIso.split('-');
-      dataPgtoMDY = `${m}/${d}/${y}`;
-    }
-    const tx = txStr !== '' ? parseFloat(txStr) : null;
-    const totalUsd = totalUsdStr !== '' ? parseFloat(totalUsdStr) : null;
+    // Total Finimp (USD) e TX Dolar Merc precisam virar numero de verdade
+    // aqui porque o proprio dashboard calcula Total R$ (coluna X) a partir
+    // deles. Os demais campos de texto vao pra planilha exatamente como o
+    // usuario digitou (USER_ENTERED), do mesmo jeito que aconteceria se ele
+    // tivesse digitado direto na celula do Google Sheets.
+    const tx = parseDecimalInput(txStr);
+    const totalUsd = parseDecimalInput(totalUsdStr);
     const totalRs = (tx != null && totalUsd != null) ? Math.round(tx * totalUsd * 100) / 100 : '';
 
-    // Ordem exata das 28 colunas da aba FINIMP (A..AB) — so preenchemos as
-    // que esse painel controla (B, D, U, V, W, X); o resto fica em branco.
+    // Ordem exata das 28 colunas da aba FINIMP (A..AB).
     const row = new Array(28).fill('');
-    row[1] = processo;                          // B: Processo Contr.
-    row[3] = dataPgtoMDY;                        // D: DATA PGTO
-    row[20] = totalUsdStr !== '' ? totalUsd : ''; // U: Total Finimp(USD)
-    row[21] = txStr !== '' ? tx : '';             // V: TX DOLAR MERC.
-    row[22] = status;                             // W: Status
-    row[23] = totalRs;                            // X: TOTAL (R$)
+    row[1] = processo;                       // B: Processo Contr.
+    row[2] = isoDateToMDY(dataInicialIso);    // C: DATA INICIAL
+    row[3] = isoDateToMDY(dataPgtoIso);       // D: DATA PGTO
+    row[20] = totalUsd != null ? totalUsd : ''; // U: Total Finimp(USD)
+    row[21] = tx != null ? tx : '';             // V: TX DOLAR MERC.
+    row[22] = status;                           // W: Status
+    row[23] = totalRs;                          // X: TOTAL (R$)
+
+    Object.entries(FINIMP_ADD_TEXT_FIELD_IDS).forEach(([idx, id]) => {
+      const el = document.getElementById(id);
+      if (el && el.value.trim() !== '') row[Number(idx)] = el.value.trim();
+    });
 
     const targetRow = findNextEmptyFinimpRow();
     await writeFinimpRow(targetRow, row);
