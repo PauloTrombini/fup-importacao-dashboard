@@ -1357,6 +1357,62 @@ async function submitAddFinimp(){
   saveBtn.textContent = 'Adicionar';
 }
 
+// Colunas em comum entre "FINIMP resultado" e "FINIMP NOVO CADASTRO" (mesmo
+// titulo de cabecalho nas duas abas) — pedido do usuario em 2026-08-04.
+// 'type':'number' faz o parser tolerante (numAny) converter o texto do CSV
+// num numero de verdade antes de gravar (evita ambiguidade de locale, ja
+// que a API sempre entende um JS number sem depender de virgula/ponto);
+// 'type':'text' (as duas datas) grava o texto DD/MM/AAAA como veio.
+const FINIMP_SHARED_FIELDS = [
+  { title: 'Volume Mercadoria (USD)', resultadoCol: 'B', type: 'number' },
+  { title: 'Volume FTS (USD)',        resultadoCol: 'C', type: 'number' },
+  { title: 'Volume Total (USD)',      resultadoCol: 'D', type: 'number' },
+  { title: 'Inicio',                  resultadoCol: 'E', type: 'text'   },
+  { title: 'Data Final',              resultadoCol: 'F', type: 'text'   },
+  { title: 'DC',                      resultadoCol: 'G', type: 'number' },
+  { title: 'TOTAL (USD)',             resultadoCol: 'H', type: 'number' },
+];
+
+// Sincroniza "FINIMP resultado" a partir de "FINIMP NOVO CADASTRO" pra
+// linhas que ja existiam direto na planilha (fora do botao Adicionar FINIMP
+// deste dashboard) e por isso ficaram sem os campos em comum preenchidos.
+// Casa as linhas pelo NUMERO DA LINHA na planilha (a mesma linha nas duas
+// abas = o mesmo FINIMP — confirmado em 2026-08-04 conferindo Contrato e
+// Data Final linha a linha), e usa o titulo da coluna pra saber qual valor
+// vai em qual campo. So preenche celulas que estao vazias em "FINIMP
+// resultado" (nunca sobrescreve algo que ja foi preenchido, seja pelo
+// Editar ou digitado direto na planilha).
+async function syncFinimpResultadoFromCadastro(){
+  if (!accessToken) return;
+  const cadastroByRow = new Map(FINIMP_CADASTRO_ROWS.map(r => [r._row, r]));
+  const writes = [];
+  for (const rRes of FINIMP_RESULTADO_ROWS){
+    const rCad = cadastroByRow.get(rRes._row);
+    if (!rCad) continue;
+    for (const field of FINIMP_SHARED_FIELDS){
+      const current = (rRes[field.title] || '').trim();
+      const incoming = (rCad[field.title] || '').trim();
+      if (current || !incoming) continue;
+      let value;
+      if (field.type === 'number'){
+        const n = numAny(incoming);
+        if (n == null) continue;
+        value = n;
+      } else {
+        value = incoming;
+      }
+      writes.push({ row: rRes._row, col: field.resultadoCol, value });
+      rRes[field.title] = incoming; // reflete na hora no render, sem esperar novo refresh()
+    }
+  }
+  if (!writes.length) return;
+  await Promise.all(writes.map(w =>
+    writeSheetCell(TAB_FINIMP_RESULTADO, w.row, w.col, w.value)
+      .catch(e => console.error('Falha ao sincronizar FINIMP resultado', w, e))
+  ));
+  showToast(`FINIMP resultado sincronizado com FINIMP NOVO CADASTRO (${writes.length} campo(s)).`, true);
+}
+
 async function refresh(){
   try {
     const [resP, resFR, resFC, resPr, resD, resForn, resCor, resRev] = await Promise.all([
@@ -1416,6 +1472,9 @@ async function refresh(){
         parsedFC.headers.forEach(h => { norm[h.trim()] = row[h]; });
         return norm;
       });
+    }
+    if (resFR.ok && resFC.ok){
+      await syncFinimpResultadoFromCadastro();
     }
 
     document.getElementById('sourceLabel').textContent =
