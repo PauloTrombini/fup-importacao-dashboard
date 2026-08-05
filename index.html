@@ -1122,9 +1122,9 @@ async function writeSheetCell(tabName, rowNum, colLetterStr, value){
 // duas abas novas nao tem linhas "molde"/template abaixo dos dados reais
 // (diferente da antiga aba FINIMP), entao basta checar se 'Contrato' esta
 // vazio.
-function findNextEmptyRow(rows){
+function findNextEmptyRow(rows, keyField){ keyField = keyField || 'Contrato';
   for (const r of rows){
-    if (!(r['Contrato'] || '').trim()) return r._row;
+    if (!(r[keyField] || '').trim()) return r._row;
   }
   const last = rows[rows.length - 1];
   return last ? last._row + 1 : 2;
@@ -1341,7 +1341,7 @@ async function submitAddFinimp(){
     resultadoRow[4] = inicioDMY;                              // E: Inicio
     resultadoRow[5] = dataFinalDMY;                           // F: Data Final
     resultadoRow[6] = getVal('finimpAddDc');                  // G: DC
-    resultadoRow[7] = getVal('finimpAddTotalUsd');            // H: TOTAL (USD)
+    resultadoRow[7] = getVal('finimpAddTotalUsd'); resultadoRow[8] = '=IFERROR(INDIRECT("H"&ROW())-INDIRECT("D"&ROW()),"")'; resultadoRow[10] = '=IFERROR(INDIRECT("J"&ROW())*INDIRECT("C"&ROW()),"")'; resultadoRow[12] = '=IFERROR(INDIRECT("L"&ROW())*INDIRECT("H"&ROW()),"")'; resultadoRow[14] = '=IFERROR(INDIRECT("N"&ROW())*(INDIRECT("B"&ROW())+INDIRECT("I"&ROW()))+INDIRECT("K"&ROW()),"")'; resultadoRow[15] = '=IFERROR(INDIRECT("O"&ROW())-INDIRECT("M"&ROW()),"")';            // H: TOTAL (USD)
 
     const targetResultadoRow = findNextEmptyRow(FINIMP_RESULTADO_ROWS);
     await writeSheetRow(TAB_FINIMP_RESULTADO, targetResultadoRow, 'Q', resultadoRow);
@@ -1413,7 +1413,7 @@ async function syncFinimpResultadoFromCadastro(){
   showToast(`FINIMP resultado sincronizado com FINIMP NOVO CADASTRO (${writes.length} campo(s)).`, true);
 }
 
-async function refresh(){
+async function backfillFinimpResultadoFormulas(){ if (!accessToken) return; const writes = []; for (const r of FINIMP_RESULTADO_ROWS){ if (!(r['Contrato'] || '').trim()) continue; const row = r._row; const specs = [ { col: 'I', title: 'Juros USD', formula: `=IFERROR(H${row}-D${row},"")` }, { col: 'K', title: 'Valor R$ FTS', formula: `=IFERROR(J${row}*C${row},"")` }, { col: 'M', title: 'Valor R$ pago Banco', formula: `=IFERROR(L${row}*H${row},"")` }, { col: 'O', title: 'Valor FINIMP custo real', formula: `=IFERROR(N${row}*(B${row}+I${row})+K${row},"")` }, { col: 'P', title: 'Ganho', formula: `=IFERROR(O${row}-M${row},"")` }, ]; for (const spec of specs){ if ((r[spec.title] || '').trim()) continue; writes.push({ row, col: spec.col, value: spec.formula }); } } if (!writes.length) return; await Promise.all(writes.map(w => writeSheetCell(TAB_FINIMP_RESULTADO, w.row, w.col, w.value).catch(e => console.error('Falha ao preencher formula em FINIMP resultado', w, e)))); showToast(`${writes.length} fórmula(s) restaurada(s) em "FINIMP resultado".`, true); } async function refresh(){
   try {
     const [resP, resFR, resFC, resPr, resD, resForn, resCor, resRev] = await Promise.all([
       fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
@@ -1474,7 +1474,7 @@ async function refresh(){
       });
     }
     if (resFR.ok && resFC.ok){
-      await syncFinimpResultadoFromCadastro();
+      await syncFinimpResultadoFromCadastro(); } if (resFR.ok){ await backfillFinimpResultadoFormulas();
     }
 
     document.getElementById('sourceLabel').textContent =
@@ -1590,8 +1590,8 @@ async function writeCell(rowNum, field, value){
   return res.json();
 }
 
-async function appendRow(tabName, values){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+async function appendRow(tabName, values){ const lastCol = String.fromCharCode('A'.charCodeAt(0) + values.length - 1);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A:' + lastCol)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -1895,12 +1895,12 @@ async function submitNewProcess(){
     // Ordem exata das colunas na aba Processos:
     // Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
     // Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
-    const row = [
+    const targetProcessoRow = findNextEmptyRow(ALL_PROCESSOS, 'Processo Contr.'); const row = [
       vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
       vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
-      vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
+      vals.valorInvoice, '', `=IFERROR(L${targetProcessoRow}-K${targetProcessoRow},"")`, vals.eta, vals.etb, vals.status,
     ];
-    await appendRow(TAB_PROCESSOS, row);
+    await writeSheetRow(TAB_PROCESSOS, targetProcessoRow, 'P', row);
     showToast('Processo criado com sucesso.', true);
     closeNewProcessModal();
     await refresh();
