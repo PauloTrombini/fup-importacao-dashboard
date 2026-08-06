@@ -268,7 +268,7 @@
 
   <div class="panel">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
-      <h2 style="margin:0;">Controle FINIMP</h2>
+      </div></div><div class="panel"><h2>Produto × ETA — Quadro de Chegadas (Peso MTON)</h2><div class="modal-sub" style="margin-bottom:12px;">Cada linha é um Produto/Revestimento/Cor; cada coluna é uma data de ETA. As células mais escuras indicam as maiores quantidades chegando naquela data.</div><div class="table-scroll" id="tblEtaMatrixWrap"><table id="tblEtaMatrix"><thead id="tblEtaMatrixHead"></thead><tbody></tbody></table></div></div><div class="panel"><div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;"><h2 style="margin:0;">Controle FINIMP</h2>
       <button class="btn btn-secondary" id="addFinimpBtn" style="display:none;" onclick="openAddFinimpModal()">+ Adicionar FINIMP</button>
     </div>
     <div class="table-scroll">
@@ -818,7 +818,7 @@ function renderAll(){
   renderFornecedorTable(filtered);
   renderProdutoTotalTable(filtered);
   renderProdutoEtaTable(filtered);
-  renderPpglTable(filtered);
+  renderPpglTable(filtered); renderEtaMatrix(filtered);
   renderTable(filtered);
 }
 
@@ -983,7 +983,7 @@ function renderProdutoEtaTable(rows){
   `).join('');
 }
 
-function renderTable(rows){
+function renderEtaMatrix(rows){ const groups = new Map(); const etaSet = new Set(); rows.forEach(r => { const produto = (r.Produto || '').trim(); if (!produto) return; const revestimento = (r.Revestimento || '').trim(); const cor = (r.Cor || '').trim(); const key = produto + '|' + revestimento + '|' + cor; if (!groups.has(key)) groups.set(key, {produto, revestimento, cor, byEta: new Map(), total: 0}); const g = groups.get(key); const eta = (r.ETA || '').trim(); const peso = num(r['Peso (MTON)']) || 0; if (eta){ etaSet.add(eta); g.byEta.set(eta, (g.byEta.get(eta) || 0) + peso); } g.total += peso; }); const etas = [...etaSet].sort((a,b) => a.localeCompare(b)); const items = [...groups.values()].sort((a,b) => { const pa = a.produto.localeCompare(b.produto); if (pa) return pa; const ra = a.revestimento.localeCompare(b.revestimento); if (ra) return ra; return a.cor.localeCompare(b.cor); }); const thead = document.getElementById('tblEtaMatrixHead'); thead.innerHTML = `<tr><th rowspan="2">Produto</th><th rowspan="2">Revestimento</th><th rowspan="2">Cor</th><th colspan="${etas.length || 1}" style="text-align:center;">ETA</th><th rowspan="2">Total Geral</th></tr><tr>${etas.length ? etas.map(e => `<th style="text-align:center;">${fmtDateISOtoBR(e)}</th>`).join('') : '<th>—</th>'}</tr>`; const tbody = document.querySelector('#tblEtaMatrix tbody'); if (!items.length){ tbody.innerHTML = `<tr><td colspan="${4 + etas.length}" class="empty">Sem dados.</td></tr>`; return; } const maxVal = Math.max(1, ...items.flatMap(it => [...it.byEta.values()]), 1); const heatCell = v => { if (!v) return ''; const ratio = Math.min(1, v / maxVal); const alpha = (0.12 + ratio * 0.55).toFixed(2); return `background:rgba(79,140,255,${alpha}); font-weight:600;`; }; const colTotals = new Map(etas.map(e => [e, 0])); let grandTotal = 0; const rowsHtml = items.map(it => { const cs = corStyle(it.cor); const corCell = it.cor ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>` : '—'; const cells = etas.map(e => { const v = it.byEta.get(e) || 0; if (v) colTotals.set(e, colTotals.get(e) + v); return `<td style="text-align:center; ${heatCell(v)}">${v ? fmtNum(v) : ''}</td>`; }).join(''); grandTotal += it.total; return `<tr><td>${it.produto || '—'}</td><td>${it.revestimento || '—'}</td><td>${corCell}</td>${cells}<td style="text-align:center; font-weight:700;">${fmtNum(it.total)}</td></tr>`; }).join(''); const totalRowCells = etas.map(e => `<td style="text-align:center; font-weight:700;">${fmtNum(colTotals.get(e))}</td>`).join(''); const totalRow = `<tr style="background:var(--panel2);"><td colspan="3" style="font-weight:700;">Total Geral</td>${totalRowCells}<td style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td></tr>`; tbody.innerHTML = rowsHtml + totalRow; } function renderTable(rows){
   lastRows = rows;
   const tbody = document.querySelector('#tblProcessos tbody');
   const editing = !!accessToken;
