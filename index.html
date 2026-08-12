@@ -202,7 +202,7 @@
 </head>
 <body>
 
-<header>
+<div class="overlay open" id="accessGateOverlay" style="z-index:9999; background:var(--bg);"><div class="modal" style="text-align:center;"><h3>Dashboard FUP Importação</h3><div class="modal-sub" id="accessGateMsg">Acesso restrito. Entre com sua conta Google para continuar.</div><div id="accessGateBtn" style="display:flex; justify-content:center; margin:18px 0;"></div><div id="accessGateDenied" style="display:none; color:var(--red); font-size:13px; margin-top:10px;"></div></div></div><header>
   <div>
     <h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
     <div class="sub" id="sourceLabel">carregando…</div>
@@ -212,7 +212,7 @@
       <option value="all">Todos os anos</option>
     </select>
     <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
-    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a>
+    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a><button class="btn btn-secondary" id="manageEmailsBtn" style="display:none;" onclick="openAccessAdmin()">Administrar acessos</button>
     <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
     <div class="status">
       <span class="dot" id="statusDot"></span>
@@ -495,7 +495,7 @@
   </div>
 </div>
 
-<div id="toastBox"></div>
+<div class="overlay" id="accessAdminOverlay"><div class="modal"><h3>Administrar acessos</h3><div class="modal-sub">O dono (trombini.paulo@gmail.com) sempre tem acesso. Adicione abaixo outros e-mails Google autorizados a ver o dashboard.</div><div id="accessEmailList" style="margin-bottom:16px;"></div><div class="field-row" style="display:flex; gap:8px; align-items:flex-end;"><div style="flex:1;"><label>Novo e-mail autorizado</label><input type="email" id="newAllowedEmail" placeholder="email@exemplo.com"></div><button type="button" class="btn btn-primary" onclick="addAllowedEmail()">Adicionar</button></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeAccessAdmin()">Fechar</button></div></div></div><div id="toastBox"></div>
 
 <script>
 // ---------------------------------------------------------------------
@@ -521,7 +521,7 @@ const TAB_DOCUMENTOS = 'Documentos';
 const TAB_PRODUTOS = 'Produtos';
 const TAB_FORNECEDORES = 'Fornecedores';
 const TAB_COR = 'Cor';
-const TAB_REVESTIMENTO = 'Revestimento';
+const TAB_REVESTIMENTO = 'Revestimento'; const GID_ACESSO = '1462046220'; const TAB_ACESSO = 'Usuarios Autorizados'; const OWNER_EMAIL = 'trombini.paulo@gmail.com';
 const REFRESH_MS = 60000;
 
 // Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
@@ -608,7 +608,7 @@ let FINIMP_RESULTADO_ROWS = [];
 let FINIMP_CADASTRO_ROWS = [];
 let currentDocsProcesso = null;
 let accessToken = null;
-let tokenClient = null;
+let tokenClient = null; let currentUserEmail = null; let ALLOWED_EMAILS = []; let appStarted = false;
 
 // ---------------------------------------------------------------------
 // Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
@@ -1520,7 +1520,7 @@ function setEditingUI(on){
   renderTable(lastRows); renderFinimp();
 }
 
-function initGis(){
+function startApp(){ if (appStarted) return; appStarted = true; refresh(); setInterval(refresh, REFRESH_MS); } function parseJwt(token){ try { const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')); return JSON.parse(jsonPayload); } catch (e) { return null; } } async function fetchAllowedEmails(){ try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); if (!res.ok) return []; const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; return parsed.data.map(r => (r[col] || '').trim().toLowerCase()).filter(v => v); } catch (e) { console.error(e); return []; } } function renderAdminBtn(){ const btn = document.getElementById('manageEmailsBtn'); if (!btn) return; btn.style.display = (currentUserEmail && currentUserEmail.toLowerCase() === OWNER_EMAIL.toLowerCase()) ? '' : 'none'; } async function onAccessGranted(email){ currentUserEmail = email; document.getElementById('accessGateOverlay').classList.remove('open'); renderAdminBtn(); startApp(); } async function handleCredentialResponse(resp){ const payload = parseJwt(resp.credential); if (!payload || !payload.email){ const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'Não foi possível confirmar sua conta Google. Tente novamente.'; return; } const email = payload.email.trim().toLowerCase(); if (email === OWNER_EMAIL.toLowerCase()){ onAccessGranted(payload.email); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); if (ALLOWED_EMAILS.includes(email)){ onAccessGranted(payload.email); } else { const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'O e-mail ' + payload.email + ' não tem acesso a este dashboard. Peça para o administrador liberar seu acesso.'; } } function initAccessGate(){ if (typeof google === 'undefined' || !google.accounts) { setTimeout(initAccessGate, 300); return; } google.accounts.id.initialize({ client_id: CLIENT_ID, callback: handleCredentialResponse }); google.accounts.id.renderButton( document.getElementById('accessGateBtn'), { theme: 'filled_blue', text: 'signin_with', shape: 'pill' } ); } function initGis(){
   if (typeof google === 'undefined' || !google.accounts) {
     setTimeout(initGis, 300);
     return;
@@ -1540,7 +1540,7 @@ function initGis(){
   });
 }
 
-function handleAuthClick(){
+async function openAccessAdmin(){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro para poder gerenciar acessos.', false); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); const list = ALLOWED_EMAILS.length ? ALLOWED_EMAILS.map(e => '<div class="field-row" style="display:flex; justify-content:space-between; align-items:center;"><span>' + e + '</span><button type="button" class="btn btn-secondary" onclick="removeAllowedEmail(\'' + e + '\')">Remover</button></div>').join('') : '<div style="color:var(--txt2);">Nenhum e-mail adicional cadastrado.</div>'; document.getElementById('accessEmailList').innerHTML = list; document.getElementById('accessAdminOverlay').classList.add('open'); } function closeAccessAdmin(){ document.getElementById('accessAdminOverlay').classList.remove('open'); } function handleAuthClick(){
   if (accessToken){
     google.accounts.oauth2.revoke(accessToken, () => {});
     accessToken = null;
@@ -1555,7 +1555,7 @@ function handleAuthClick(){
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
-function colLetter(n){
+async function addAllowedEmail(){ const input = document.getElementById('newAllowedEmail'); const email = (input.value || '').trim().toLowerCase(); if (!email || !email.includes('@')){ showToast('Digite um e-mail válido.', false); return; } if (email === OWNER_EMAIL.toLowerCase() || ALLOWED_EMAILS.includes(email)){ showToast('Esse e-mail já tem acesso.', false); return; } try { await appendRow(TAB_ACESSO, [email]); showToast('E-mail adicionado.', true); input.value = ''; openAccessAdmin(); } catch (e) { showToast(e.message, false); } } async function removeAllowedEmail(email){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro.', false); return; } try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; const rowIdx = parsed.data.findIndex(r => (r[col] || '').trim().toLowerCase() === email); if (rowIdx === -1){ showToast('E-mail não encontrado.', false); return; } const rowNum = parsed.data[rowIdx]._row; const range = TAB_ACESSO + '!A' + rowNum; const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent(range) + '?valueInputOption=USER_ENTERED'; const putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [['']] }) }); if (!putRes.ok) throw new Error('Erro ao remover e-mail.'); showToast('E-mail removido.', true); openAccessAdmin(); } catch (e) { showToast(e.message, false); } } function colLetter(n){
   let s = '';
   while (n > 0){
     const m = (n - 1) % 26;
@@ -1917,8 +1917,7 @@ async function submitNewProcess(){
 }
 
 window.addEventListener('load', initGis);
-refresh();
-setInterval(refresh, REFRESH_MS);
+window.addEventListener('load', initAccessGate);
 </script>
 
 </body>
