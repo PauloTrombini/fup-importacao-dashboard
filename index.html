@@ -389,7 +389,7 @@
   </div>
 </div>
 
-<div class="overlay" id="addFinimpOverlay">
+<div class="overlay" id="viewFinimpOverlay"><div class="modal wide"><h3 id="viewFinimpTitle">Cadastro FINIMP</h3><div class="modal-sub">Todas as informações registradas na aba "FINIMP NOVO CADASTRO" do Google Sheets para este processo (somente leitura).</div><div id="viewFinimpBody" style="max-height:60vh; overflow-y:auto; margin-bottom:16px;"></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeViewFinimpModal()">Fechar</button></div></div></div><div class="overlay" id="addFinimpOverlay">
   <div class="modal wide">
     <h3>Adicionar FINIMP</h3>
     <div class="modal-sub">Cria uma linha nova na aba "FINIMP NOVO CADASTRO" da planilha do Google Sheets (e uma linha correspondente em "FINIMP resultado", com os campos em comum já preenchidos). Preencha os campos que tiver — os demais ficam em branco.</div>
@@ -1089,7 +1089,7 @@ function renderFinimp(){
       <td>${fmtBRL(valorCustoReal)}</td>
       <td>${fmtBRL(ganho)}</td>
       <td>${statusBadgeFinimp(r['Status'])}</td>
-      <td>${editing ? `<button class="edit-btn" onclick="openEditFinimpModal(${r._row})">Editar</button>` : ''}</td>
+      <td><button class="edit-btn" onclick="openViewFinimpModal(${r._row})">Ver Cadastro</button> ${editing ? `<button class="edit-btn" onclick="openEditFinimpModal(${r._row})">Editar</button>` : ''}</td>
     </tr>`;
   }).join('');
 }
@@ -1179,7 +1179,7 @@ function closeEditFinimpModal(){
   document.getElementById('editFinimpOverlay').classList.remove('open');
 }
 
-async function submitFinimpEdit(){
+function openViewFinimpModal(rowId){ const r = FINIMP_CADASTRO_ROWS.find(x => x._row === rowId); const rr = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId); const titulo = (rr && rr['Contrato']) || (r && r['Contrato']) || ''; document.getElementById('viewFinimpTitle').textContent = 'Cadastro FINIMP ' + titulo + ' - linha ' + rowId; const body = document.getElementById('viewFinimpBody'); const keys = r ? Object.keys(r).filter(k => k !== '_row') : []; const hasData = keys.some(k => (r[k] || '').trim()); if (!hasData){ body.innerHTML = '<div style="color:var(--txt2);">Nenhuma informação de cadastro encontrada na aba "FINIMP NOVO CADASTRO" para esta linha.</div>'; } else { body.innerHTML = keys.map(k => '<div style="display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); padding:7px 0;"><span style="color:var(--txt2);">' + k + '</span><span>' + ((r[k]||'').trim() || '—') + '</span></div>').join(''); } document.getElementById('viewFinimpOverlay').classList.add('open'); } function closeViewFinimpModal(){ document.getElementById('viewFinimpOverlay').classList.remove('open'); } async function submitFinimpEdit(){
   const overlay = document.getElementById('editFinimpOverlay');
   const rowId = parseInt(overlay.dataset.row, 10);
   const original = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId) || {};
