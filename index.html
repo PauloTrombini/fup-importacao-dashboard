@@ -202,7 +202,7 @@
 </head>
 <body>
 
-<header>
+<div class="overlay open" id="accessGateOverlay" style="z-index:9999; background:var(--bg);"><div class="modal" style="text-align:center;"><h3>Dashboard FUP Importação</h3><div class="modal-sub" id="accessGateMsg">Acesso restrito. Entre com sua conta Google para continuar.</div><div id="accessGateBtn" style="display:flex; justify-content:center; margin:18px 0;"></div><div id="accessGateDenied" style="display:none; color:var(--red); font-size:13px; margin-top:10px;"></div></div></div><header>
   <div>
     <h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
     <div class="sub" id="sourceLabel">carregando…</div>
@@ -212,7 +212,7 @@
       <option value="all">Todos os anos</option>
     </select>
     <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
-    <a href="https://console.cloud.google.com/apis/credentials/consent?project=project-42628e75-056e-4628-a30" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a>
+    <a href="https://console.cloud.google.com/apis/credentials/consent?project=446804769711" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a><button class="btn btn-secondary" id="manageEmailsBtn" style="display:none;" onclick="openAccessAdmin()">Administrar acessos</button>
     <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
     <div class="status">
       <span class="dot" id="statusDot"></span>
@@ -268,7 +268,7 @@
 
   <div class="panel">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
-      <h2 style="margin:0;">Controle FINIMP</h2>
+      </div></div><div class="panel"><h2>Produto × ETA — Quadro de Chegadas (Peso MTON)</h2><div class="modal-sub" style="margin-bottom:12px;">Cada linha é um Produto/Revestimento/Cor; cada coluna é uma data de ETA. As células mais escuras indicam as maiores quantidades chegando naquela data.</div><div class="table-scroll" id="tblEtaMatrixWrap"><table id="tblEtaMatrix"><thead id="tblEtaMatrixHead"></thead><tbody></tbody></table></div></div><div class="panel"><div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;"><h2 style="margin:0;">Controle FINIMP</h2>
       <button class="btn btn-secondary" id="addFinimpBtn" style="display:none;" onclick="openAddFinimpModal()">+ Adicionar FINIMP</button>
     </div>
     <div class="table-scroll">
@@ -375,14 +375,6 @@
       <input type="text" inputmode="decimal" placeholder="Ex: 5,15" id="finimpEditTaxaMerc">
     </div>
     <div class="field-row">
-      <label>Valor R$ pago Banco</label>
-      <input type="text" inputmode="decimal" placeholder="Ex: 599.301,21" id="finimpEditValorPagoBanco">
-    </div>
-    <div class="field-row">
-      <label>Valor FINIMP custo real</label>
-      <input type="text" inputmode="decimal" placeholder="Ex: 625.216,05" id="finimpEditCustoReal">
-    </div>
-    <div class="field-row">
       <label>Status</label>
       <select id="finimpEditStatus">
         <option value="">—</option>
@@ -397,7 +389,7 @@
   </div>
 </div>
 
-<div class="overlay" id="addFinimpOverlay">
+<div class="overlay" id="viewFinimpOverlay"><div class="modal wide"><h3 id="viewFinimpTitle">Cadastro FINIMP</h3><div class="modal-sub">Todas as informações registradas na aba "FINIMP NOVO CADASTRO" do Google Sheets para este processo (somente leitura).</div><div id="viewFinimpBody" style="max-height:60vh; overflow-y:auto; margin-bottom:16px;"></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeViewFinimpModal()">Fechar</button></div></div></div><div class="overlay" id="addFinimpOverlay">
   <div class="modal wide">
     <h3>Adicionar FINIMP</h3>
     <div class="modal-sub">Cria uma linha nova na aba "FINIMP NOVO CADASTRO" da planilha do Google Sheets (e uma linha correspondente em "FINIMP resultado", com os campos em comum já preenchidos). Preencha os campos que tiver — os demais ficam em branco.</div>
@@ -503,7 +495,7 @@
   </div>
 </div>
 
-<div id="toastBox"></div>
+<div class="overlay" id="accessAdminOverlay"><div class="modal"><h3>Administrar acessos</h3><div class="modal-sub">O dono (trombini.paulo@gmail.com) sempre tem acesso. Adicione abaixo outros e-mails Google autorizados a ver o dashboard.</div><div id="accessEmailList" style="margin-bottom:16px;"></div><div class="field-row" style="display:flex; gap:8px; align-items:flex-end;"><div style="flex:1;"><label>Novo e-mail autorizado</label><input type="email" id="newAllowedEmail" placeholder="email@exemplo.com"></div><button type="button" class="btn btn-primary" onclick="addAllowedEmail()">Adicionar</button></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeAccessAdmin()">Fechar</button></div></div></div><div id="toastBox"></div>
 
 <script>
 // ---------------------------------------------------------------------
@@ -529,15 +521,14 @@ const TAB_DOCUMENTOS = 'Documentos';
 const TAB_PRODUTOS = 'Produtos';
 const TAB_FORNECEDORES = 'Fornecedores';
 const TAB_COR = 'Cor';
-const TAB_REVESTIMENTO = 'Revestimento';
+const TAB_REVESTIMENTO = 'Revestimento'; const GID_ACESSO = '1462046220'; const TAB_ACESSO = 'Usuarios Autorizados'; const OWNER_EMAIL = 'trombini.paulo@gmail.com';
 const REFRESH_MS = 60000;
 
 // Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
 const DRIVE_FOLDER_ID = '16WWIdaJBE3QMLNjKexvZ1mKmeXXxUSRv';
 const DOC_CATEGORIES = [
   'Invoice', 'Bill of Lading (BL)', 'Packing List',
-  'Declaração de Importação (DI)', 'Contrato',
-  'Numerário', 'Custo Operacional', 'Outro',
+  'Declaração de Importação (DI)', 'Contrato', 'Outro',
 ];
 
 // Status é uma lista fixa (nao vem de aba)
@@ -617,7 +608,7 @@ let FINIMP_RESULTADO_ROWS = [];
 let FINIMP_CADASTRO_ROWS = [];
 let currentDocsProcesso = null;
 let accessToken = null;
-let tokenClient = null;
+let tokenClient = null; let currentUserEmail = null; let ALLOWED_EMAILS = []; let appStarted = false;
 
 // ---------------------------------------------------------------------
 // Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
@@ -827,7 +818,7 @@ function renderAll(){
   renderFornecedorTable(filtered);
   renderProdutoTotalTable(filtered);
   renderProdutoEtaTable(filtered);
-  renderPpglTable(filtered);
+  renderPpglTable(filtered); renderEtaMatrix(filtered);
   renderTable(filtered);
 }
 
@@ -992,7 +983,7 @@ function renderProdutoEtaTable(rows){
   `).join('');
 }
 
-function renderTable(rows){
+function renderEtaMatrix(rows){ const groups = new Map(); const etaSet = new Set(); rows.forEach(r => { const produto = (r.Produto || '').trim(); if (!produto) return; const revestimento = (r.Revestimento || '').trim(); const cor = (r.Cor || '').trim(); const key = produto + '|' + revestimento + '|' + cor; if (!groups.has(key)) groups.set(key, {produto, revestimento, cor, byEta: new Map(), total: 0}); const g = groups.get(key); const eta = (r.ETA || '').trim(); const peso = num(r['Peso (MTON)']) || 0; if (eta){ etaSet.add(eta); g.byEta.set(eta, (g.byEta.get(eta) || 0) + peso); } g.total += peso; }); const etas = [...etaSet].sort((a,b) => a.localeCompare(b)); const items = [...groups.values()].sort((a,b) => { const pa = a.produto.localeCompare(b.produto); if (pa) return pa; const ra = a.revestimento.localeCompare(b.revestimento); if (ra) return ra; return a.cor.localeCompare(b.cor); }); const thead = document.getElementById('tblEtaMatrixHead'); thead.innerHTML = `<tr><th rowspan="2">Produto</th><th rowspan="2">Revestimento</th><th rowspan="2">Cor</th><th colspan="${etas.length || 1}" style="text-align:center;">ETA</th><th rowspan="2">Total Geral</th></tr><tr>${etas.length ? etas.map(e => `<th style="text-align:center;">${fmtDateISOtoBR(e)}</th>`).join('') : '<th>—</th>'}</tr>`; const tbody = document.querySelector('#tblEtaMatrix tbody'); if (!items.length){ tbody.innerHTML = `<tr><td colspan="${4 + etas.length}" class="empty">Sem dados.</td></tr>`; return; } const maxVal = Math.max(1, ...items.flatMap(it => [...it.byEta.values()]), 1); const heatCell = v => { if (!v) return ''; const ratio = Math.min(1, v / maxVal); const alpha = (0.12 + ratio * 0.55).toFixed(2); return `background:rgba(79,140,255,${alpha}); font-weight:600;`; }; const colTotals = new Map(etas.map(e => [e, 0])); let grandTotal = 0; const rowsHtml = items.map(it => { const cs = corStyle(it.cor); const corCell = it.cor ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>` : '—'; const cells = etas.map(e => { const v = it.byEta.get(e) || 0; if (v) colTotals.set(e, colTotals.get(e) + v); return `<td style="text-align:center; ${heatCell(v)}">${v ? fmtNum(v) : ''}</td>`; }).join(''); grandTotal += it.total; return `<tr><td>${it.produto || '—'}</td><td>${it.revestimento || '—'}</td><td>${corCell}</td>${cells}<td style="text-align:center; font-weight:700;">${fmtNum(it.total)}</td></tr>`; }).join(''); const totalRowCells = etas.map(e => `<td style="text-align:center; font-weight:700;">${fmtNum(colTotals.get(e))}</td>`).join(''); const totalRow = `<tr style="background:var(--panel2);"><td colspan="3" style="font-weight:700;">Total Geral</td>${totalRowCells}<td style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td></tr>`; tbody.innerHTML = rowsHtml + totalRow; } function renderTable(rows){
   lastRows = rows;
   const tbody = document.querySelector('#tblProcessos tbody');
   const editing = !!accessToken;
@@ -1098,7 +1089,7 @@ function renderFinimp(){
       <td>${fmtBRL(valorCustoReal)}</td>
       <td>${fmtBRL(ganho)}</td>
       <td>${statusBadgeFinimp(r['Status'])}</td>
-      <td>${editing ? `<button class="edit-btn" onclick="openEditFinimpModal(${r._row})">Editar</button>` : ''}</td>
+      <td><button class="edit-btn" onclick="openViewFinimpModal(${r._row})">Ver Cadastro</button> ${editing ? `<button class="edit-btn" onclick="openEditFinimpModal(${r._row})">Editar</button>` : ''}</td>
     </tr>`;
   }).join('');
 }
@@ -1131,9 +1122,9 @@ async function writeSheetCell(tabName, rowNum, colLetterStr, value){
 // duas abas novas nao tem linhas "molde"/template abaixo dos dados reais
 // (diferente da antiga aba FINIMP), entao basta checar se 'Contrato' esta
 // vazio.
-function findNextEmptyRow(rows){
+function findNextEmptyRow(rows, keyField){ keyField = keyField || 'Contrato';
   for (const r of rows){
-    if (!(r['Contrato'] || '').trim()) return r._row;
+    if (!(r[keyField] || '').trim()) return r._row;
   }
   const last = rows[rows.length - 1];
   return last ? last._row + 1 : 2;
@@ -1162,13 +1153,11 @@ async function writeSheetRow(tabName, rowNum, lastColLetter, values){
   return res.json();
 }
 
-// Botao Editar (pedido do usuario em 2026-08-04, ampliado em 2026-09-10):
-// campos editaveis da aba "FINIMP resultado" — Status (Q), Taxa Dolar dia
-// pgto (N), Taxa Dolar FTS (J), Taxa Dolar MERC (L), Valor R$ pago Banco
-// (M) e Valor FINIMP custo real (O). Ganho (P) NAO e' editavel diretamente:
-// e' sempre recalculado (M - O) e gravado na planilha automaticamente
-// sempre que M ou O mudam (ver submitFinimpEdit), igual o comportamento
-// antigo de Total R$ na aba FINIMP original.
+// Botao Editar: pedido do usuario em 2026-08-04 restringiu os campos
+// editaveis a exatamente 4, todos da aba "FINIMP resultado" — Status (Q),
+// Taxa Dolar dia pgto (N), Taxa Dolar FTS (J), Taxa Dolar MERC (L). Sem
+// recalculo automatico de nenhum outro campo (diferente do comportamento
+// antigo com a aba FINIMP, que recalculava Total R$).
 function openEditFinimpModal(rowId){
   const r = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId);
   if (!r) return;
@@ -1178,14 +1167,10 @@ function openEditFinimpModal(rowId){
   const taxaDiaPgto = numAny(r['Taxa Dolar dia pgto']);
   const taxaFts = numAny(r['Taxa Dolar FTS']);
   const taxaMerc = numAny(r['Taxa Dolar MERC']);
-  const valorPagoBanco = numAny(r['Valor R$ pago Banco']);
-  const custoReal = numAny(r['Valor FINIMP custo real']);
   // Mostra com virgula (padrao BR), que e' o formato que os campos aceitam digitar.
   document.getElementById('finimpEditTaxaDiaPgto').value = taxaDiaPgto != null ? String(taxaDiaPgto).replace('.', ',') : '';
   document.getElementById('finimpEditTaxaFts').value = taxaFts != null ? String(taxaFts).replace('.', ',') : '';
   document.getElementById('finimpEditTaxaMerc').value = taxaMerc != null ? String(taxaMerc).replace('.', ',') : '';
-  document.getElementById('finimpEditValorPagoBanco').value = valorPagoBanco != null ? String(valorPagoBanco).replace('.', ',') : '';
-  document.getElementById('finimpEditCustoReal').value = custoReal != null ? String(custoReal).replace('.', ',') : '';
   document.getElementById('editFinimpOverlay').dataset.row = rowId;
   document.getElementById('editFinimpOverlay').classList.add('open');
 }
@@ -1194,7 +1179,7 @@ function closeEditFinimpModal(){
   document.getElementById('editFinimpOverlay').classList.remove('open');
 }
 
-async function submitFinimpEdit(){
+function openViewFinimpModal(rowId){ const r = FINIMP_CADASTRO_ROWS.find(x => x._row === rowId); const rr = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId); const titulo = (rr && rr['Contrato']) || (r && r['Contrato']) || ''; document.getElementById('viewFinimpTitle').textContent = 'Cadastro FINIMP ' + titulo + ' - linha ' + rowId; const body = document.getElementById('viewFinimpBody'); const keys = r ? Object.keys(r).filter(k => k !== '_row') : []; const hasData = keys.some(k => (r[k] || '').trim()); if (!hasData){ body.innerHTML = '<div style="color:var(--txt2);">Nenhuma informação de cadastro encontrada na aba "FINIMP NOVO CADASTRO" para esta linha.</div>'; } else { body.innerHTML = keys.map(k => '<div style="display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); padding:7px 0;"><span style="color:var(--txt2);">' + k + '</span><span>' + ((r[k]||'').trim() || '—') + '</span></div>').join(''); } document.getElementById('viewFinimpOverlay').classList.add('open'); } function closeViewFinimpModal(){ document.getElementById('viewFinimpOverlay').classList.remove('open'); } async function submitFinimpEdit(){
   const overlay = document.getElementById('editFinimpOverlay');
   const rowId = parseInt(overlay.dataset.row, 10);
   const original = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId) || {};
@@ -1203,15 +1188,11 @@ async function submitFinimpEdit(){
   const newTaxaDiaPgto = parseDecimalInput(document.getElementById('finimpEditTaxaDiaPgto').value);
   const newTaxaFts = parseDecimalInput(document.getElementById('finimpEditTaxaFts').value);
   const newTaxaMerc = parseDecimalInput(document.getElementById('finimpEditTaxaMerc').value);
-  const newValorPagoBanco = parseDecimalInput(document.getElementById('finimpEditValorPagoBanco').value);
-  const newCustoReal = parseDecimalInput(document.getElementById('finimpEditCustoReal').value);
 
   const origStatus = (original['Status'] || '').trim().toLowerCase();
   const origTaxaDiaPgto = numAny(original['Taxa Dolar dia pgto']);
   const origTaxaFts = numAny(original['Taxa Dolar FTS']);
   const origTaxaMerc = numAny(original['Taxa Dolar MERC']);
-  const origValorPagoBanco = numAny(original['Valor R$ pago Banco']);
-  const origCustoReal = numAny(original['Valor FINIMP custo real']);
 
   // Compara valores (nao strings) pra nao disparar gravacao a toa so por
   // causa de diferenca de formatacao (5.15 vs 5,1500 etc).
@@ -1220,17 +1201,6 @@ async function submitFinimpEdit(){
   if ((origTaxaDiaPgto ?? null) !== (newTaxaDiaPgto ?? null)) changes.push(['N', newTaxaDiaPgto != null ? newTaxaDiaPgto : '']);
   if ((origTaxaFts ?? null) !== (newTaxaFts ?? null)) changes.push(['J', newTaxaFts != null ? newTaxaFts : '']);
   if ((origTaxaMerc ?? null) !== (newTaxaMerc ?? null)) changes.push(['L', newTaxaMerc != null ? newTaxaMerc : '']);
-  const valorPagoBancoChanged = (origValorPagoBanco ?? null) !== (newValorPagoBanco ?? null);
-  const custoRealChanged = (origCustoReal ?? null) !== (newCustoReal ?? null);
-  if (valorPagoBancoChanged) changes.push(['M', newValorPagoBanco != null ? newValorPagoBanco : '']);
-  if (custoRealChanged) changes.push(['O', newCustoReal != null ? newCustoReal : '']);
-  // Ganho (P) e' sempre M - O: recalcula e regrava toda vez que qualquer um
-  // dos dois mudar, pra nunca ficar com o valor antigo desatualizado.
-  if (valorPagoBancoChanged || custoRealChanged){
-    const finalPagoBanco = newValorPagoBanco != null ? newValorPagoBanco : (origValorPagoBanco ?? 0);
-    const finalCustoReal = newCustoReal != null ? newCustoReal : (origCustoReal ?? 0);
-    changes.push(['P', finalPagoBanco - finalCustoReal]);
-  }
 
   if (!changes.length){
     closeEditFinimpModal();
@@ -1371,7 +1341,7 @@ async function submitAddFinimp(){
     resultadoRow[4] = inicioDMY;                              // E: Inicio
     resultadoRow[5] = dataFinalDMY;                           // F: Data Final
     resultadoRow[6] = getVal('finimpAddDc');                  // G: DC
-    resultadoRow[7] = getVal('finimpAddTotalUsd');            // H: TOTAL (USD)
+    resultadoRow[7] = getVal('finimpAddTotalUsd'); resultadoRow[8] = '=IFERROR(INDIRECT("H"&ROW())-INDIRECT("D"&ROW()),"")'; resultadoRow[10] = '=IFERROR(INDIRECT("J"&ROW())*INDIRECT("C"&ROW()),"")'; resultadoRow[12] = '=IFERROR(INDIRECT("L"&ROW())*INDIRECT("H"&ROW()),"")'; resultadoRow[14] = '=IFERROR(INDIRECT("N"&ROW())*(INDIRECT("B"&ROW())+INDIRECT("I"&ROW()))+INDIRECT("K"&ROW()),"")'; resultadoRow[15] = '=IFERROR(INDIRECT("O"&ROW())-INDIRECT("M"&ROW()),"")';            // H: TOTAL (USD)
 
     const targetResultadoRow = findNextEmptyRow(FINIMP_RESULTADO_ROWS);
     await writeSheetRow(TAB_FINIMP_RESULTADO, targetResultadoRow, 'Q', resultadoRow);
@@ -1394,18 +1364,10 @@ async function submitAddFinimp(){
 // que a API sempre entende um JS number sem depender de virgula/ponto);
 // 'type':'text' (as duas datas) grava o texto DD/MM/AAAA como veio.
 const FINIMP_SHARED_FIELDS = [
-  // 'Contrato' entrou em 2026-09-10: sem ele, uma linha criada direto na
-  // planilha (fora do botao "+ Adicionar FINIMP") nunca aparecia no painel
-  // Controle FINIMP, porque renderFinimp() so mostra linhas com Contrato
-  // preenchido em "FINIMP resultado" — e esse campo nunca era sincronizado.
-  { title: 'Contrato',                resultadoCol: 'A', type: 'text'   },
   { title: 'Volume Mercadoria (USD)', resultadoCol: 'B', type: 'number' },
   { title: 'Volume FTS (USD)',        resultadoCol: 'C', type: 'number' },
   { title: 'Volume Total (USD)',      resultadoCol: 'D', type: 'number' },
-  // Corrigido em 2026-09-10: estava sem acento ('Inicio'), mas o cabecalho
-  // real da planilha (nas duas abas) e' 'Início' — por causa disso essa
-  // coluna nunca batia e nunca era sincronizada.
-  { title: 'Início',                  resultadoCol: 'E', type: 'text'   },
+  { title: 'Inicio',                  resultadoCol: 'E', type: 'text'   },
   { title: 'Data Final',              resultadoCol: 'F', type: 'text'   },
   { title: 'DC',                      resultadoCol: 'G', type: 'number' },
   { title: 'TOTAL (USD)',             resultadoCol: 'H', type: 'number' },
@@ -1451,7 +1413,7 @@ async function syncFinimpResultadoFromCadastro(){
   showToast(`FINIMP resultado sincronizado com FINIMP NOVO CADASTRO (${writes.length} campo(s)).`, true);
 }
 
-async function refresh(){
+async function backfillFinimpResultadoFormulas(){ if (!accessToken) return; const writes = []; for (const r of FINIMP_RESULTADO_ROWS){ if (!(r['Contrato'] || '').trim()) continue; const row = r._row; const specs = [ { col: 'I', title: 'Juros USD', formula: `=IFERROR(H${row}-D${row},"")` }, { col: 'K', title: 'Valor R$ FTS', formula: `=IFERROR(J${row}*C${row},"")` }, { col: 'M', title: 'Valor R$ pago Banco', formula: `=IFERROR(L${row}*H${row},"")` }, { col: 'O', title: 'Valor FINIMP custo real', formula: `=IFERROR(N${row}*(B${row}+I${row})+K${row},"")` }, { col: 'P', title: 'Ganho', formula: `=IFERROR(O${row}-M${row},"")` }, ]; for (const spec of specs){ if ((r[spec.title] || '').trim()) continue; writes.push({ row, col: spec.col, value: spec.formula }); } } if (!writes.length) return; await Promise.all(writes.map(w => writeSheetCell(TAB_FINIMP_RESULTADO, w.row, w.col, w.value).catch(e => console.error('Falha ao preencher formula em FINIMP resultado', w, e)))); showToast(`${writes.length} fórmula(s) restaurada(s) em "FINIMP resultado".`, true); } async function refresh(){
   try {
     const [resP, resFR, resFC, resPr, resD, resForn, resCor, resRev] = await Promise.all([
       fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
@@ -1512,7 +1474,7 @@ async function refresh(){
       });
     }
     if (resFR.ok && resFC.ok){
-      await syncFinimpResultadoFromCadastro();
+      await syncFinimpResultadoFromCadastro(); } if (resFR.ok){ await backfillFinimpResultadoFormulas();
     }
 
     document.getElementById('sourceLabel').textContent =
@@ -1555,10 +1517,10 @@ function setEditingUI(on){
     badge.className = 'badge-readonly';
     btn.textContent = 'Entrar para editar';
   }
-  renderTable(lastRows);
+  renderTable(lastRows); renderFinimp();
 }
 
-function initGis(){
+function startApp(){ if (appStarted) return; appStarted = true; refresh(); setInterval(refresh, REFRESH_MS); } function parseJwt(token){ try { const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')); return JSON.parse(jsonPayload); } catch (e) { return null; } } async function fetchAllowedEmails(){ try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); if (!res.ok) return []; const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; return parsed.data.map(r => (r[col] || '').trim().toLowerCase()).filter(v => v); } catch (e) { console.error(e); return []; } } function renderAdminBtn(){ const btn = document.getElementById('manageEmailsBtn'); if (!btn) return; btn.style.display = (currentUserEmail && currentUserEmail.toLowerCase() === OWNER_EMAIL.toLowerCase()) ? '' : 'none'; } async function onAccessGranted(email){ currentUserEmail = email; document.getElementById('accessGateOverlay').classList.remove('open'); renderAdminBtn(); startApp(); } async function handleCredentialResponse(resp){ const payload = parseJwt(resp.credential); if (!payload || !payload.email){ const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'Não foi possível confirmar sua conta Google. Tente novamente.'; return; } const email = payload.email.trim().toLowerCase(); if (email === OWNER_EMAIL.toLowerCase()){ onAccessGranted(payload.email); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); if (ALLOWED_EMAILS.includes(email)){ onAccessGranted(payload.email); } else { const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'O e-mail ' + payload.email + ' não tem acesso a este dashboard. Peça para o administrador liberar seu acesso.'; } } function initAccessGate(){ if (typeof google === 'undefined' || !google.accounts) { setTimeout(initAccessGate, 300); return; } google.accounts.id.initialize({ client_id: CLIENT_ID, callback: handleCredentialResponse }); google.accounts.id.renderButton( document.getElementById('accessGateBtn'), { theme: 'filled_blue', text: 'signin_with', shape: 'pill' } ); } function initGis(){
   if (typeof google === 'undefined' || !google.accounts) {
     setTimeout(initGis, 300);
     return;
@@ -1578,7 +1540,7 @@ function initGis(){
   });
 }
 
-function handleAuthClick(){
+async function openAccessAdmin(){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro para poder gerenciar acessos.', false); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); const list = ALLOWED_EMAILS.length ? ALLOWED_EMAILS.map(e => '<div class="field-row" style="display:flex; justify-content:space-between; align-items:center;"><span>' + e + '</span><button type="button" class="btn btn-secondary" onclick="removeAllowedEmail(\'' + e + '\')">Remover</button></div>').join('') : '<div style="color:var(--txt2);">Nenhum e-mail adicional cadastrado.</div>'; document.getElementById('accessEmailList').innerHTML = list; document.getElementById('accessAdminOverlay').classList.add('open'); } function closeAccessAdmin(){ document.getElementById('accessAdminOverlay').classList.remove('open'); } function handleAuthClick(){
   if (accessToken){
     google.accounts.oauth2.revoke(accessToken, () => {});
     accessToken = null;
@@ -1593,7 +1555,7 @@ function handleAuthClick(){
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
-function colLetter(n){
+async function addAllowedEmail(){ const input = document.getElementById('newAllowedEmail'); const email = (input.value || '').trim().toLowerCase(); if (!email || !email.includes('@')){ showToast('Digite um e-mail válido.', false); return; } if (email === OWNER_EMAIL.toLowerCase() || ALLOWED_EMAILS.includes(email)){ showToast('Esse e-mail já tem acesso.', false); return; } try { await appendRow(TAB_ACESSO, [email]); showToast('E-mail adicionado.', true); input.value = ''; openAccessAdmin(); } catch (e) { showToast(e.message, false); } } async function removeAllowedEmail(email){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro.', false); return; } try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; const rowIdx = parsed.data.findIndex(r => (r[col] || '').trim().toLowerCase() === email); if (rowIdx === -1){ showToast('E-mail não encontrado.', false); return; } const rowNum = parsed.data[rowIdx]._row; const range = TAB_ACESSO + '!A' + rowNum; const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent(range) + '?valueInputOption=USER_ENTERED'; const putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [['']] }) }); if (!putRes.ok) throw new Error('Erro ao remover e-mail.'); showToast('E-mail removido.', true); openAccessAdmin(); } catch (e) { showToast(e.message, false); } } function colLetter(n){
   let s = '';
   while (n > 0){
     const m = (n - 1) % 26;
@@ -1628,8 +1590,8 @@ async function writeCell(rowNum, field, value){
   return res.json();
 }
 
-async function appendRow(tabName, values){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+async function appendRow(tabName, values){ const lastCol = String.fromCharCode('A'.charCodeAt(0) + values.length - 1);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A:' + lastCol)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -1933,12 +1895,12 @@ async function submitNewProcess(){
     // Ordem exata das colunas na aba Processos:
     // Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
     // Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
-    const row = [
+    const targetProcessoRow = findNextEmptyRow(ALL_PROCESSOS, 'Processo Contr.'); const row = [
       vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
       vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
-      vals.valorInvoice, '', '', vals.eta, vals.etb, vals.status,
+      vals.valorInvoice, '', `=IFERROR(L${targetProcessoRow}-K${targetProcessoRow},"")`, vals.eta, vals.etb, vals.status,
     ];
-    await appendRow(TAB_PROCESSOS, row);
+    await writeSheetRow(TAB_PROCESSOS, targetProcessoRow, 'P', row);
     showToast('Processo criado com sucesso.', true);
     closeNewProcessModal();
     await refresh();
@@ -1955,8 +1917,7 @@ async function submitNewProcess(){
 }
 
 window.addEventListener('load', initGis);
-refresh();
-setInterval(refresh, REFRESH_MS);
+window.addEventListener('load', initAccessGate);
 </script>
 
 </body>
