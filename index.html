@@ -375,6 +375,1966 @@
       <input type="text" inputmode="decimal" placeholder="Ex: 5,15" id="finimpEditTaxaMerc">
     </div>
     <div class="field-row">
+      <label>Valor R$ pago Banco</label>
+      <input type="text" inputmode="decimal" placeholder="Ex: 599.301,21" id="finimpEditValorPagoBanco">
+    </div>
+    <div class="field-row">
+      <label>Valor FINIMP custo real</label>
+      <input type="text" inputmode="decimal" placeholder="Ex: 625.216,05" id="finimpEditCustoReal">
+    </div>
+    <div class="field-row">
+      <label>Status</label>
+      <select id="finimpEditStatus">
+        <option value="">—</option>
+        <option value="aberto">aberto</option>
+        <option value="pago">pago</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeEditFinimpModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="finimpEditSaveBtn" onclick="submitFinimpEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="viewFinimpOverlay"><div class="modal wide"><h3 id="viewFinimpTitle">Cadastro FINIMP</h3><div class="modal-sub">Todas as informações registradas na aba "FINIMP NOVO CADASTRO" do Google Sheets para este processo (somente leitura).</div><div id="viewFinimpBody" style="max-height:60vh; overflow-y:auto; margin-bottom:16px;"></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeViewFinimpModal()">Fechar</button></div></div></div><div class="overlay" id="addFinimpOverlay">
+  <div class="modal wide">
+    <h3>Adicionar FINIMP</h3>
+    <div class="modal-sub">Cria uma linha nova na aba "FINIMP NOVO CADASTRO" da planilha do Google Sheets (e uma linha correspondente em "FINIMP resultado", com os campos em comum já preenchidos). Preencha os campos que tiver — os demais ficam em branco.</div>
+    <div class="field-grid">
+      <div class="field-row">
+        <label>Contrato</label>
+        <input type="text" id="finimpAddContrato" list="finimpProcessoOptions" autocomplete="off">
+        <datalist id="finimpProcessoOptions"></datalist>
+      </div>
+      <div class="field-row">
+        <label>N. Finimp</label>
+        <input type="text" id="finimpAddNFinimp">
+      </div>
+      <div class="field-row">
+        <label>Taxa Dólar dia (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 5,15" id="finimpAddTaxaDolarDia">
+      </div>
+      <div class="field-row">
+        <label>Volume Mercadoria (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 64.660,00" id="finimpAddVolMercadoria">
+      </div>
+      <div class="field-row">
+        <label>Volume FTS (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 54.961,00" id="finimpAddVolFts">
+      </div>
+      <div class="field-row">
+        <label>Volume Total (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 119.621,00" id="finimpAddVolTotal">
+      </div>
+      <div class="field-row">
+        <label>Juros a.a.</label>
+        <input type="text" placeholder="Ex: 6,16%" id="finimpAddJurosAA">
+      </div>
+      <div class="field-row">
+        <label>IR s/ Juros</label>
+        <input type="text" placeholder="Ex: 2,05%" id="finimpAddIrJuros">
+      </div>
+      <div class="field-row">
+        <label>CPG %</label>
+        <input type="text" placeholder="Ex: 0,40%" id="finimpAddCpgPct">
+      </div>
+      <div class="field-row">
+        <label>Custo All-in</label>
+        <input type="text" placeholder="Ex: 8,61%" id="finimpAddCustoAllIn">
+      </div>
+      <div class="field-row">
+        <label>CPG Inicial (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 159,49" id="finimpAddCpgInicial">
+      </div>
+      <div class="field-row">
+        <label>Início</label>
+        <input type="date" id="finimpAddInicio">
+      </div>
+      <div class="field-row">
+        <label>Data Final</label>
+        <input type="date" id="finimpAddDataFinal">
+      </div>
+      <div class="field-row">
+        <label>DC</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 120" id="finimpAddDc">
+      </div>
+      <div class="field-row">
+        <label>Saldo Devedor (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddSaldoDevedor">
+      </div>
+      <div class="field-row">
+        <label>Amortização (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddAmortizacao">
+      </div>
+      <div class="field-row">
+        <label>Juros Merc. (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddJurosMerc">
+      </div>
+      <div class="field-row">
+        <label>IR Merc. (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddIrMerc">
+      </div>
+      <div class="field-row">
+        <label>Juros FTS (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddJurosFts">
+      </div>
+      <div class="field-row">
+        <label>IR FTS (USD)</label>
+        <input type="text" inputmode="decimal" id="finimpAddIrFts">
+      </div>
+      <div class="field-row">
+        <label>TOTAL (USD)</label>
+        <input type="text" inputmode="decimal" placeholder="Ex: 122.895,26" id="finimpAddTotalUsd">
+      </div>
+      <div class="field-row">
+        <label>Hedge</label>
+        <input type="text" id="finimpAddHedge">
+      </div>
+      <div class="field-row">
+        <label>Parcela (BRL)</label>
+        <input type="text" inputmode="decimal" id="finimpAddParcelaBrl">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeAddFinimpModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="finimpAddSaveBtn" onclick="submitAddFinimp()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="accessAdminOverlay"><div class="modal"><h3>Administrar acessos</h3><div class="modal-sub">O dono (trombini.paulo@gmail.com) sempre tem acesso. Adicione abaixo outros e-mails Google autorizados a ver o dashboard.</div><div id="accessEmailList" style="margin-bottom:16px;"></div><div class="field-row" style="display:flex; gap:8px; align-items:flex-end;"><div style="flex:1;"><label>Novo e-mail autorizado</label><input type="email" id="newAllowedEmail" placeholder="email@exemplo.com"></div><button type="button" class="btn btn-primary" onclick="addAllowedEmail()">Adicionar</button></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeAccessAdmin()">Fechar</button></div></div></div><div id="toastBox"></div>
+
+<script>
+// ---------------------------------------------------------------------
+// Configuracao
+// ---------------------------------------------------------------------
+const SHEET_ID = '17qjdmQwe5qK-B76RCOQ8v3fJmzdZHrfFnao3nDqVjAw';
+const GID_PROCESSOS = '0';
+// Pedido do usuario em 2026-08-04: o Controle FINIMP passou a usar as abas
+// novas "FINIMP resultado" (o que aparece no dash + botao Editar) e "FINIMP
+// NOVO CADASTRO" (o que o botao "+ Adicionar FINIMP" preenche). A aba antiga
+// "FINIMP" nao e mais lida por este dashboard.
+const GID_FINIMP_RESULTADO = '1439307414';
+const GID_FINIMP_CADASTRO = '1641199352';
+const GID_PRODUTOS = '632533681';
+const GID_DOCUMENTOS = '282169672';
+const GID_FORNECEDORES = '109208429';
+const GID_COR = '1208696385';
+const GID_REVESTIMENTO = '136288052';
+const TAB_PROCESSOS = 'Processos';
+const TAB_FINIMP_RESULTADO = 'FINIMP resultado';
+const TAB_FINIMP_CADASTRO = 'FINIMP NOVO CADASTRO';
+const TAB_DOCUMENTOS = 'Documentos';
+const TAB_PRODUTOS = 'Produtos';
+const TAB_FORNECEDORES = 'Fornecedores';
+const TAB_COR = 'Cor';
+const TAB_REVESTIMENTO = 'Revestimento'; const GID_ACESSO = '1462046220'; const TAB_ACESSO = 'Usuarios Autorizados'; const OWNER_EMAIL = 'trombini.paulo@gmail.com';
+const REFRESH_MS = 60000;
+
+// Pasta no Google Drive onde os PDFs de documentos por processo sao guardados
+const DRIVE_FOLDER_ID = '16WWIdaJBE3QMLNjKexvZ1mKmeXXxUSRv';
+const DOC_CATEGORIES = [
+  'Invoice', 'Bill of Lading (BL)', 'Packing List',
+  'Declaração de Importação (DI)', 'Contrato',
+  'Numerário', 'Custo Operacional', 'Outro',
+];
+
+// Status é uma lista fixa (nao vem de aba)
+const STATUS_OPTIONS = ['PRODUZINDO', 'EMBARCADO', 'CHEGOU'];
+
+// Cores conhecidas -> estilo de pintura da celula. Qualquer cor nova cai no fallback.
+const COR_STYLE = {
+  'natural':     {bg:'#c9ccd1', fg:'#16181d'},
+  'branco':      {bg:'#f5f5f0', fg:'#16181d'},
+  'preto':       {bg:'#161616', fg:'#ffffff'},
+  'madeira':     {bg:'#8b5a2b', fg:'#ffffff'},
+  'cinza medio': {bg:'#8a8f98', fg:'#ffffff'},
+  'ceramica':    {bg:'#c48a5a', fg:'#16181d'},
+};
+function corStyle(nome){
+  const key = String(nome || '').trim().toLowerCase();
+  if (COR_STYLE[key]) return COR_STYLE[key];
+  // fallback: gera uma cor estavel a partir do texto
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
+  const hue = Math.abs(hash) % 360;
+  return {bg:`hsl(${hue},45%,45%)`, fg:'#ffffff'};
+}
+
+// ID do cliente OAuth (tipo "Aplicativo da Web") criado no Google Cloud.
+// So funciona login para a conta autorizada como "usuario de teste".
+const CLIENT_ID = '446804769711-9d2f71d7mf1q464o0ffcu08prkldka32.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
+
+const EDITABLE_FIELDS = [
+  {key:'Processo Contr.', label:'Processo Contr.', type:'text'},
+  {key:'Fornecedor', label:'Fornecedor', type:'select', options:'FORNECEDOR_OPTIONS'},
+  {key:'Produto', label:'Produto', type:'select', options:'PRODUTO_OPTIONS'},
+  {key:'Revestimento', label:'Revestimento', type:'select', options:'REVESTIMENTO_OPTIONS'},
+  {key:'Cor', label:'Cor', type:'select', options:'COR_OPTIONS'},
+  {key:'NAVIO', label:'Navio', type:'text'},
+  {key:'Data de embarque', label:'Data de Embarque', type:'date'},
+  {key:'Bobinas', label:'Bobinas', type:'number', step:'1'},
+  {key:'Peso (MTON)', label:'Peso (MTON)', type:'number', step:'any'},
+  {key:'Preco Unit (USD)', label:'Preço Unit. (USD)', type:'number', step:'any'},
+  {key:'Valor Invoice (USD)', label:'Valor Invoice (USD)', type:'number', step:'any'},
+  {key:'ETA', label:'ETA', type:'date'},
+  {key:'ETB', label:'ETB', type:'date'},
+  {key:'Status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
+];
+
+// Campos do formulario "Novo Processo" — combo (select + opcao de digitar valor novo)
+const NEW_PROCESS_FIELDS = [
+  {key:'processo', label:'Processo Contr.', type:'text'},
+  {key:'fornecedor', label:'Fornecedor', type:'combo', options:'FORNECEDOR_OPTIONS', tab:'TAB_FORNECEDORES'},
+  {key:'produto', label:'Produto', type:'combo', options:'PRODUTO_OPTIONS', tab:'TAB_PRODUTOS'},
+  {key:'revestimento', label:'Revestimento', type:'combo', options:'REVESTIMENTO_OPTIONS', tab:'TAB_REVESTIMENTO'},
+  {key:'cor', label:'Cor', type:'combo', options:'COR_OPTIONS', tab:'TAB_COR'},
+  {key:'navio', label:'Navio', type:'text'},
+  {key:'dataEmbarque', label:'Data de Embarque', type:'date'},
+  {key:'bobinas', label:'Bobinas', type:'number', step:'1'},
+  {key:'peso', label:'Peso (MTON)', type:'number', step:'any'},
+  {key:'precoUnit', label:'Preço Unit. (USD)', type:'number', step:'any'},
+  {key:'valorInvoice', label:'Valor Invoice (USD)', type:'number', step:'any'},
+  {key:'eta', label:'ETA', type:'date'},
+  {key:'etb', label:'ETB', type:'date'},
+  {key:'status', label:'Status', type:'select', options:'STATUS_OPTIONS'},
+];
+
+const PALETTE = ['#4f8cff','#2fd08a','#f5b942','#f5615c','#a78bfa','#8f9ac0'];
+
+let lastRows = [];
+let ALL_PROCESSOS = [];
+let YEAR_FILTER = 'all';
+let PROCESSOS_HEADERS = [];
+let PRODUTO_OPTIONS = [];
+let FORNECEDOR_OPTIONS = [];
+let COR_OPTIONS = [];
+let REVESTIMENTO_OPTIONS = [];
+let DOCUMENTOS = [];
+let FINIMP_RESULTADO_ROWS = [];
+let FINIMP_CADASTRO_ROWS = [];
+let currentDocsProcesso = null;
+let accessToken = null;
+let tokenClient = null; let currentUserEmail = null; let ALLOWED_EMAILS = []; let appStarted = false;
+
+// ---------------------------------------------------------------------
+// Leitura (CSV publico da planilha) - funciona sem login, para qualquer visitante
+// ---------------------------------------------------------------------
+function csvUrl(gid){
+  // Usamos /export (nao /gviz/tq) porque o endpoint gviz fica com cache
+  // atrasado no lado do Google e pode mostrar valores antigos/vazios.
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+}
+
+// Converte data ISO (AAAA-MM-DD) para o padrao brasileiro (DD/MM/AAAA) so na exibicao.
+function fmtDateISOtoBR(iso){
+  if (!iso || !iso.trim()) return '—';
+  const parts = String(iso).trim().split('-');
+  if (parts.length !== 3) return iso;
+  const [y, m, d] = parts;
+  return `${d}/${m}/${y}`;
+}
+
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i], next = text[i+1];
+    if (inQuotes){
+      if (c === '"' && next === '"'){ field += '"'; i++; }
+      else if (c === '"'){ inQuotes = false; }
+      else { field += c; }
+    } else {
+      if (c === '"'){ inQuotes = true; }
+      else if (c === ','){ row.push(field); field = ''; }
+      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\r'){ /* skip */ }
+      else { field += c; }
+    }
+  }
+  if (field.length || row.length){ row.push(field); rows.push(row); }
+  if (!rows.length) return {headers: [], data: []};
+  const headers = rows[0];
+  const data = rows.slice(1).map((r, idx) => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = r[i] !== undefined ? r[i].trim() : '');
+    obj._row = idx + 2; // linha real na planilha (linha 1 = cabecalho)
+    return obj;
+  }).filter(o => headers.some(h => o[h] !== ''));
+  return {headers, data};
+}
+
+function num(v){
+  if (v == null) return null;
+  const cleaned = String(v).replace(/,/g, '').trim();
+  if (cleaned === '' || cleaned === '-') return null;
+  const n = parseFloat(cleaned);
+  return isNaN(n) ? null : n;
+}
+
+// Numeros no formato brasileiro (aba FINIMP): "1.184.577,59" ou "- 1.184.577,59"
+function numBR(v){
+  if (v == null) return null;
+  let s = String(v).replace(/\s+/g, '').trim();
+  if (s === '' || s === '-') return null;
+  s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+// Parser tolerante para campos digitados pelo usuario nos formularios de
+// Editar/Adicionar FINIMP: aceita tanto virgula decimal (padrao BR, "5,1150")
+// quanto ponto decimal ("5.1150"), sem limite de casas decimais. Usado so
+// para os campos em que fazemos conta no proprio dashboard (TX Dolar Merc x
+// Total Finimp = Total R$) — os demais campos vao para a planilha como o
+// usuario digitou, e o Google Sheets interpreta como se ele tivesse digitado
+// direto na celula (mesma logica BR ja usada em toda a aba FINIMP).
+function parseDecimalInput(v){
+  if (v == null) return null;
+  let s = String(v).trim();
+  if (s === '') return null;
+  if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+// Datas da aba FINIMP vem em MM/DD/AAAA
+function parseMDY(str){
+  if (!str) return null;
+  const parts = String(str).trim().split('/');
+  if (parts.length !== 3) return null;
+  const mm = parseInt(parts[0], 10), dd = parseInt(parts[1], 10), yyyy = parseInt(parts[2], 10);
+  if (!mm || !dd || !yyyy) return null;
+  return new Date(yyyy, mm - 1, dd);
+}
+
+// Datas das abas "FINIMP resultado" e "FINIMP NOVO CADASTRO" vem em
+// DD/MM/AAAA (confirmado célula a célula em 2026-08-04: Inicio=21/05/2026,
+// Data Final=18/09/2026 — se fosse MM/DD a Data Final ficaria ANTES do
+// Inicio, o que não faz sentido). Formato diferente da aba antiga "FINIMP"
+// (essa usava MM/DD/AAAA, ver parseMDY acima) — por isso um parser separado.
+function parseDMY(str){
+  if (!str) return null;
+  const parts = String(str).trim().split('/');
+  if (parts.length !== 3) return null;
+  const dd = parseInt(parts[0], 10), mm = parseInt(parts[1], 10), yyyy = parseInt(parts[2], 10);
+  if (!dd || !mm || !yyyy) return null;
+  return new Date(yyyy, mm - 1, dd);
+}
+
+// Parser tolerante para os valores JÁ GRAVADOS nas abas "FINIMP resultado" e
+// "FINIMP NOVO CADASTRO": ao contrário do resto da planilha (formato BR,
+// vírgula decimal), essas duas abas guardam número com ponto decimal — ex.
+// H2 (TOTAL (USD)) tem valor bruto "122895.26" mesmo aparecendo como
+// "$122.895,26"... na verdade aparecendo como "$122,895.26" na grade (cifrão
+// + vírgula de milhar), mas a barra de fórmulas mostra o valor cru
+// "122895.26" (ponto decimal, sem separador de milhar). Detecta qual
+// separador (vírgula ou ponto) aparece por último na string e trata esse
+// como decimal — funciona tanto para "$122,895.26" quanto para "122.895,26"
+// quanto para "5.15" simples.
+function numAny(v){
+  if (v == null) return null;
+  let s = String(v).replace(/[^0-9.,\-]/g, '').trim();
+  if (s === '' || s === '-') return null;
+  const lastComma = s.lastIndexOf(',');
+  const lastDot = s.lastIndexOf('.');
+  if (lastComma > lastDot){
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (lastDot > lastComma){
+    s = s.replace(/,/g, '');
+  }
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function fmtDateBR(d){
+  if (!d) return '—';
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+}
+
+const fmtUSD = n => n == null ? '—' : n.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtBRL = n => n == null ? '—' : n.toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtNum = (n, d=2) => n == null ? '—' : n.toLocaleString('pt-BR', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+function kpiCard(label, value, cls=''){
+  return `<div class="kpi"><div class="label">${label}</div><div class="value ${cls}">${value}</div></div>`;
+}
+
+function statusBadge(s){
+  const key = String(s || '').trim().toUpperCase();
+  if (key === 'CHEGOU') return `<span class="badge chegou">${s}</span>`;
+  if (key === 'EMBARCADO') return `<span class="badge embarcado">${s}</span>`;
+  if (key === 'PRODUZINDO') return `<span class="badge produzindo">${s}</span>`;
+  if (!s) return '<span class="badge default">—</span>';
+  return `<span class="badge default">${s}</span>`;
+}
+
+// Link de rastreamento de navio (VesselFinder, busca por nome — carga a granel nao tem container/BL rastreavel).
+function navioCell(navio){
+  if (!navio || !navio.trim()) return '—';
+  const url = `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(navio.trim())}`;
+  return `<span class="navio-cell-wrap"><span class="navio-name" title="${navio}">${navio}</span><a href="${url}" target="_blank" rel="noopener" class="edit-btn icon-btn" title="Rastrear navio no VesselFinder">🧭</a></span>`;
+}
+
+// ---------------------------------------------------------------------
+// Filtro de ano+mes (baseado no ETA) — "a partir de", nao mostra dados antes do periodo escolhido
+// ---------------------------------------------------------------------
+const MES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function etaYearMonth(row){
+  const eta = row && row.ETA ? row.ETA.trim() : '';
+  const m = eta.match(/^(\d{4})-(\d{2})/);
+  return m ? `${m[1]}-${m[2]}` : null;
+}
+
+function populateYearFilter(rows){
+  const yearMonths = [...new Set(rows.map(etaYearMonth).filter(Boolean))].sort();
+  const sel = document.getElementById('yearFilter');
+  const current = sel.value || 'all';
+  sel.innerHTML = ['<option value="all">Todos os períodos</option>']
+    .concat(yearMonths.map(ym => {
+      const [y, mo] = ym.split('-');
+      const label = `${MES_ABREV[parseInt(mo, 10) - 1]}/${y}`;
+      return `<option value="${ym}">A partir de ${label}</option>`;
+    }))
+    .join('');
+  // mantem a selecao anterior se o periodo ainda existir na lista
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
+  YEAR_FILTER = sel.value;
+}
+
+function onYearFilterChange(){
+  YEAR_FILTER = document.getElementById('yearFilter').value;
+  renderAll();
+}
+
+function applyYearFilter(rows){
+  if (YEAR_FILTER === 'all') return rows;
+  return rows.filter(r => {
+    const ym = etaYearMonth(r);
+    if (!ym) return true; // sem ETA definido: nao exclui, so nao da pra classificar
+    return ym >= YEAR_FILTER;
+  });
+}
+
+function renderAll(){
+  // Linhas sem Fornecedor preenchido nao sao exibidas em nenhum dash (geralmente sao linhas vazias/incompletas na planilha).
+  const comFornecedor = ALL_PROCESSOS.filter(r => r.Fornecedor && r.Fornecedor.trim() !== '');
+  const filtered = applyYearFilter(comFornecedor);
+  renderKPIs(filtered);
+  renderFornecedorTable(filtered);
+  renderProdutoTotalTable(filtered);
+  renderProdutoEtaTable(filtered);
+  renderPpglTable(filtered); renderEtaMatrix(filtered);
+  renderTable(filtered);
+}
+
+function renderKPIs(rows){
+  const contratos = new Set(rows.map(r => r['Processo Contr.']).filter(v => v && v.trim() !== '')).size;
+
+  const isChegou = r => String(r.Status || '').trim().toUpperCase() === 'CHEGOU';
+
+  const valorChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+  const valorOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Valor Invoice (USD)']) || 0), 0);
+
+  const pesoChegou = rows.filter(isChegou).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
+  const pesoOutros = rows.filter(r => !isChegou(r)).reduce((s,r) => s + (num(r['Peso (MTON)']) || 0), 0);
+
+  document.getElementById('kpis').innerHTML = [
+    kpiCard('Número de Contratos', fmtNum(contratos)),
+    kpiCard('Valor Invoice — Em Andamento', fmtUSD(valorOutros)),
+    kpiCard('Peso — Em Andamento (MTON)', fmtNum(pesoOutros)),
+    kpiCard('Valor Invoice — Chegou', fmtUSD(valorChegou), 'pos'),
+    kpiCard('Peso — Chegou (MTON)', fmtNum(pesoChegou), 'pos'),
+  ].join('');
+}
+
+function renderFornecedorTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const fornecedor = r.Fornecedor || '—';
+    const processo = r['Processo Contr.'] || '—';
+    const key = fornecedor + '|' + processo;
+    if (!groups.has(key)){
+      groups.set(key, {fornecedor, processo, valor:0, aPagar:0, dataEmbarque: r['Data de embarque'] || '', statuses: new Set()});
+    }
+    const g = groups.get(key);
+    g.valor += (num(r['Valor Invoice (USD)']) || 0);
+    g.aPagar += (num(r['A Pagar (USD)']) || 0);
+    if (!g.dataEmbarque && r['Data de embarque']) g.dataEmbarque = r['Data de embarque'];
+    if (r.Status && r.Status.trim()) g.statuses.add(r.Status.trim());
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.dataEmbarque && !b.dataEmbarque) return 0;
+    if (!a.dataEmbarque) return 1;
+    if (!b.dataEmbarque) return -1;
+    return a.dataEmbarque.localeCompare(b.dataEmbarque);
+  });
+  const tbody = document.querySelector('#tblFornecedor tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => {
+    const statusCell = it.statuses.size
+      ? [...it.statuses].map(statusBadge).join(' ')
+      : statusBadge('');
+    const quitado = Math.abs(it.aPagar) < 0.005;
+    return `
+    <tr class="${quitado ? 'row-paid' : ''}">
+      <td>${it.fornecedor}</td>
+      <td>${it.processo}</td>
+      <td>${statusCell}</td>
+      <td>${fmtUSD(it.valor)}</td>
+      <td class="${quitado ? 'paid-cell' : ''}">${quitado ? `${fmtUSD(it.aPagar)} · Quitado` : fmtUSD(it.aPagar)}</td>
+      <td>${fmtDateISOtoBR(it.dataEmbarque)}</td>
+    </tr>
+  `;
+  }).join('');
+}
+
+function renderProdutoTotalTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = r.Produto || '—';
+    if (!groups.has(produto)) groups.set(produto, {produto, peso:0, bobinas:0});
+    const g = groups.get(produto);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => b.peso - a.peso);
+  const tbody = document.querySelector('#tblProdutoTotal tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="3" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderPpglTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = (r.Produto || '').trim();
+    if (!produto.toUpperCase().startsWith('PPGL')) return;
+    const cor = r.Cor || '';
+    const eta = r.ETA || '';
+    const key = produto + '|' + cor + '|' + eta;
+    if (!groups.has(key)) groups.set(key, {produto, cor, eta, peso:0, bobinas:0});
+    const g = groups.get(key);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.eta && !b.eta) return 0;
+    if (!a.eta) return 1;
+    if (!b.eta) return -1;
+    return a.eta.localeCompare(b.eta);
+  });
+  const tbody = document.querySelector('#tblPpgl tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">Nenhum produto PPGL encontrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => {
+    const cs = corStyle(it.cor);
+    const corCell = it.cor
+      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>`
+      : '—';
+    return `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${corCell}</td>
+      <td>${fmtDateISOtoBR(it.eta)}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
+    </tr>
+  `;
+  }).join('');
+}
+
+function renderProdutoEtaTable(rows){
+  const groups = new Map();
+  rows.forEach(r => {
+    const produto = r.Produto || '—';
+    const eta = r.ETA || '';
+    const key = produto + '|' + eta;
+    if (!groups.has(key)) groups.set(key, {produto, eta, peso:0, bobinas:0});
+    const g = groups.get(key);
+    g.peso += (num(r['Peso (MTON)']) || 0);
+    g.bobinas += (num(r.Bobinas) || 0);
+  });
+  const items = [...groups.values()].sort((a,b) => {
+    if (!a.eta && !b.eta) return 0;
+    if (!a.eta) return 1;
+    if (!b.eta) return -1;
+    return a.eta.localeCompare(b.eta);
+  });
+  const tbody = document.querySelector('#tblProdutoEta tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sem dados.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(it => `
+    <tr>
+      <td>${it.produto}</td>
+      <td>${fmtDateISOtoBR(it.eta)}</td>
+      <td>${fmtNum(it.peso)}</td>
+      <td>${fmtNum(it.bobinas)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderEtaMatrix(rows){ const groups = new Map(); const etaSet = new Set(); rows.forEach(r => { const produto = (r.Produto || '').trim(); if (!produto) return; const revestimento = (r.Revestimento || '').trim(); const cor = (r.Cor || '').trim(); const key = produto + '|' + revestimento + '|' + cor; if (!groups.has(key)) groups.set(key, {produto, revestimento, cor, byEta: new Map(), total: 0}); const g = groups.get(key); const eta = (r.ETA || '').trim(); const peso = num(r['Peso (MTON)']) || 0; if (eta){ etaSet.add(eta); g.byEta.set(eta, (g.byEta.get(eta) || 0) + peso); } g.total += peso; }); const etas = [...etaSet].sort((a,b) => a.localeCompare(b)); const items = [...groups.values()].sort((a,b) => { const pa = a.produto.localeCompare(b.produto); if (pa) return pa; const ra = a.revestimento.localeCompare(b.revestimento); if (ra) return ra; return a.cor.localeCompare(b.cor); }); const thead = document.getElementById('tblEtaMatrixHead'); thead.innerHTML = `<tr><th rowspan="2">Produto</th><th rowspan="2">Revestimento</th><th rowspan="2">Cor</th><th colspan="${etas.length || 1}" style="text-align:center;">ETA</th><th rowspan="2">Total Geral</th></tr><tr>${etas.length ? etas.map(e => `<th style="text-align:center;">${fmtDateISOtoBR(e)}</th>`).join('') : '<th>—</th>'}</tr>`; const tbody = document.querySelector('#tblEtaMatrix tbody'); if (!items.length){ tbody.innerHTML = `<tr><td colspan="${4 + etas.length}" class="empty">Sem dados.</td></tr>`; return; } const maxVal = Math.max(1, ...items.flatMap(it => [...it.byEta.values()]), 1); const heatCell = v => { if (!v) return ''; const ratio = Math.min(1, v / maxVal); const alpha = (0.12 + ratio * 0.55).toFixed(2); return `background:rgba(79,140,255,${alpha}); font-weight:600;`; }; const colTotals = new Map(etas.map(e => [e, 0])); let grandTotal = 0; const rowsHtml = items.map(it => { const cs = corStyle(it.cor); const corCell = it.cor ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${it.cor}</span>` : '—'; const cells = etas.map(e => { const v = it.byEta.get(e) || 0; if (v) colTotals.set(e, colTotals.get(e) + v); return `<td style="text-align:center; ${heatCell(v)}">${v ? fmtNum(v) : ''}</td>`; }).join(''); grandTotal += it.total; return `<tr><td>${it.produto || '—'}</td><td>${it.revestimento || '—'}</td><td>${corCell}</td>${cells}<td style="text-align:center; font-weight:700;">${fmtNum(it.total)}</td></tr>`; }).join(''); const totalRowCells = etas.map(e => `<td style="text-align:center; font-weight:700;">${fmtNum(colTotals.get(e))}</td>`).join(''); const totalRow = `<tr style="background:var(--panel2);"><td colspan="3" style="font-weight:700;">Total Geral</td>${totalRowCells}<td style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td></tr>`; tbody.innerHTML = rowsHtml + totalRow; } function renderTable(rows){
+  lastRows = rows;
+  const tbody = document.querySelector('#tblProcessos tbody');
+  const editing = !!accessToken;
+  document.getElementById('thEditCol').style.display = editing ? '' : 'none';
+  document.getElementById('newProcessBtn').style.display = editing ? '' : 'none';
+  document.getElementById('manageAccessBtn').style.display = editing ? '' : 'none';
+
+  if (!rows.length){
+    tbody.innerHTML = `<tr><td colspan="15" class="empty">Nenhum dado encontrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const cs = corStyle(r.Cor);
+    const corCell = r.Cor
+      ? `<span class="cor-cell" style="background:${cs.bg};color:${cs.fg};">${r.Cor}</span>`
+      : '—';
+    return `
+    <tr>
+      <td title="${r['Processo Contr.'] || ''}">${r['Processo Contr.'] || '—'}</td>
+      <td title="${r.Fornecedor || ''}">${r.Fornecedor || '—'}</td>
+      <td title="${r.Produto || ''}">${r.Produto || '—'}</td>
+      <td title="${r.Revestimento || ''}">${r.Revestimento || '—'}</td>
+      <td>${corCell}</td>
+      <td>${navioCell(r.NAVIO)}</td>
+      <td>${fmtDateISOtoBR(r['Data de embarque'])}</td>
+      <td>${num(r.Bobinas) != null ? fmtNum(num(r.Bobinas)) : '—'}</td>
+      <td>${fmtNum(num(r['Peso (MTON)']))}</td>
+      <td>${num(r['Preco Unit (USD)']) != null ? fmtUSD(num(r['Preco Unit (USD)'])) : '—'}</td>
+      <td>${fmtUSD(num(r['Valor Invoice (USD)']))}</td>
+      <td>${fmtDateISOtoBR(r.ETA)}</td>
+      <td>${fmtDateISOtoBR(r.ETB)}</td>
+      <td>${statusBadge(r.Status)}</td>
+      <td>${editing ? `
+        <button class="edit-btn icon-btn" title="Editar" onclick="openEditModal(${r._row})">✏️</button>
+        <button class="edit-btn icon-btn" title="Documentos" onclick="openDocsModal('${String(r['Processo Contr.'] ?? '').replace(/'/g, "\\'")}')">📄</button>
+      ` : ''}</td>
+    </tr>
+  `;
+  }).join('');
+}
+
+// Busca um campo pelo nome exato; se nao existir (ex: caractere especial diferente
+// no cabecalho da planilha, como o simbolo de grau em "N° FINIMP"), tenta achar uma
+// coluna cujo nome contenha o texto informado em fallbackContains.
+function ffield(row, exact, fallbackContains){
+  if (row[exact] !== undefined) return row[exact];
+  if (fallbackContains){
+    const k = Object.keys(row).find(k => k.toUpperCase().includes(fallbackContains.toUpperCase()));
+    if (k) return row[k];
+  }
+  return '';
+}
+
+// Painel "Controle FINIMP" (pedido do usuario em 2026-08-03): foco em
+// controlar data/valor pago do FINIMP — Processo Contr., Data Pgto, Total
+// Finimp (USD), Status, TX Dolar Merc. e Total R$ (= TX Dolar Merc x Total
+// Finimp, recalculado e gravado na planilha sempre que a TX Dolar Merc e'
+// editada). So Status e TX Dolar Merc sao editaveis por aqui; o resto vem
+// da planilha. Linhas "molde" da aba (sem Processo Contr. nem Data Pgto,
+// so com tracinho "-" em colunas de formula) nao aparecem na lista.
+function statusBadgeFinimp(s){
+  const key = String(s || '').trim().toLowerCase();
+  if (!key) return '<span class="badge default">—</span>';
+  if (key === 'pago') return '<span class="badge chegou">' + s + '</span>';
+  return '<span class="badge produzindo">' + s + '</span>';
+}
+
+// Painel Controle FINIMP agora le direto da aba "FINIMP resultado" (pedido
+// do usuario em 2026-08-04). As 7 colunas mostradas sao exatamente as
+// pedidas: Contrato, Data Final, Total (USD), Valor R$ pago Banco, Valor
+// FINIMP custo real, Ganho, Status. Datas em DD/MM/AAAA (parseDMY) e numeros
+// com parser tolerante (numAny), ja que essa aba guarda os valores com
+// ponto decimal (diferente do resto da planilha, que usa virgula BR).
+function renderFinimp(){
+  const editing = !!accessToken;
+  document.getElementById('addFinimpBtn').style.display = editing ? '' : 'none';
+
+  const items = FINIMP_RESULTADO_ROWS
+    .filter(r => (r['Contrato'] || '').trim())
+    .sort((a,b) => {
+      const da = parseDMY(a['Data Final']), db = parseDMY(b['Data Final']);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da - db;
+    });
+  const tbody = document.querySelector('#tblFinimp tbody');
+  if (!items.length){
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">Sem dados FINIMP.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(r => {
+    const totalUsd = numAny(r['TOTAL (USD)']);
+    const valorRsBanco = numAny(r['Valor R$ pago Banco']);
+    const valorCustoReal = numAny(r['Valor FINIMP custo real']);
+    const ganho = numAny(r['Ganho']);
+    return `
+    <tr>
+      <td>${r['Contrato'] || '—'}</td>
+      <td>${fmtDateBR(parseDMY(r['Data Final']))}</td>
+      <td>${fmtUSD(totalUsd)}</td>
+      <td>${fmtBRL(valorRsBanco)}</td>
+      <td>${fmtBRL(valorCustoReal)}</td>
+      <td>${fmtBRL(ganho)}</td>
+      <td>${statusBadgeFinimp(r['Status'])}</td>
+      <td><button class="edit-btn" onclick="openViewFinimpModal(${r._row})">Ver Cadastro</button> ${editing ? `<button class="edit-btn" onclick="openEditFinimpModal(${r._row})">Editar</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Grava uma unica celula em qualquer aba (generico, parametrizado por nome
+// de aba) — usado tanto para "FINIMP resultado" quanto (no futuro, se
+// preciso) qualquer outra aba do FINIMP.
+async function writeSheetCell(tabName, rowNum, colLetterStr, value){
+  const range = `${tabName}!${colLetterStr}${rowNum}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ values: [[value]] }),
+  });
+  if (!res.ok){
+    if (res.status === 401){
+      accessToken = null;
+      setEditingUI(false);
+      throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+    }
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+// Acha a proxima linha vazia de uma lista de linhas ja carregadas (generico,
+// usado tanto para "FINIMP resultado" quanto "FINIMP NOVO CADASTRO"). As
+// duas abas novas nao tem linhas "molde"/template abaixo dos dados reais
+// (diferente da antiga aba FINIMP), entao basta checar se 'Contrato' esta
+// vazio.
+function findNextEmptyRow(rows, keyField){ keyField = keyField || 'Contrato';
+  for (const r of rows){
+    if (!(r[keyField] || '').trim()) return r._row;
+  }
+  const last = rows[rows.length - 1];
+  return last ? last._row + 1 : 2;
+}
+
+// Escreve uma linha inteira nova em qualquer aba com um range A1 explicito
+// (nunca via appendRow/values.append "as cegas"), parametrizado por nome da
+// aba e ultima coluna (letra) do range.
+async function writeSheetRow(tabName, rowNum, lastColLetter, values){
+  const range = `${tabName}!A${rowNum}:${lastColLetter}${rowNum}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ values: [values] }),
+  });
+  if (!res.ok){
+    if (res.status === 401){
+      accessToken = null;
+      setEditingUI(false);
+      throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+    }
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
+  }
+  return res.json();
+}
+
+// Botao Editar: pedido do usuario em 2026-08-04 restringiu os campos
+// editaveis a exatamente 4, todos da aba "FINIMP resultado" — Status (Q),
+// Taxa Dolar dia pgto (N), Taxa Dolar FTS (J), Taxa Dolar MERC (L). Sem
+// recalculo automatico de nenhum outro campo (diferente do comportamento
+// antigo com a aba FINIMP, que recalculava Total R$).
+function openEditFinimpModal(rowId){
+  const r = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId);
+  if (!r) return;
+  document.getElementById('editFinimpTitle').textContent =
+    `Editar FINIMP ${r['Contrato'] || ''} · linha ${rowId}`;
+  document.getElementById('finimpEditStatus').value = (r['Status'] || '').trim().toLowerCase();
+  const taxaDiaPgto = numAny(r['Taxa Dolar dia pgto']);
+  const taxaFts = numAny(r['Taxa Dolar FTS']);
+  const taxaMerc = numAny(r['Taxa Dolar MERC']);
+  const valorPagoBanco = numAny(r['Valor R$ pago Banco']);
+  const custoReal = numAny(r['Valor FINIMP custo real']);
+  // Mostra com virgula (padrao BR), que e' o formato que os campos aceitam digitar.
+  document.getElementById('finimpEditTaxaDiaPgto').value = taxaDiaPgto != null ? String(taxaDiaPgto).replace('.', ',') : '';
+  document.getElementById('finimpEditTaxaFts').value = taxaFts != null ? String(taxaFts).replace('.', ',') : '';
+  document.getElementById('finimpEditTaxaMerc').value = taxaMerc != null ? String(taxaMerc).replace('.', ',') : '';
+  document.getElementById('finimpEditValorPagoBanco').value = valorPagoBanco != null ? String(valorPagoBanco).replace('.', ',') : '';
+  document.getElementById('finimpEditCustoReal').value = custoReal != null ? String(custoReal).replace('.', ',') : '';
+  document.getElementById('editFinimpOverlay').dataset.row = rowId;
+  document.getElementById('editFinimpOverlay').classList.add('open');
+}
+
+function closeEditFinimpModal(){
+  document.getElementById('editFinimpOverlay').classList.remove('open');
+}
+
+function openViewFinimpModal(rowId){ const r = FINIMP_CADASTRO_ROWS.find(x => x._row === rowId); const rr = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId); const titulo = (rr && rr['Contrato']) || (r && r['Contrato']) || ''; document.getElementById('viewFinimpTitle').textContent = 'Cadastro FINIMP ' + titulo + ' - linha ' + rowId; const body = document.getElementById('viewFinimpBody'); const keys = r ? Object.keys(r).filter(k => k !== '_row') : []; const hasData = keys.some(k => (r[k] || '').trim()); if (!hasData){ body.innerHTML = '<div style="color:var(--txt2);">Nenhuma informação de cadastro encontrada na aba "FINIMP NOVO CADASTRO" para esta linha.</div>'; } else { body.innerHTML = keys.map(k => '<div style="display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); padding:7px 0;"><span style="color:var(--txt2);">' + k + '</span><span>' + ((r[k]||'').trim() || '—') + '</span></div>').join(''); } document.getElementById('viewFinimpOverlay').classList.add('open'); } function closeViewFinimpModal(){ document.getElementById('viewFinimpOverlay').classList.remove('open'); } async function submitFinimpEdit(){
+  const overlay = document.getElementById('editFinimpOverlay');
+  const rowId = parseInt(overlay.dataset.row, 10);
+  const original = FINIMP_RESULTADO_ROWS.find(x => x._row === rowId) || {};
+
+  const newStatus = document.getElementById('finimpEditStatus').value;
+  const newTaxaDiaPgto = parseDecimalInput(document.getElementById('finimpEditTaxaDiaPgto').value);
+  const newTaxaFts = parseDecimalInput(document.getElementById('finimpEditTaxaFts').value);
+  const newTaxaMerc = parseDecimalInput(document.getElementById('finimpEditTaxaMerc').value);
+  const newValorPagoBanco = parseDecimalInput(document.getElementById('finimpEditValorPagoBanco').value);
+  const newCustoReal = parseDecimalInput(document.getElementById('finimpEditCustoReal').value);
+
+  const origStatus = (original['Status'] || '').trim().toLowerCase();
+  const origTaxaDiaPgto = numAny(original['Taxa Dolar dia pgto']);
+  const origTaxaFts = numAny(original['Taxa Dolar FTS']);
+  const origTaxaMerc = numAny(original['Taxa Dolar MERC']);
+  const origValorPagoBanco = numAny(original['Valor R$ pago Banco']);
+  const origCustoReal = numAny(original['Valor FINIMP custo real']);
+
+  // Compara valores (nao strings) pra nao disparar gravacao a toa so por
+  // causa de diferenca de formatacao (5.15 vs 5,1500 etc).
+  const changes = [];
+  if (origStatus !== newStatus) changes.push(['Q', newStatus]);
+  if ((origTaxaDiaPgto ?? null) !== (newTaxaDiaPgto ?? null)) changes.push(['N', newTaxaDiaPgto != null ? newTaxaDiaPgto : '']);
+  if ((origTaxaFts ?? null) !== (newTaxaFts ?? null)) changes.push(['J', newTaxaFts != null ? newTaxaFts : '']);
+  if ((origTaxaMerc ?? null) !== (newTaxaMerc ?? null)) changes.push(['L', newTaxaMerc != null ? newTaxaMerc : '']);
+  const valorPagoBancoChanged = (origValorPagoBanco ?? null) !== (newValorPagoBanco ?? null);
+  const custoRealChanged = (origCustoReal ?? null) !== (newCustoReal ?? null);
+  if (valorPagoBancoChanged) changes.push(['M', newValorPagoBanco != null ? newValorPagoBanco : '']);
+  if (custoRealChanged) changes.push(['O', newCustoReal != null ? newCustoReal : '']);
+  // Ganho (P) e' sempre M - O: recalcula e regrava toda vez que qualquer um
+  // dos dois mudar, pra nunca ficar com o valor antigo desatualizado.
+  if (valorPagoBancoChanged || custoRealChanged){
+    const finalPagoBanco = newValorPagoBanco != null ? newValorPagoBanco : (origValorPagoBanco ?? 0);
+    const finalCustoReal = newCustoReal != null ? newCustoReal : (origCustoReal ?? 0);
+    changes.push(['P', finalPagoBanco - finalCustoReal]);
+  }
+
+  if (!changes.length){
+    closeEditFinimpModal();
+    return;
+  }
+
+  const saveBtn = document.getElementById('finimpEditSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Salvando…';
+
+  let okCount = 0, lastError = null;
+  for (const [col, value] of changes){
+    try {
+      await writeSheetCell(TAB_FINIMP_RESULTADO, rowId, col, value);
+      okCount++;
+    } catch (e) {
+      lastError = e.message;
+    }
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Salvar';
+
+  if (okCount) showToast(`${okCount} campo(s) salvo(s) na planilha.`, true);
+  if (lastError) showToast(lastError, false);
+
+  closeEditFinimpModal();
+  refresh();
+}
+
+// IDs dos campos de texto livre do formulario "Adicionar FINIMP", na ordem
+// exata das colunas da planilha (A..AB). Campos ausentes daqui (datas,
+// Processo Contr., Status, Total R$) tem tratamento proprio em submitAddFinimp.
+// IDs dos campos de texto livre do formulario "Adicionar FINIMP", na ordem
+// exata das colunas da aba "FINIMP NOVO CADASTRO" (A..W). Campos ausentes
+// daqui (Contrato, Inicio, Data Final) tem tratamento proprio em
+// submitAddFinimp porque viram data ISO->DD/MM/AAAA ou sao obrigatorios.
+const FINIMP_ADD_TEXT_FIELD_IDS = {
+  1: 'finimpAddNFinimp',          // B: N. Finimp
+  2: 'finimpAddTaxaDolarDia',     // C: Taxa Dolar dia (USD)
+  3: 'finimpAddVolMercadoria',    // D: Volume Mercadoria (USD)
+  4: 'finimpAddVolFts',           // E: Volume FTS (USD)
+  5: 'finimpAddVolTotal',         // F: Volume Total (USD)
+  6: 'finimpAddJurosAA',          // G: Juros a.a.
+  7: 'finimpAddIrJuros',          // H: IR s/ Juros
+  8: 'finimpAddCpgPct',           // I: CPG %
+  9: 'finimpAddCustoAllIn',       // J: Custo All-in
+  10: 'finimpAddCpgInicial',      // K: CPG Inicial (USD)
+  13: 'finimpAddDc',              // N: DC
+  14: 'finimpAddSaldoDevedor',    // O: Saldo Devedor (USD)
+  15: 'finimpAddAmortizacao',     // P: Amortização (USD)
+  16: 'finimpAddJurosMerc',       // Q: Juros Merc. (USD)
+  17: 'finimpAddIrMerc',          // R: IR Merc. (USD)
+  18: 'finimpAddJurosFts',        // S: Juros FTS (USD)
+  19: 'finimpAddIrFts',           // T: IR FTS (USD)
+  20: 'finimpAddTotalUsd',        // U: TOTAL (USD)
+  21: 'finimpAddHedge',           // V: Hedge
+  22: 'finimpAddParcelaBrl',      // W: Parcela (BRL)
+};
+
+function openAddFinimpModal(){
+  document.getElementById('finimpAddContrato').value = '';
+  document.getElementById('finimpAddInicio').value = '';
+  document.getElementById('finimpAddDataFinal').value = '';
+  Object.values(FINIMP_ADD_TEXT_FIELD_IDS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const options = [...new Set(FINIMP_CADASTRO_ROWS.map(r => (r['Contrato'] || '').trim()).filter(Boolean))].sort();
+  document.getElementById('finimpProcessoOptions').innerHTML =
+    options.map(p => `<option value="${String(p).replace(/"/g,'&quot;')}">`).join('');
+  document.getElementById('addFinimpOverlay').classList.add('open');
+}
+
+function closeAddFinimpModal(){
+  document.getElementById('addFinimpOverlay').classList.remove('open');
+}
+
+// Converte AAAA-MM-DD (valor nativo do <input type="date">) para DD/MM/AAAA,
+// que e' o formato usado nas colunas de data das abas "FINIMP resultado" e
+// "FINIMP NOVO CADASTRO" (ver parseDMY acima — diferente do MM/DD/AAAA da
+// antiga aba FINIMP).
+function isoDateToDMY(iso){
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// Pedido do usuario em 2026-08-04 (item 3): o botao "Acionar FINIMP" agora
+// grava a linha nova na aba "FINIMP NOVO CADASTRO", com todos os seus 23
+// campos. E (item 2, "relacionar por titulo das colunas") tambem cria, na
+// mesma hora, uma linha correspondente na aba "FINIMP resultado", copiando
+// so os 8 campos cujo titulo de coluna existe nas duas abas: Contrato,
+// Volume Mercadoria (USD), Volume FTS (USD), Volume Total (USD), Inicio,
+// Data Final, DC e TOTAL (USD). As demais colunas de "FINIMP resultado"
+// (Juros USD, Taxa Dolar FTS, Valor R$ FTS, Taxa Dolar MERC, Valor R$ pago
+// Banco, Taxa Dolar dia pgto, Valor FINIMP custo real, Ganho, Status) ficam
+// em branco ate serem preenchidas pelo botao Editar.
+async function submitAddFinimp(){
+  const contrato = document.getElementById('finimpAddContrato').value.trim();
+  const inicioIso = document.getElementById('finimpAddInicio').value; // AAAA-MM-DD
+  const dataFinalIso = document.getElementById('finimpAddDataFinal').value;
+
+  if (!contrato){
+    showToast('Preencha o Contrato.', false);
+    return;
+  }
+
+  const saveBtn = document.getElementById('finimpAddSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Adicionando…';
+
+  try {
+    const inicioDMY = isoDateToDMY(inicioIso);
+    const dataFinalDMY = isoDateToDMY(dataFinalIso);
+
+    // Ordem exata das 23 colunas da aba FINIMP NOVO CADASTRO (A..W).
+    const cadastroRow = new Array(23).fill('');
+    cadastroRow[0] = contrato;      // A: Contrato
+    cadastroRow[11] = inicioDMY;    // L: Inicio
+    cadastroRow[12] = dataFinalDMY; // M: Data Final
+    Object.entries(FINIMP_ADD_TEXT_FIELD_IDS).forEach(([idx, id]) => {
+      const el = document.getElementById(id);
+      if (el && el.value.trim() !== '') cadastroRow[Number(idx)] = el.value.trim();
+    });
+
+    const targetCadastroRow = findNextEmptyRow(FINIMP_CADASTRO_ROWS);
+    await writeSheetRow(TAB_FINIMP_CADASTRO, targetCadastroRow, 'W', cadastroRow);
+
+    // Linha correspondente em FINIMP resultado, so com os 8 campos em comum
+    // (relacionamento por titulo de coluna, ver comentario acima).
+    const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    const resultadoRow = new Array(17).fill('');
+    resultadoRow[0] = contrato;                              // A: Contrato
+    resultadoRow[1] = getVal('finimpAddVolMercadoria');       // B: Volume Mercadoria (USD)
+    resultadoRow[2] = getVal('finimpAddVolFts');              // C: Volume FTS (USD)
+    resultadoRow[3] = getVal('finimpAddVolTotal');            // D: Volume Total (USD)
+    resultadoRow[4] = inicioDMY;                              // E: Inicio
+    resultadoRow[5] = dataFinalDMY;                           // F: Data Final
+    resultadoRow[6] = getVal('finimpAddDc');                  // G: DC
+    resultadoRow[7] = getVal('finimpAddTotalUsd'); resultadoRow[8] = '=IFERROR(INDIRECT("H"&ROW())-INDIRECT("D"&ROW()),"")'; resultadoRow[10] = '=IFERROR(INDIRECT("J"&ROW())*INDIRECT("C"&ROW()),"")'; resultadoRow[12] = '=IFERROR(INDIRECT("L"&ROW())*INDIRECT("H"&ROW()),"")'; resultadoRow[14] = '=IFERROR(INDIRECT("N"&ROW())*(INDIRECT("B"&ROW())+INDIRECT("I"&ROW()))+INDIRECT("K"&ROW()),"")'; resultadoRow[15] = '=IFERROR(INDIRECT("O"&ROW())-INDIRECT("M"&ROW()),"")';            // H: TOTAL (USD)
+
+    const targetResultadoRow = findNextEmptyRow(FINIMP_RESULTADO_ROWS);
+    await writeSheetRow(TAB_FINIMP_RESULTADO, targetResultadoRow, 'Q', resultadoRow);
+
+    showToast('FINIMP adicionado na planilha.', true);
+    closeAddFinimpModal();
+    await refresh();
+  } catch (e) {
+    showToast(e.message, false);
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Adicionar';
+}
+
+// Colunas em comum entre "FINIMP resultado" e "FINIMP NOVO CADASTRO" (mesmo
+// titulo de cabecalho nas duas abas) — pedido do usuario em 2026-08-04.
+// 'type':'number' faz o parser tolerante (numAny) converter o texto do CSV
+// num numero de verdade antes de gravar (evita ambiguidade de locale, ja
+// que a API sempre entende um JS number sem depender de virgula/ponto);
+// 'type':'text' (as duas datas) grava o texto DD/MM/AAAA como veio.
+const FINIMP_SHARED_FIELDS = [
+  // 'Contrato' entrou em 2026-09-10: sem ele, uma linha criada direto na
+  // planilha (fora do botao "+ Adicionar FINIMP") nunca aparecia no painel
+  // Controle FINIMP, porque renderFinimp() so mostra linhas com Contrato
+  // preenchido em "FINIMP resultado" — e esse campo nunca era sincronizado.
+  { title: 'Contrato',                resultadoCol: 'A', type: 'text'   },
+  { title: 'Volume Mercadoria (USD)', resultadoCol: 'B', type: 'number' },
+  { title: 'Volume FTS (USD)',        resultadoCol: 'C', type: 'number' },
+  { title: 'Volume Total (USD)',      resultadoCol: 'D', type: 'number' },
+  // Corrigido em 2026-09-10: estava sem acento ('Inicio'), mas o cabecalho
+  // real da planilha (nas duas abas) e' 'Início' — por causa disso essa
+  // coluna nunca batia e nunca era sincronizada.
+  { title: 'Início',                  resultadoCol: 'E', type: 'text'   },
+  { title: 'Data Final',              resultadoCol: 'F', type: 'text'   },
+  { title: 'DC',                      resultadoCol: 'G', type: 'number' },
+  { title: 'TOTAL (USD)',             resultadoCol: 'H', type: 'number' },
+];
+
+// Sincroniza "FINIMP resultado" a partir de "FINIMP NOVO CADASTRO" pra
+// linhas que ja existiam direto na planilha (fora do botao Adicionar FINIMP
+// deste dashboard) e por isso ficaram sem os campos em comum preenchidos.
+// Casa as linhas pelo NUMERO DA LINHA na planilha (a mesma linha nas duas
+// abas = o mesmo FINIMP — confirmado em 2026-08-04 conferindo Contrato e
+// Data Final linha a linha), e usa o titulo da coluna pra saber qual valor
+// vai em qual campo. So preenche celulas que estao vazias em "FINIMP
+// resultado" (nunca sobrescreve algo que ja foi preenchido, seja pelo
+// Editar ou digitado direto na planilha).
+async function syncFinimpResultadoFromCadastro(){
+  if (!accessToken) return;
+  const cadastroByRow = new Map(FINIMP_CADASTRO_ROWS.map(r => [r._row, r]));
+  const writes = [];
+  for (const rRes of FINIMP_RESULTADO_ROWS){
+    const rCad = cadastroByRow.get(rRes._row);
+    if (!rCad) continue;
+    for (const field of FINIMP_SHARED_FIELDS){
+      const current = (rRes[field.title] || '').trim();
+      const incoming = (rCad[field.title] || '').trim();
+      if (current || !incoming) continue;
+      let value;
+      if (field.type === 'number'){
+        const n = numAny(incoming);
+        if (n == null) continue;
+        value = n;
+      } else {
+        value = incoming;
+      }
+      writes.push({ row: rRes._row, col: field.resultadoCol, value });
+      rRes[field.title] = incoming; // reflete na hora no render, sem esperar novo refresh()
+    }
+  }
+  if (!writes.length) return;
+  await Promise.all(writes.map(w =>
+    writeSheetCell(TAB_FINIMP_RESULTADO, w.row, w.col, w.value)
+      .catch(e => console.error('Falha ao sincronizar FINIMP resultado', w, e))
+  ));
+  showToast(`FINIMP resultado sincronizado com FINIMP NOVO CADASTRO (${writes.length} campo(s)).`, true);
+}
+
+async function backfillFinimpResultadoFormulas(){ if (!accessToken) return; const writes = []; for (const r of FINIMP_RESULTADO_ROWS){ if (!(r['Contrato'] || '').trim()) continue; const row = r._row; const specs = [ { col: 'I', title: 'Juros USD', formula: `=IFERROR(H${row}-D${row},"")` }, { col: 'K', title: 'Valor R$ FTS', formula: `=IFERROR(J${row}*C${row},"")` }, { col: 'M', title: 'Valor R$ pago Banco', formula: `=IFERROR(L${row}*H${row},"")` }, { col: 'O', title: 'Valor FINIMP custo real', formula: `=IFERROR(N${row}*(B${row}+I${row})+K${row},"")` }, { col: 'P', title: 'Ganho', formula: `=IFERROR(O${row}-M${row},"")` }, ]; for (const spec of specs){ if ((r[spec.title] || '').trim()) continue; writes.push({ row, col: spec.col, value: spec.formula }); } } if (!writes.length) return; await Promise.all(writes.map(w => writeSheetCell(TAB_FINIMP_RESULTADO, w.row, w.col, w.value).catch(e => console.error('Falha ao preencher formula em FINIMP resultado', w, e)))); showToast(`${writes.length} fórmula(s) restaurada(s) em "FINIMP resultado".`, true); } async function refresh(){
+  try {
+    const [resP, resFR, resFC, resPr, resD, resForn, resCor, resRev] = await Promise.all([
+      fetch(csvUrl(GID_PROCESSOS), {cache:'no-store'}),
+      fetch(csvUrl(GID_FINIMP_RESULTADO), {cache:'no-store'}),
+      fetch(csvUrl(GID_FINIMP_CADASTRO), {cache:'no-store'}),
+      fetch(csvUrl(GID_PRODUTOS), {cache:'no-store'}),
+      fetch(csvUrl(GID_DOCUMENTOS), {cache:'no-store'}),
+      fetch(csvUrl(GID_FORNECEDORES), {cache:'no-store'}),
+      fetch(csvUrl(GID_COR), {cache:'no-store'}),
+      fetch(csvUrl(GID_REVESTIMENTO), {cache:'no-store'}),
+    ]);
+    if (!resP.ok) throw new Error('Falha ao buscar dados da planilha');
+    const textP = await resP.text();
+    const parsedP = parseCSV(textP);
+    PROCESSOS_HEADERS = parsedP.headers;
+
+    if (resPr.ok){
+      const parsedPr = parseCSV(await resPr.text());
+      const col = parsedPr.headers[0];
+      PRODUTO_OPTIONS = parsedPr.data.map(r => r[col]).filter(v => v);
+    }
+    if (resForn.ok){
+      const parsedForn = parseCSV(await resForn.text());
+      const col = parsedForn.headers[0];
+      FORNECEDOR_OPTIONS = parsedForn.data.map(r => r[col]).filter(v => v);
+    }
+    if (resCor.ok){
+      const parsedCor = parseCSV(await resCor.text());
+      const col = parsedCor.headers[0];
+      COR_OPTIONS = parsedCor.data.map(r => r[col]).filter(v => v);
+    }
+    if (resRev.ok){
+      const parsedRev = parseCSV(await resRev.text());
+      const col = parsedRev.headers[0];
+      REVESTIMENTO_OPTIONS = parsedRev.data.map(r => r[col]).filter(v => v);
+    }
+    if (resD.ok){
+      DOCUMENTOS = parseCSV(await resD.text()).data;
+    }
+    // Controle FINIMP (pedido do usuario em 2026-08-04): le das duas abas
+    // novas "FINIMP resultado" e "FINIMP NOVO CADASTRO" — a antiga aba
+    // FINIMP nao e mais consultada por este dashboard. Normaliza as chaves
+    // (trim) igual antes, para os campos serem acessiveis pelo nome exato.
+    if (resFR.ok){
+      const parsedFR = parseCSV(await resFR.text());
+      FINIMP_RESULTADO_ROWS = parsedFR.data.map(row => {
+        const norm = { _row: row._row };
+        parsedFR.headers.forEach(h => { norm[h.trim()] = row[h]; });
+        return norm;
+      });
+    }
+    if (resFC.ok){
+      const parsedFC = parseCSV(await resFC.text());
+      FINIMP_CADASTRO_ROWS = parsedFC.data.map(row => {
+        const norm = { _row: row._row };
+        parsedFC.headers.forEach(h => { norm[h.trim()] = row[h]; });
+        return norm;
+      });
+    }
+    if (resFR.ok && resFC.ok){
+      await syncFinimpResultadoFromCadastro(); } if (resFR.ok){ await backfillFinimpResultadoFormulas();
+    }
+
+    document.getElementById('sourceLabel').textContent =
+      `Fonte: Google Sheets · atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
+    document.getElementById('statusDot').className = 'dot';
+    document.getElementById('statusText').textContent = 'ao vivo';
+
+    ALL_PROCESSOS = parsedP.data;
+    populateYearFilter(ALL_PROCESSOS);
+    renderAll();
+    renderFinimp();
+  } catch (err) {
+    document.getElementById('statusDot').className = 'dot err';
+    document.getElementById('statusText').textContent = 'sem conexão';
+    console.error(err);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Login (Google Identity Services) + escrita direta na Sheets API
+// ---------------------------------------------------------------------
+function showToast(message, ok=true){
+  const box = document.getElementById('toastBox');
+  const el = document.createElement('div');
+  el.className = `toast ${ok ? 'ok' : 'err'}`;
+  el.textContent = message;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 6000);
+}
+
+function setEditingUI(on){
+  const badge = document.getElementById('modeBadge');
+  const btn = document.getElementById('authBtn');
+  if (on){
+    badge.textContent = 'MODO EDIÇÃO';
+    badge.className = 'badge-edit';
+    btn.textContent = 'Sair do modo edição';
+  } else {
+    badge.textContent = 'SOMENTE LEITURA';
+    badge.className = 'badge-readonly';
+    btn.textContent = 'Entrar para editar';
+  }
+  renderTable(lastRows); renderFinimp();
+}
+
+function startApp(){ if (appStarted) return; appStarted = true; refresh(); setInterval(refresh, REFRESH_MS); } function parseJwt(token){ try { const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')); return JSON.parse(jsonPayload); } catch (e) { return null; } } async function fetchAllowedEmails(){ try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); if (!res.ok) return []; const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; return parsed.data.map(r => (r[col] || '').trim().toLowerCase()).filter(v => v); } catch (e) { console.error(e); return []; } } function renderAdminBtn(){ const btn = document.getElementById('manageEmailsBtn'); if (!btn) return; btn.style.display = (currentUserEmail && currentUserEmail.toLowerCase() === OWNER_EMAIL.toLowerCase()) ? '' : 'none'; } async function onAccessGranted(email){ currentUserEmail = email; document.getElementById('accessGateOverlay').classList.remove('open'); renderAdminBtn(); startApp(); } async function handleCredentialResponse(resp){ const payload = parseJwt(resp.credential); if (!payload || !payload.email){ const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'Não foi possível confirmar sua conta Google. Tente novamente.'; return; } const email = payload.email.trim().toLowerCase(); if (email === OWNER_EMAIL.toLowerCase()){ onAccessGranted(payload.email); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); if (ALLOWED_EMAILS.includes(email)){ onAccessGranted(payload.email); } else { const denied = document.getElementById('accessGateDenied'); denied.style.display = 'block'; denied.textContent = 'O e-mail ' + payload.email + ' não tem acesso a este dashboard. Peça para o administrador liberar seu acesso.'; } } function initAccessGate(){ if (typeof google === 'undefined' || !google.accounts) { setTimeout(initAccessGate, 300); return; } google.accounts.id.initialize({ client_id: CLIENT_ID, callback: handleCredentialResponse }); google.accounts.id.renderButton( document.getElementById('accessGateBtn'), { theme: 'filled_blue', text: 'signin_with', shape: 'pill' } ); } function initGis(){
+  if (typeof google === 'undefined' || !google.accounts) {
+    setTimeout(initGis, 300);
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if (resp.error){
+        showToast('Não foi possível entrar: ' + resp.error, false);
+        return;
+      }
+      accessToken = resp.access_token;
+      setEditingUI(true);
+      showToast('Modo edição ativado.', true);
+    },
+  });
+}
+
+async function openAccessAdmin(){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro para poder gerenciar acessos.', false); return; } ALLOWED_EMAILS = await fetchAllowedEmails(); const list = ALLOWED_EMAILS.length ? ALLOWED_EMAILS.map(e => '<div class="field-row" style="display:flex; justify-content:space-between; align-items:center;"><span>' + e + '</span><button type="button" class="btn btn-secondary" onclick="removeAllowedEmail(\'' + e + '\')">Remover</button></div>').join('') : '<div style="color:var(--txt2);">Nenhum e-mail adicional cadastrado.</div>'; document.getElementById('accessEmailList').innerHTML = list; document.getElementById('accessAdminOverlay').classList.add('open'); } function closeAccessAdmin(){ document.getElementById('accessAdminOverlay').classList.remove('open'); } function handleAuthClick(){
+  if (accessToken){
+    google.accounts.oauth2.revoke(accessToken, () => {});
+    accessToken = null;
+    setEditingUI(false);
+    showToast('Modo edição desativado.', true);
+    return;
+  }
+  if (!tokenClient){
+    showToast('Ainda carregando o login do Google, tente de novo em instantes.', false);
+    return;
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+async function addAllowedEmail(){ const input = document.getElementById('newAllowedEmail'); const email = (input.value || '').trim().toLowerCase(); if (!email || !email.includes('@')){ showToast('Digite um e-mail válido.', false); return; } if (email === OWNER_EMAIL.toLowerCase() || ALLOWED_EMAILS.includes(email)){ showToast('Esse e-mail já tem acesso.', false); return; } try { await appendRow(TAB_ACESSO, [email]); showToast('E-mail adicionado.', true); input.value = ''; openAccessAdmin(); } catch (e) { showToast(e.message, false); } } async function removeAllowedEmail(email){ if (!accessToken){ showToast('Clique em "Entrar para editar" primeiro.', false); return; } try { const res = await fetch(csvUrl(GID_ACESSO), {cache:'no-store'}); const parsed = parseCSV(await res.text()); const col = parsed.headers[0]; const rowIdx = parsed.data.findIndex(r => (r[col] || '').trim().toLowerCase() === email); if (rowIdx === -1){ showToast('E-mail não encontrado.', false); return; } const rowNum = parsed.data[rowIdx]._row; const range = TAB_ACESSO + '!A' + rowNum; const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent(range) + '?valueInputOption=USER_ENTERED'; const putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [['']] }) }); if (!putRes.ok) throw new Error('Erro ao remover e-mail.'); showToast('E-mail removido.', true); openAccessAdmin(); } catch (e) { showToast(e.message, false); } } function colLetter(n){
+  let s = '';
+  while (n > 0){
+    const m = (n - 1) % 26;
+    s = String.fromCharCode(65 + m) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+async function writeCell(rowNum, field, value){
+  const colIdx = PROCESSOS_HEADERS.indexOf(field) + 1;
+  if (colIdx < 1) throw new Error(`Campo '${field}' não encontrado na planilha.`);
+  const range = `${TAB_PROCESSOS}!${colLetter(colIdx)}${rowNum}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ values: [[value]] }),
+  });
+  if (!res.ok){
+    if (res.status === 401){
+      accessToken = null;
+      setEditingUI(false);
+      throw new Error('Sessão expirada. Clique em "Entrar para editar" de novo.');
+    }
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+async function appendRow(tabName, values){ const lastCol = String.fromCharCode('A'.charCodeAt(0) + values.length - 1);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(tabName + '!A:' + lastCol)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ values: [values] }),
+  });
+  if (!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao gravar em ${tabName}`);
+  }
+  return res.json();
+}
+
+const OPTION_STORE = {
+  FORNECEDOR_OPTIONS: () => FORNECEDOR_OPTIONS,
+  PRODUTO_OPTIONS: () => PRODUTO_OPTIONS,
+  REVESTIMENTO_OPTIONS: () => REVESTIMENTO_OPTIONS,
+  COR_OPTIONS: () => COR_OPTIONS,
+  STATUS_OPTIONS: () => STATUS_OPTIONS,
+};
+const TAB_STORE = {
+  TAB_FORNECEDORES, TAB_PRODUTOS, TAB_REVESTIMENTO, TAB_COR,
+};
+
+// Garante que um valor exista na lista suspensa (aba de apoio); se nao existir, adiciona.
+async function ensureListValue(value, optionsArrayName, tabConstName){
+  const value2 = (value || '').trim();
+  if (!value2) return;
+  const arr = OPTION_STORE[optionsArrayName]();
+  if (arr.includes(value2)) return;
+  const tabName = TAB_STORE[tabConstName];
+  await appendRow(tabName, [value2]);
+  arr.push(value2);
+}
+
+function renderDocList(){
+  const el = document.getElementById('docList');
+  const docs = DOCUMENTOS.filter(d => (d['Processo'] ?? '') === currentDocsProcesso);
+  if (!docs.length){
+    el.innerHTML = '<div class="empty">Nenhum documento enviado ainda.</div>';
+    return;
+  }
+  el.innerHTML = docs.map(d => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-size:13px;">${d['Categoria'] ?? '—'}</div>
+        <div style="font-size:12px; color:var(--txt2);">${d['Nome do Arquivo'] ?? ''} · ${d['Enviado em'] ?? ''}</div>
+      </div>
+      <a href="${d['Link']}" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Abrir</a>
+    </div>
+  `).join('');
+}
+
+function openDocsModal(processo){
+  currentDocsProcesso = processo;
+  document.getElementById('docTitle').textContent = `Documentos · ${processo || ''}`;
+  const sel = document.getElementById('docCategoria');
+  sel.innerHTML = DOC_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+  document.getElementById('docFile').value = '';
+  renderDocList();
+  document.getElementById('docOverlay').classList.add('open');
+}
+
+function closeDocsModal(){
+  document.getElementById('docOverlay').classList.remove('open');
+}
+
+function arrayBufferToBase64(buffer){
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+async function uploadToDrive(file, driveName){
+  const metadata = { name: driveName, parents: [DRIVE_FOLDER_ID] };
+  const boundary = '-------fupimportacao314159265';
+  const delimiter = `\r\n--${boundary}\r\n`;
+  const closeDelim = `\r\n--${boundary}--`;
+  const base64Data = arrayBufferToBase64(await file.arrayBuffer());
+
+  const multipartBody =
+    delimiter +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+    JSON.stringify(metadata) +
+    delimiter +
+    'Content-Type: application/pdf\r\n' +
+    'Content-Transfer-Encoding: base64\r\n\r\n' +
+    base64Data +
+    closeDelim;
+
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': `multipart/related; boundary=${boundary}`,
+    },
+    body: multipartBody,
+  });
+  if (!res.ok){
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || `Erro HTTP ${res.status} ao enviar para o Drive`);
+  }
+  const created = await res.json();
+
+  try {
+    await fetch(`https://www.googleapis.com/drive/v3/files/${created.id}/permissions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ role: 'reader', type: 'anyone' }),
+    });
+  } catch (e) { /* nao bloqueia se falhar */ }
+
+  return created.webViewLink || `https://drive.google.com/file/d/${created.id}/view`;
+}
+
+async function appendDocumentRow(processo, categoria, filename, link){
+  const enviado_em = new Date().toISOString().slice(0,19).replace('T',' ');
+  await appendRow(TAB_DOCUMENTOS, [processo, categoria, filename, link, enviado_em]);
+}
+
+async function submitUpload(){
+  const fileInput = document.getElementById('docFile');
+  const file = fileInput.files[0];
+  if (!file){
+    showToast('Escolha um arquivo PDF.', false);
+    return;
+  }
+  const categoria = document.getElementById('docCategoria').value;
+  const saveBtn = document.getElementById('docSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Enviando…';
+
+  try {
+    const driveName = `${currentDocsProcesso} - ${categoria} - ${file.name}`;
+    const link = await uploadToDrive(file, driveName);
+    await appendDocumentRow(currentDocsProcesso, categoria, file.name, link);
+    showToast('Documento enviado com sucesso.', true);
+    await refresh();
+    renderDocList();
+    fileInput.value = '';
+  } catch (e) {
+    if (String(e.message).includes('401')){
+      accessToken = null;
+      setEditingUI(false);
+    }
+    showToast(e.message, false);
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Enviar';
+}
+
+function buildSelectOptions(optionsArrayName, currentVal){
+  const opts = new Set(OPTION_STORE[optionsArrayName]());
+  if (currentVal) opts.add(currentVal);
+  return ['<option value="">—</option>'].concat(
+    [...opts].map(o => `<option value="${String(o).replace(/"/g,'&quot;')}" ${o === currentVal ? 'selected' : ''}>${o}</option>`)
+  ).join('');
+}
+
+function openEditModal(rowId){
+  const r = lastRows.find(x => x._row === rowId);
+  if (!r) return;
+
+  document.getElementById('editTitle').textContent =
+    `Editar processo ${r['Processo Contr.'] || ''} · linha ${rowId}`;
+
+  const form = document.getElementById('editForm');
+  form.innerHTML = EDITABLE_FIELDS.map(f => {
+    const val = r[f.key] ?? '';
+
+    if (f.type === 'select'){
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <select data-field="${f.key}">
+            ${buildSelectOptions(f.options, val)}
+          </select>
+        </div>`;
+    }
+
+    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+    return `
+      <div class="field-row">
+        <label>${f.label}</label>
+        <input type="${f.type}" ${attrs} data-field="${f.key}"
+               value="${String(val).replace(/"/g,'&quot;')}">
+      </div>`;
+  }).join('');
+
+  form.dataset.row = rowId;
+  document.getElementById('editOverlay').classList.add('open');
+}
+
+function closeEditModal(){
+  document.getElementById('editOverlay').classList.remove('open');
+}
+
+async function submitEdit(){
+  const form = document.getElementById('editForm');
+  const rowId = parseInt(form.dataset.row, 10);
+  const original = lastRows.find(x => x._row === rowId) || {};
+  const inputs = [...form.querySelectorAll('input, select')];
+
+  const changed = inputs
+    .map(inp => ({ field: inp.dataset.field, value: inp.value }))
+    .filter(({field, value}) => String(original[field] ?? '') !== String(value ?? ''));
+
+  if (!changed.length){
+    closeEditModal();
+    return;
+  }
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Salvando…';
+
+  let okCount = 0;
+  let lastError = null;
+
+  for (const {field, value} of changed){
+    try {
+      await writeCell(rowId, field, value);
+      okCount++;
+    } catch (e) {
+      lastError = e.message;
+      break;
+    }
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Salvar';
+
+  if (okCount) showToast(`${okCount} campo(s) salvo(s) na planilha.`, true);
+  if (lastError) showToast(lastError, false);
+
+  closeEditModal();
+  refresh();
+}
+
+// ---------------------------------------------------------------------
+// Novo Processo
+// ---------------------------------------------------------------------
+function openNewProcessModal(){
+  const form = document.getElementById('newProcessForm');
+  form.innerHTML = NEW_PROCESS_FIELDS.map(f => {
+    if (f.type === 'select'){
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <select data-field="${f.key}">${buildSelectOptions(f.options, '')}</select>
+        </div>`;
+    }
+    if (f.type === 'combo'){
+      const listId = 'dl_' + f.key;
+      const opts = OPTION_STORE[f.options]();
+      return `
+        <div class="field-row">
+          <label>${f.label}</label>
+          <input type="text" data-field="${f.key}" list="${listId}" placeholder="Selecione ou digite um novo">
+          <datalist id="${listId}">
+            ${opts.map(o => `<option value="${String(o).replace(/"/g,'&quot;')}">`).join('')}
+          </datalist>
+        </div>`;
+    }
+    const attrs = f.type === 'number' ? `step="${f.step}"` : '';
+    return `
+      <div class="field-row">
+        <label>${f.label}</label>
+        <input type="${f.type}" ${attrs} data-field="${f.key}">
+      </div>`;
+  }).join('');
+  document.getElementById('newProcessOverlay').classList.add('open');
+}
+
+function closeNewProcessModal(){
+  document.getElementById('newProcessOverlay').classList.remove('open');
+}
+
+async function submitNewProcess(){
+  const form = document.getElementById('newProcessForm');
+  const vals = {};
+  [...form.querySelectorAll('input, select')].forEach(inp => { vals[inp.dataset.field] = inp.value.trim(); });
+
+  const saveBtn = document.getElementById('newProcessSaveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Criando…';
+
+  try {
+    await ensureListValue(vals.fornecedor, 'FORNECEDOR_OPTIONS', 'TAB_FORNECEDORES');
+    await ensureListValue(vals.produto, 'PRODUTO_OPTIONS', 'TAB_PRODUTOS');
+    await ensureListValue(vals.revestimento, 'REVESTIMENTO_OPTIONS', 'TAB_REVESTIMENTO');
+    await ensureListValue(vals.cor, 'COR_OPTIONS', 'TAB_COR');
+
+    // Ordem exata das colunas na aba Processos:
+    // Processo Contr., Fornecedor, Produto, Revestimento, Cor, NAVIO, Data de embarque,
+    // Bobinas, Peso (MTON), Preco Unit (USD), Valor Invoice (USD), Pago (USD), A Pagar (USD), ETA, ETB, Status
+    const targetProcessoRow = findNextEmptyRow(ALL_PROCESSOS, 'Processo Contr.'); const row = [
+      vals.processo, vals.fornecedor, vals.produto, vals.revestimento, vals.cor,
+      vals.navio, vals.dataEmbarque, vals.bobinas, vals.peso, vals.precoUnit,
+      vals.valorInvoice, '', `=IFERROR(L${targetProcessoRow}-K${targetProcessoRow},"")`, vals.eta, vals.etb, vals.status,
+    ];
+    await writeSheetRow(TAB_PROCESSOS, targetProcessoRow, 'P', row);
+    showToast('Processo criado com sucesso.', true);
+    closeNewProcessModal();
+    await refresh();
+  } catch (e) {
+    if (String(e.message).includes('401')){
+      accessToken = null;
+      setEditingUI(false);
+    }
+    showToast(e.message, false);
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Criar Processo';
+}
+
+window.addEventListener('load', initGis);
+window.addEventListener('load', initAccessGate);
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard FUP Importação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#161d2e; --panel2:#1c2438; --border:#2a3348;
+    --txt:#e8ecf5; --txt2:#8f9ac0; --accent:#4f8cff; --green:#2fd08a;
+    --amber:#f5b942; --red:#f5615c; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box;}
+  html, body{ max-width:100%; overflow-x:hidden; }
+  body{
+    margin:0; font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--txt);
+  }
+  header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 28px; border-bottom:1px solid var(--border);
+    flex-wrap:wrap; gap:12px;
+  }
+  header h1{ font-size:20px; margin:0; font-weight:600; }
+  header .sub{ color:var(--txt2); font-size:13px; margin-top:4px; }
+  .badge-readonly{
+    background:rgba(245,185,66,.15); color:var(--amber); font-size:11px;
+    padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
+  }
+  .badge-edit{
+    background:rgba(47,208,138,.15); color:var(--green); font-size:11px;
+    padding:3px 9px; border-radius:20px; font-weight:600; margin-left:8px;
+  }
+  .right-controls{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .status{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--txt2); }
+  .dot{
+    width:9px; height:9px; border-radius:50%; background:var(--green);
+    box-shadow:0 0 0 0 rgba(47,208,138,.6); animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(47,208,138,.5);}
+    70%{box-shadow:0 0 0 8px rgba(47,208,138,0);}
+    100%{box-shadow:0 0 0 0 rgba(47,208,138,0);}
+  }
+  .dot.err{ background:var(--red); animation:none; }
+  main{ padding:24px 28px 60px; max-width:1500px; margin:0 auto; }
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:24px; }
+  .kpi{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .kpi .label{ color:var(--txt2); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .kpi .value{ font-size:22px; font-weight:700; margin-top:6px; }
+  .kpi .value.pos{ color:var(--green); }
+  .kpi .value.neg{ color:var(--red); }
+  .grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+  main > .panel{ margin-bottom:16px; }
+  @media (max-width:1100px){ .grid3 { grid-template-columns:1fr 1fr; } }
+  @media (max-width:900px){ .grid, .grid3 { grid-template-columns:1fr; } }
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px; }
+  .panel h2{ font-size:14px; margin:0 0 14px; color:var(--txt2); font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
+  .chart-wrap{ position:relative; min-height:120px; overflow:auto; padding-top:4px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th,td{ padding:9px 10px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+  th{ color:var(--txt2); font-weight:600; font-size:11px; text-transform:uppercase; position:sticky; top:0; background:var(--panel); }
+  tr:hover td{ background:var(--panel2); }
+  .table-scroll{ max-height:440px; overflow:auto; }
+  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge.produzindo{ background:rgba(245,185,66,.15); color:var(--amber); }
+  .badge.embarcado{ background:rgba(79,140,255,.15); color:var(--accent); }
+  .badge.chegou{ background:rgba(47,208,138,.15); color:var(--green); }
+
+  .row-paid td{ background:rgba(47,208,138,.08); }
+  .row-paid:hover td{ background:rgba(47,208,138,.14); }
+  .paid-cell{ color:var(--green); font-weight:700; }
+  .badge.default{ background:rgba(143,154,192,.15); color:var(--txt2); }
+  .empty{ color:var(--txt2); text-align:center; padding:40px; font-size:14px; }
+  footer{ text-align:center; color:var(--txt2); font-size:12px; padding:20px; }
+
+  .btn{
+    border:none; border-radius:8px; padding:8px 16px; font-size:13px; cursor:pointer;
+    font-weight:600;
+  }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-secondary{ background:var(--panel2); color:var(--txt2); border:1px solid var(--border); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .edit-btn{
+    background:var(--panel2); border:1px solid var(--border); color:var(--txt2);
+    border-radius:6px; padding:4px 9px; cursor:pointer; font-size:12px;
+  }
+  .edit-btn:hover{ color:var(--txt); border-color:var(--accent); }
+
+  .overlay{
+    display:none; position:fixed; inset:0; background:rgba(5,8,15,.65);
+    align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .overlay.open{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    width:100%; max-width:560px; max-height:88vh; overflow:auto;
+    padding:22px 24px;
+  }
+  .modal.wide{ max-width:720px; }
+  .modal h3{ margin:0 0 4px; font-size:17px; }
+  .modal .modal-sub{ color:var(--txt2); font-size:13px; margin-bottom:18px; }
+  .field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:560px){ .field-grid{ grid-template-columns:1fr; } }
+  .field-row{ margin-bottom:14px; }
+  .field-row label{
+    display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2);
+    text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
+  }
+  .field-row input, .field-row select{
+    width:100%; background:var(--panel2); border:1px solid var(--border);
+    color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;
+  }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+
+  .cor-cell{
+    border-radius:6px; padding:3px 6px; font-size:12px; font-weight:600;
+    display:inline-block; width:88px; text-align:center; box-sizing:border-box;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;
+  }
+
+  .icon-btn{ padding:4px 6px; font-size:13px; line-height:1; flex:0 0 auto; }
+  .navio-name{
+    display:inline-block; max-width:70px; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; vertical-align:middle; font-size:12px;
+  }
+  .navio-cell-wrap{
+    display:flex; align-items:center; gap:4px; width:100%; overflow:hidden;
+  }
+  .navio-cell-wrap .navio-name{ flex:1 1 auto; min-width:0; max-width:none; }
+  .navio-cell-wrap .icon-btn{ text-decoration:none; }
+
+  /* Tabela de Detalhe dos Processos: bem mais compacta pra evitar rolagem lateral */
+  #tblProcessos{ font-size:11px; table-layout:fixed; width:100%; }
+  #tblProcessos th, #tblProcessos td{ padding:6px 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #tblProcessos th{
+    white-space:normal; word-break:break-word; line-height:1.2;
+    vertical-align:bottom; text-align:left; font-size:10px; overflow:visible;
+  }
+  #tblProcessos td:has(.navio-cell-wrap){ overflow:visible; }
+  #tblProcessos .cor-cell{ width:100%; max-width:64px; font-size:10.5px; padding:2px 4px; }
+  #tblProcessos .navio-name{ font-size:10.5px; }
+  #tblProcessos .badge{ font-size:9.5px; padding:2px 6px; }
+  #tblProcessos .icon-btn{ padding:3px 5px; font-size:12px; }
+
+  #toastBox{
+    position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column;
+    gap:8px; z-index:60;
+  }
+  .toast{
+    background:var(--panel2); border:1px solid var(--border); border-left:4px solid var(--accent);
+    color:var(--txt); padding:11px 16px; border-radius:8px; font-size:13px; max-width:340px;
+    box-shadow:0 6px 20px rgba(0,0,0,.3);
+  }
+  .toast.ok{ border-left-color:var(--green); }
+  .toast.err{ border-left-color:var(--red); }
+
+  /* ---------- Layout específico para celular ---------- */
+  @media (max-width:640px){
+    header{ padding:14px 16px; gap:8px; }
+    header h1{ font-size:16px; line-height:1.3; }
+    header .sub{ font-size:11px; }
+    .badge-readonly, .badge-edit{ font-size:10px; padding:2px 7px; margin-left:6px; }
+    .right-controls{ width:100%; gap:8px; }
+    .right-controls .btn, .right-controls a.btn{
+      flex:1 1 auto; text-align:center; padding:8px 10px; font-size:12px;
+    }
+    .status{ width:100%; justify-content:center; font-size:12px; }
+
+    main{ padding:14px 12px 40px; }
+    .kpis{ grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:16px; }
+    .kpi{ padding:12px 12px; }
+    .kpi .label{ font-size:10px; }
+    .kpi .value{ font-size:17px; margin-top:4px; }
+
+    .grid, .grid3{ gap:12px; margin-bottom:12px; }
+    .panel{ padding:12px; border-radius:10px; }
+    .panel h2{ font-size:12px; margin-bottom:10px; }
+
+    table{ font-size:12px; }
+    th, td{ padding:7px 8px; }
+    .table-scroll{
+      max-height:360px; overflow-x:auto; overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .cor-cell{ width:72px; font-size:11px; }
+    .badge{ font-size:10px; padding:2px 7px; }
+    .edit-btn{ font-size:11px; padding:4px 7px; }
+
+    .overlay{ padding:10px; align-items:flex-start; }
+    .modal, .modal.wide{ max-width:100%; padding:16px; max-height:92vh; margin-top:10px; }
+    .field-grid{ grid-template-columns:1fr; gap:10px; }
+    .modal-actions{ flex-wrap:wrap; }
+    .modal-actions .btn{ flex:1 1 auto; }
+
+    footer{ font-size:11px; padding:14px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay open" id="accessGateOverlay" style="z-index:9999; background:var(--bg);"><div class="modal" style="text-align:center;"><h3>Dashboard FUP Importação</h3><div class="modal-sub" id="accessGateMsg">Acesso restrito. Entre com sua conta Google para continuar.</div><div id="accessGateBtn" style="display:flex; justify-content:center; margin:18px 0;"></div><div id="accessGateDenied" style="display:none; color:var(--red); font-size:13px; margin-top:10px;"></div></div></div><header>
+  <div>
+    <h1>Dashboard FUP Importação <span class="badge-readonly" id="modeBadge">SOMENTE LEITURA</span></h1>
+    <div class="sub" id="sourceLabel">carregando…</div>
+  </div>
+  <div class="right-controls">
+    <select id="yearFilter" class="btn btn-secondary" onchange="onYearFilterChange()" title="Filtra o dashboard a partir do ano selecionado (baseado no ETA)">
+      <option value="all">Todos os anos</option>
+    </select>
+    <button class="btn btn-secondary" id="newProcessBtn" style="display:none;" onclick="openNewProcessModal()">+ Novo Processo</button>
+    <a href="https://console.cloud.google.com/apis/credentials/consent?project=446804769711" target="_blank" rel="noopener" id="manageAccessBtn" class="btn btn-secondary" style="text-decoration:none; display:none;">Gerenciar acessos</a><button class="btn btn-secondary" id="manageEmailsBtn" style="display:none;" onclick="openAccessAdmin()">Administrar acessos</button>
+    <button class="btn btn-secondary" id="authBtn" onclick="handleAuthClick()">Entrar para editar</button>
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">conectando…</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Valor Invoice (USD) por Fornecedor / Contrato</h2>
+      <div class="chart-wrap table-scroll" id="tblFornecedorWrap">
+        <table id="tblFornecedor">
+          <thead><tr><th>Fornecedor</th><th>Processo Contr.</th><th>Status</th><th>Valor Invoice (USD)</th><th>A Pagar (USD)</th><th>Data de Embarque</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="panel">
+      <h2>Total por Produto</h2>
+      <div class="chart-wrap table-scroll" id="tblProdutoTotalWrap">
+        <table id="tblProdutoTotal">
+          <thead><tr><th>Produto</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Produto × ETA (Data Estimada de Chegada)</h2>
+      <div class="chart-wrap table-scroll" id="tblProdutoEtaWrap">
+        <table id="tblProdutoEta">
+          <thead><tr><th>Produto</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>PPGL — Quantidades, Cores e ETA</h2>
+      <div class="chart-wrap table-scroll" id="tblPpglWrap">
+        <table id="tblPpgl">
+          <thead><tr><th>Produto</th><th>Cor</th><th>ETA</th><th>Peso (MTON)</th><th>Bobinas</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+      </div></div><div class="panel"><h2>Produto × ETA — Quadro de Chegadas (Peso MTON)</h2><div class="modal-sub" style="margin-bottom:12px;">Cada linha é um Produto/Revestimento/Cor; cada coluna é uma data de ETA. As células mais escuras indicam as maiores quantidades chegando naquela data.</div><div class="table-scroll" id="tblEtaMatrixWrap"><table id="tblEtaMatrix"><thead id="tblEtaMatrixHead"></thead><tbody></tbody></table></div></div><div class="panel"><div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;"><h2 style="margin:0;">Controle FINIMP</h2>
+      <button class="btn btn-secondary" id="addFinimpBtn" style="display:none;" onclick="openAddFinimpModal()">+ Adicionar FINIMP</button>
+    </div>
+    <div class="table-scroll">
+      <table id="tblFinimp">
+        <thead><tr>
+          <th>Contrato</th><th>Data Final</th><th>Total (USD)</th>
+          <th>Valor R$ pago Banco</th><th>Valor FINIMP custo real</th>
+          <th>Ganho</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Detalhe dos Processos</h2>
+    <div class="table-scroll">
+      <table id="tblProcessos">
+        <colgroup>
+          <col style="width:9%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%">
+          <col style="width:9%"><col style="width:6%"><col style="width:4%">
+          <col style="width:6%"><col style="width:7%"><col style="width:8%">
+          <col style="width:6%"><col style="width:5%"><col style="width:7%">
+          <col style="width:6%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Processo Contr.</th><th>Fornecedor</th><th>Produto</th><th>Revestimento</th><th>Cor</th>
+            <th>Navio</th><th>Data Embarque</th><th>Bobinas</th>
+            <th>Peso (MTON)</th><th>Preço Unit. (USD)</th><th>Valor Invoice (USD)</th>
+            <th>ETA</th><th>ETB</th><th>Status</th>
+            <th id="thEditCol" style="display:none;"></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>Dados vindos de uma planilha Google Sheets · atualiza a cada 60s · clique em "Entrar para editar" para gravar direto na planilha (login com a conta autorizada)</footer>
+
+<div class="overlay" id="editOverlay">
+  <div class="modal">
+    <h3 id="editTitle">Editar processo</h3>
+    <div class="modal-sub">As alterações são gravadas direto na planilha do Google Sheets.</div>
+    <form id="editForm"></form>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="saveBtn" onclick="submitEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="newProcessOverlay">
+  <div class="modal wide">
+    <h3>Novo Processo de Importação</h3>
+    <div class="modal-sub">Cria uma linha completa na aba Processos. Se digitar um Produto/Fornecedor/Cor/Revestimento novo, ele é adicionado automaticamente na respectiva lista suspensa.</div>
+    <form id="newProcessForm" class="field-grid"></form>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeNewProcessModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="newProcessSaveBtn" onclick="submitNewProcess()">Criar Processo</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="docOverlay">
+  <div class="modal">
+    <h3 id="docTitle">Documentos do processo</h3>
+    <div class="modal-sub">PDFs ficam guardados no Google Drive; o link fica registrado na planilha.</div>
+
+    <div id="docList" style="margin-bottom:18px;"></div>
+
+    <div class="field-row">
+      <label>Categoria</label>
+      <select id="docCategoria" style="width:100%; background:var(--panel2); border:1px solid var(--border); color:var(--txt); border-radius:8px; padding:9px 10px; font-size:14px;"></select>
+    </div>
+    <div class="field-row">
+      <label>Arquivo (PDF)</label>
+      <input type="file" id="docFile" accept="application/pdf">
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeDocsModal()">Fechar</button>
+      <button type="button" class="btn btn-primary" id="docSaveBtn" onclick="submitUpload()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="editFinimpOverlay">
+  <div class="modal">
+    <h3 id="editFinimpTitle">Editar FINIMP</h3>
+    <div class="modal-sub">As alterações são gravadas direto na aba "FINIMP resultado" do Google Sheets.</div>
+    <div class="field-row">
+      <label>Taxa Dólar dia pgto</label>
+      <input type="text" inputmode="decimal" placeholder="Ex: 5,05" id="finimpEditTaxaDiaPgto">
+    </div>
+    <div class="field-row">
+      <label>Taxa Dólar FTS</label>
+      <input type="text" inputmode="decimal" placeholder="Ex: 5,11" id="finimpEditTaxaFts">
+    </div>
+    <div class="field-row">
+      <label>Taxa Dólar MERC</label>
+      <input type="text" inputmode="decimal" placeholder="Ex: 5,15" id="finimpEditTaxaMerc">
+    </div>
+    <div class="field-row">
       <label>Status</label>
       <select id="finimpEditStatus">
         <option value="">—</option>
