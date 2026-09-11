@@ -298,12 +298,19 @@ main.wide{ max-width:98vw; }
 <div class="panel">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
 <h2 style="margin:0;">Produto × ETA — Quadro de Chegadas (Peso MTON)</h2>
+<div style="display:flex; gap:8px; flex-wrap:wrap;">
 <select id="etaMatrixStatusFilter" class="btn btn-secondary" onchange="onEtaMatrixStatusFilterChange()" title="Filtra o quadro de chegadas pelo status do processo">
 <option value="all">Todos os status</option>
 <option value="PRODUZINDO">Produzindo</option>
 <option value="EMBARCADO">Embarcado</option>
 <option value="CHEGOU">Chegou</option>
 </select>
+<select id="etaMatrixDateFilter" class="btn btn-secondary" onchange="onEtaMatrixDateFilterChange()" title="Filtra o quadro de chegadas pela data de ETA">
+<option value="all">Todas as datas</option>
+<option value="future">A partir de hoje</option>
+<option value="month">Este mês</option>
+</select>
+</div>
 </div>
 <div class="modal-sub" style="margin-bottom:12px;">Cada linha é um Produto/Revestimento/Cor; cada coluna é uma data de ETA. As células mais escuras indicam as maiores quantidades chegando naquela data.</div>
 <div class="table-scroll" id="tblEtaMatrixWrap"><table id="tblEtaMatrix"><thead id="tblEtaMatrixHead"></thead><tbody></tbody></table></div>
@@ -405,7 +412,7 @@ main.wide{ max-width:98vw; }
 <div class="modal-sub">Aplica Fornecedor, Data de Embarque, ETA, ETB e Status a todas as linhas que compartilham o mesmo "Processo Contr." de uma vez só — em vez de editar linha por linha. Deixe em branco qualquer campo que não deva ser alterado.</div>
 <div class="field-row">
 <label>Processo Contr.</label>
-<input type="text" id="bulkUpdateProcessoInput" list="processoContrOptions" autocomplete="off" onchange="onBulkUpdateProcessoInputChange()">
+<select id="bulkUpdateProcessoInput" onchange="onBulkUpdateProcessoInputChange()"></select>
 </div>
 <div class="modal-sub" id="bulkUpdateCount" style="margin-bottom:14px;"></div>
 <form id="bulkUpdateForm" class="field-grid">
@@ -951,6 +958,29 @@ ETA_MATRIX_STATUS_FILTER = document.getElementById('etaMatrixStatusFilter').valu
 renderAll();
 }
 
+// Filtro por data do Quadro de Chegadas (pedido do usuario em 2026-09-11):
+// 'all' mantem o comportamento original identico; 'future' mostra so ETAs
+// a partir de hoje (inclusive); 'month' mostra so ETAs do mes corrente.
+let ETA_MATRIX_DATE_FILTER = 'all';
+
+function applyEtaMatrixDateFilter(rows){
+if (ETA_MATRIX_DATE_FILTER === 'all') return rows;
+const todayISO = new Date().toISOString().slice(0, 10);
+if (ETA_MATRIX_DATE_FILTER === 'future'){
+return rows.filter(r => { const eta = (r.ETA || '').trim(); return eta && eta >= todayISO; });
+}
+if (ETA_MATRIX_DATE_FILTER === 'month'){
+const ym = todayISO.slice(0, 7);
+return rows.filter(r => { const eta = (r.ETA || '').trim(); return eta && eta.slice(0, 7) === ym; });
+}
+return rows;
+}
+
+function onEtaMatrixDateFilterChange(){
+ETA_MATRIX_DATE_FILTER = document.getElementById('etaMatrixDateFilter').value;
+renderAll();
+}
+
 function renderAll(){
 // Linhas sem Fornecedor preenchido nao sao exibidas em nenhum dash (geralmente sao linhas vazias/incompletas na planilha).
 const comFornecedor = ALL_PROCESSOS.filter(r => r.Fornecedor && r.Fornecedor.trim() !== '');
@@ -959,7 +989,7 @@ renderKPIs(filtered);
 renderFornecedorTable(filtered);
 renderProdutoTotalTable(filtered);
 renderProdutoEtaTable(filtered);
-renderPpglTable(filtered); renderEtaMatrix(applyEtaMatrixStatusFilter(filtered));
+renderPpglTable(filtered); renderEtaMatrix(applyEtaMatrixDateFilter(applyEtaMatrixStatusFilter(filtered)));
 renderTable(filtered);
 }
 
@@ -2172,7 +2202,13 @@ saveBtn.textContent = 'Criar Processo';
 // ---------------------------------------------------------------------
 function openBulkUpdateProcessoModal(processoContr){
 const val = (processoContr || '').trim();
-document.getElementById('bulkUpdateProcessoInput').value = val;
+// Popula o seletor com os numeros de processo ja existentes na planilha
+// (pedido do usuario em 2026-09-11: caixa seletora em vez de texto livre).
+const selectEl = document.getElementById('bulkUpdateProcessoInput');
+const processoOptions = [...new Set(ALL_PROCESSOS.map(r => (r['Processo Contr.'] || '').trim()).filter(Boolean))].sort();
+selectEl.innerHTML = '<option value="">Selecione um processo…</option>' +
+processoOptions.map(p => `<option value="${String(p).replace(/"/g,'&quot;')}">${p}</option>`).join('');
+selectEl.value = val;
 const matches = val
 ? ALL_PROCESSOS.filter(r => (r['Processo Contr.'] || '').trim().toLowerCase() === val.toLowerCase())
 : [];
